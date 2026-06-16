@@ -28,7 +28,7 @@ graph TD
     - Calcular el saldo residual del ciclo de origen en modalidad contado (RN-04) aplicando la fórmula: `Monto pagado contado ÷ semanas totales del ciclo × semanas restantes`.
     - Calcular el saldo residual o devengado en modalidad cuotas (RN-05, RN-09), respetando las reglas de la semana marketera (donde no se descuenta valor hasta el miércoles de la segunda semana administrativa).
     - Calcular el costo residual del ciclo destino en base a la modalidad de destino.
-    - Determinar la aplicación o exoneración del costo administrativo de S/20 (RN-14, RN-15) según la fecha efectiva de traslado y los calendarios del ciclo destino.
+    - Determinar la aplicación o exoneración del costo administrativo de S/20 (RN-14, RN-15) según la fecha efectiva de traslado, los calendarios del ciclo destino, y la fecha de matrícula del estudiante.
     - Resolver el balance neto (`Resultado = Saldo residual origen − costo residual destino − costo administrativo`).
 *   **Riesgo asociado**: Inconsistencias de cálculo por diferencias horarias o mala interpretación de los calendarios académico (lunes a viernes) vs. administrativo (jueves a miércoles).
 

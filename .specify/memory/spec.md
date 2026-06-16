@@ -52,6 +52,7 @@ Esta especificación detalla las reglas de cálculo de residuales, la aplicació
 * **RN-15 Exoneración**: El costo administrativo de S/20 no se cobrará (S/0) si la fecha efectiva del traslado coincide con:
   - La semana marketera del ciclo de destino.
   - La primera semana académica del ciclo de destino.
+  - La primera semana de clases del estudiante (primeros 7 días calendario contados a partir de su fecha de matrícula; por ejemplo, si el ciclo inicia el 01/06 y el estudiante se matricula el 03/06, no se le cobrarán los S/20 si solicita el traslado hasta el 10/06 inclusive. Pasada esa fecha, se le cobrará el gasto administrativo).
 * **RN-16 Anulación**: Un traslado previamente ejecutado podrá anularse únicamente cuando el estudiante responda de forma posterior al hilo de correo solicitando dicha anulación. El sistema revertirá los saldos y registrará el evento.
 * **RN-17 Auditoría**: Cada registro de ejecución o anulación debe almacenar los siguientes datos:
   - Estudiante (ID/Nombre)
@@ -124,6 +125,16 @@ Entonces el agente de Helpdesk registra el rechazo y el traslado queda cancelado
 Dado que un estudiante solicita un traslado con una fecha efectiva que cae dentro de la primera semana académica del ciclo de destino
 Cuando el sistema calcula los costos del traslado
 Entonces el costo administrativo se calcula como S/0 (Exonerado).
+
+Dado que un estudiante se matricula el 03/06 en un ciclo iniciado el 01/06
+Y solicita un traslado con fecha efectiva el 10/06 (dentro de los primeros 7 días de su matrícula)
+Cuando el sistema calcula los costos del traslado
+Entonces el costo administrativo se calcula como S/0 (Exonerado).
+
+Dado que un estudiante se matricula el 03/06 en un ciclo iniciado el 01/06
+Y solicita un traslado con fecha efectiva el 11/06 (después de los primeros 7 días de su matrícula)
+Cuando el sistema calcula los costos del traslado
+Entonces el costo administrativo se establece en S/20.
 ```
 
 ### Traslado con costo administrativo
