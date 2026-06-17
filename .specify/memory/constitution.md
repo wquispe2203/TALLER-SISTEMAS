@@ -1,29 +1,26 @@
 # Constitution.md
 
+# Constitución del Proyecto
+
 ## Feature: Calculadora de Montos de Traslado Académico
 
 ### Art. 3 · Quality Standards
 
-#### 3.1 Exactitud de cálculos
+#### 3.1 Exactitud de resultados
 
-Todo cálculo realizado por la herramienta deberá producir el mismo resultado que el procedimiento manual vigente basado en el Excel oficial proporcionado por Gerencia.
+Todo cálculo generado por la herramienta deberá coincidir con el resultado obtenido mediante el procedimiento manual vigente utilizando el Excel oficial aprobado por Gerencia.
 
-#### 3.2 Validación obligatoria de entradas
+#### 3.2 Cobertura mínima de pruebas
 
-Antes de ejecutar cualquier cálculo, el sistema deberá validar:
+La lógica de cálculo deberá mantener una cobertura mínima del 80% mediante pruebas unitarias que validen escenarios felices, errores y casos borde.
 
-* Estado de matrícula válido para realizar el traslado.
-* Fecha de traslado válida dentro del periodo académico correspondiente.
-* Existencia del ciclo origen.
-* Existencia del ciclo destino.
-* Existencia de la modalidad seleccionada.
+#### 3.3 Rendimiento
 
+La herramienta deberá generar el resultado del cálculo en menos de 200 milisegundos desde que el usuario envía los datos requeridos.
 
-Si alguna validación falla, el sistema deberá mostrar una observación clara y detener el procesamiento.
+#### 3.4 Calidad del código
 
-#### 3.3 Tiempo de respuesta
-
-El resultado del cálculo deberá mostrarse al usuario en menos de 2 segundos desde el envío de los datos.
+El código deberá cumplir el estándar PEP8 y superar la validación automática de estilo antes de ser considerado listo para entrega.
 
 ---
 
@@ -31,22 +28,27 @@ El resultado del cálculo deberá mostrarse al usuario en menos de 2 segundos de
 
 #### 4.1 Fuente única de verdad
 
-La información oficial de ciclos, semanas académicas, cuotas, montos al contado, montos por cuota y demás parámetros de cálculo será la definida por el Excel autorizado por Gerencia.
+Los parámetros académicos y financieros deberán obtenerse de una representación digital controlada cuyo origen sea el Excel oficial aprobado por Gerencia.
 
-#### 4.2 Separación de reglas de negocio
+#### 4.2 Separación de responsabilidades
 
-Las reglas de cálculo deberán mantenerse separadas de la interfaz de usuario para permitir modificaciones futuras sin afectar la experiencia del usuario.
+La lógica de cálculo deberá mantenerse separada de la interfaz de usuario para facilitar mantenimiento, pruebas y futuras modificaciones.
 
-#### 4.3 Trazabilidad de resultados
+#### 4.3 Arquitectura por capas
 
-Todo resultado deberá mostrar claramente:
+La solución deberá separar claramente:
 
-* Fecha de traslado utilizada.
-* Ciclo origen.
-* Ciclo destino.
-* Modalidad de pago.
-* Resultado final del cálculo.
-* Estado final del traslado (saldo a favor, traslado cubierto o monto pendiente).
+* Captura de datos de entrada.
+* Reglas de negocio y cálculos.
+* Presentación de resultados.
+
+#### 4.4 Anti-patrones prohibidos
+
+No se permitirá:
+
+* Duplicar fórmulas de cálculo en múltiples componentes.
+* Mezclar reglas de negocio con código de interfaz.
+* Modificar directamente la fuente oficial de datos desde la aplicación.
 
 ---
 
@@ -54,31 +56,29 @@ Todo resultado deberá mostrar claramente:
 
 #### ALWAYS DO
 
-* Validar todas las entradas antes de realizar cualquier cálculo.
-* Utilizar únicamente la información oficial aprobada por Gerencia.
-* Aplicar las fórmulas de cálculo vigentes para las modalidades al contado y en cuotas.
-* Validar que el estado del estudiante sea MATRICULADO o PAGADO antes de procesar un traslado.
-* Mostrar mensajes claros cuando un traslado no pueda procesarse.
-* Mantener consistencia con los resultados obtenidos mediante el procedimiento manual actual.
+* Utilizar únicamente información oficial aprobada por Gerencia.
+* Validar todas las entradas antes de ejecutar cálculos.
+* Mantener consistencia con los resultados del procedimiento manual vigente.
+* Mostrar mensajes de error estandarizados indicando el campo inválido y la causa de la validación fallida.
+* Registrar y documentar cualquier cambio en las reglas de cálculo.
 
 #### ASK FIRST
 
-* Cambios en las fórmulas de cálculo.
+* Cambios en fórmulas de negocio.
 * Nuevas modalidades de pago.
 * Nuevos estados de matrícula.
 * Nuevos tipos de traslado.
-* Cambios en las reglas de becas o descuentos.
-* Integración con otros sistemas institucionales.
+* Cambios en políticas de descuentos o beneficios.
+* Integraciones con otros sistemas institucionales.
 
 #### NEVER DO
 
-* Procesar traslados de estudiantes con estado SUSPENDIDO o RETIRADO.
-* Realizar cálculos con datos incompletos.
-* Asumir valores por defecto cuando falte información requerida.
+* Realizar cálculos con información incompleta.
+* Asumir valores por defecto cuando falten datos obligatorios.
 * Modificar fórmulas sin validación del área de negocio.
-* Procesar traslados con fechas fuera del periodo académico válido.
+* Procesar operaciones que no cumplan las validaciones definidas.
 * Mostrar resultados cuando exista una validación fallida.
-* Mantener beneficios, becas o descuentos después de un traslado cuando la política institucional indique su pérdida.
-* Permitir resultados inconsistentes con las reglas oficiales definidas por Gerencia.
+* Duplicar reglas de negocio en diferentes componentes del sistema.
 
+```
 ```
