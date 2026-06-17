@@ -1,201 +1,255 @@
 # spec.md
 
-## Resumen
+# Resumen ejecutivo
 
-El proceso de traslado de estudiantes entre ciclos académicos de Vonex permite reubicar a un estudiante que solicita formalmente su cambio a través del correo `helpdesk@vonex.edu.pe`. Para calcular y ejecutar este traslado, se procesa la información de programación académica proveniente de un Excel institucional oficial, determinando el saldo residual del ciclo de origen, el costo residual del ciclo de destino y la aplicación de los costos administrativos correspondientes. El resultado de este cálculo financiero (saldo positivo, exacto o negativo) define las acciones a seguir y requiere una estricta trazabilidad de auditoría.
+Actualmente el área de TI realiza cálculos manuales para determinar el monto correspondiente a un traslado académico utilizando información proporcionada por Gerencia mediante un archivo Excel oficial. El proceso requiere entre 10 y 20 minutos por solicitud y depende de la correcta interpretación de reglas relacionadas con fechas académicas, modalidad de pago, semanas restantes, descuentos y beneficios.
 
-## Objetivo
+La presente feature propone una Calculadora de Montos de Traslado Académico que permita ingresar los parámetros necesarios y obtener automáticamente el resultado económico del traslado, reduciendo errores operativos, disminuyendo tiempos de atención y estandarizando la aplicación de las reglas de negocio.
 
-Permitir que el personal de Helpdesk calcule, apruebe, ejecute y registre traslados entre ciclos académicos respetando las reglas financieras y de calendario institucional de Vonex, garantizando exactitud financiera y la trazabilidad de cada estado en el ciclo de vida del traslado.
+---
 
-## Alcance
+# 1. Contexto de negocio
 
-Esta especificación detalla las reglas de cálculo de residuales, la aplicación de prorrateos, los calendarios correspondientes, y las siguientes dos historias de usuario:
-* **US-1: Calcular traslado**: Registro de la fecha efectiva de solicitud, cálculo de saldo residual origen, costo residual destino, costo administrativo y determinación del resultado financiero.
-* **US-2: Ejecutar y registrar traslado**: Confirmación de la ejecución del traslado, registro inmutable de auditoría y la capacidad de anulación a solicitud posterior del estudiante.
+## Problema que resuelve
 
-## User Stories
+El cálculo actual de traslados se realiza manualmente utilizando fórmulas contenidas en un Excel oficial. Esto genera dependencia del conocimiento del analista, riesgo de errores humanos y tiempos elevados de atención.
 
-### US-1: Calcular traslado
-**Como** agente de Helpdesk,
-**quiero** calcular el saldo residual del estudiante y el costo del ciclo destino,
-**para** determinar si el traslado puede realizarse y conocer el resultado financiero correspondiente.
+## Impacto
 
-### US-2: Ejecutar y registrar traslado
-**Como** agente de Helpdesk,
-**quiero** ejecutar, registrar y eventualmente anular un traslado aprobado,
-**para** mantener trazabilidad y control institucional del proceso.
+La solución beneficiará al área de TI reduciendo el tiempo promedio de cálculo y garantizando consistencia en la aplicación de las reglas de negocio, especialmente durante campañas donde el volumen de solicitudes aumenta significativamente.
 
-## Reglas de negocio
+---
 
-* **RN-01 Fecha efectiva**: El cálculo del traslado debe realizarse utilizando exclusivamente la fecha efectiva de traslado indicada por el estudiante en su solicitud de correo. No se debe emplear la fecha del correo, de aprobación ni de ejecución.
-* **RN-02 Compatibilidad**: Cualquier ciclo académico es compatible con cualquier otro ciclo de destino. No existen restricciones por carrera, programa, modalidad o universidad de origen/destino.
-* **RN-03 Modalidades**: La modalidad de pago registrada como "partes" equivale a la modalidad "cuotas".
-* **RN-04 Modalidad contado**: 
-  - Se calcula a partir del monto efectivamente pagado por el estudiante (respetando los descuentos aplicados al pago al contado).
-  - La semana marketera consume valor dentro del prorrateo en modalidad contado.
-  - *Fórmula*: `Saldo residual = Monto pagado contado ÷ semanas totales del ciclo × semanas restantes`
-* **RN-05 Modalidad cuotas**: Cada cuota cobrable equivale a un periodo de 4 semanas académicas.
-* **RN-06 Calendario académico**: Define la duración académica del ciclo, semanas consumidas y validaciones académicas. Se rige de lunes a viernes (5 días laborables).
-* **RN-07 Calendario administrativo**: Utilizado de manera exclusiva para el cálculo de prorrateo. Se rige de jueves a miércoles (7 días calendario). Los cambios de porcentaje/avances administrativos para prorrateo ocurren los días jueves.
-* **RN-08 Prorrateo sin semana marketera**: En ciclos que no contemplen semana marketera, el descuento por avance administrativo se aplica de forma regular a lo largo del tiempo.
-* **RN-09 Prorrateo con semana marketera**: En ciclos con modalidad cuotas que incluyan semana marketera:
-  - La semana marketera no descuenta valor.
-  - El estudiante conserva el valor completo de la cuota hasta el miércoles de la segunda semana administrativa.
-  - A partir del jueves de la segunda semana administrativa inicia el prorrateo de forma regular.
-* **RN-10 Resultado financiero**: Se obtiene mediante la ecuación:
-  `Resultado = Saldo residual origen − costo residual destino − costo administrativo`
-* **RN-11 Saldo positivo**: Si el resultado financiero es mayor a cero, el traslado se considera cubierto y el excedente se abonará automáticamente como saldo a favor en futuras cuotas del estudiante en el ciclo de destino.
-* **RN-12 Saldo exacto**: Si el resultado financiero es igual a cero, el traslado se considera completamente cubierto sin saldo pendiente ni excedentes.
-* **RN-13 Saldo negativo**: Si el resultado financiero es menor a cero, se genera una deuda. El estudiante debe decidir si pagar la diferencia. Si acepta pagar, el traslado procede; si la rechaza, el traslado no debe ejecutarse.
-* **RN-14 Costo administrativo**: Todo proceso de traslado tiene un cargo administrativo estipulado de S/20.
-* **RN-15 Exoneración**: El costo administrativo de S/20 no se cobrará (S/0) si la fecha efectiva del traslado coincide con:
-  - La semana marketera del ciclo de destino.
-  - La primera semana académica del ciclo de destino.
-  - La primera semana de clases del estudiante (primeros 7 días calendario contados a partir de su fecha de matrícula; por ejemplo, si el ciclo inicia el 01/06 y el estudiante se matricula el 03/06, no se le cobrarán los S/20 si solicita el traslado hasta el 10/06 inclusive. Pasada esa fecha, se le cobrará el gasto administrativo).
-* **RN-16 Anulación**: Un traslado previamente ejecutado podrá anularse únicamente cuando el estudiante responda de forma posterior al hilo de correo solicitando dicha anulación. El sistema revertirá los saldos y registrará el evento.
-* **RN-17 Auditoría**: Cada registro de ejecución o anulación debe almacenar los siguientes datos:
-  - Estudiante (ID/Nombre)
-  - Correo del solicitante
-  - Fecha de solicitud
-  - Fecha efectiva
-  - Ciclo origen y ciclo destino
-  - Modalidad origen y modalidad destino
-  - Saldo origen calculado
-  - Costo destino calculado
-  - Costo administrativo aplicado o exonerado
-  - Diferencia final (Resultado financiero)
-  - Decisión del estudiante frente a la deuda (Acepta pagar / Rechaza)
-  - Usuario de Helpdesk que operó el registro
-  - Observaciones
-  - Fecha y hora del registro de auditoría
-  - Estado final del traslado (Simulado, Ejecutado, Anulado, Rechazado)
+# 2. User Stories y criterios de aceptación
 
-## Criterios de aceptación
+## US-1
 
-### Cálculo con saldo positivo
-```gherkin
-Dado que un estudiante solicita un traslado con modalidad contado
-Y su saldo residual de origen es S/500
-Y el costo residual del ciclo destino es S/400
-Y aplica un costo administrativo de S/20
-Cuando el sistema realiza el cálculo del traslado
-Entonces el resultado financiero determinado es S/80 a favor (Saldo positivo)
-Y el sistema registra que el excedente se aplicará automáticamente a futuras cuotas del ciclo destino.
+Como analista de soporte,
+
+quiero ingresar los datos requeridos para un traslado académico,
+
+para obtener automáticamente el resultado económico del traslado.
+
+### AC-1.1 Saldo a favor
+
+Dado un traslado válido donde:
+
+* Saldo disponible calculado = S/ 700
+* Costo requerido del ciclo destino = S/ 500
+
+Cuando el usuario ejecuta el cálculo,
+
+Entonces el sistema muestra:
+
+* Resultado: S/ 200 de saldo a favor
+* Estado: "Saldo a favor"
+
+### AC-1.2 Traslado cubierto
+
+Dado un traslado válido donde:
+
+* Saldo disponible calculado = S/ 500
+* Costo requerido del ciclo destino = S/ 500
+
+Cuando el usuario ejecuta el cálculo,
+
+Entonces el sistema muestra:
+
+* Resultado: S/ 0
+* Estado: "Sin saldo pendiente"
+
+### AC-1.3 Monto pendiente
+
+Dado un traslado válido donde:
+
+* Saldo disponible calculado = S/ 500
+* Costo requerido del ciclo destino = S/ 800
+
+Cuando el usuario ejecuta el cálculo,
+
+Entonces el sistema muestra:
+
+* Resultado: S/ 300 pendiente de pago
+* Estado: "Monto pendiente por cancelar"
+
+---
+
+## US-2
+
+Como analista de soporte,
+
+quiero que el sistema valide las reglas de negocio antes de calcular,
+
+para evitar resultados incorrectos.
+
+### AC-2.1 Fecha inválida
+
+Dado una fecha que no pertenece al periodo válido del ciclo origen o destino,
+
+Cuando el usuario intenta calcular,
+
+Entonces el sistema bloquea la operación y muestra:
+
+"Fecha de traslado inválida para los ciclos seleccionados."
+
+### AC-2.2 Estado no permitido
+
+Dado cualquier estado diferente de:
+
+* MATRICULADO
+* PAGADO
+
+Cuando el usuario intenta calcular,
+
+Entonces el sistema bloquea la operación y muestra:
+
+"El estado actual no permite realizar traslados."
+
+### AC-2.3 Modalidad inexistente
+
+Dado que el ciclo seleccionado no posee la modalidad indicada,
+
+Cuando el usuario intenta calcular,
+
+Entonces el sistema bloquea la operación y muestra:
+
+"La modalidad seleccionada no existe para el ciclo indicado."
+
+---
+
+# 3. Requisitos no funcionales
+
+### NFR-1
+
+La generación del resultado deberá completarse en menos de 2 segundos.
+
+---
+
+# 4. Casos borde
+
+### CB-1 Fecha fuera del rango académico
+
+Resultado esperado:
+
+El sistema bloquea el cálculo e informa que la fecha es inválida.
+
+### CB-2 Ciclo origen igual a ciclo destino
+
+Resultado esperado:
+
+El sistema muestra:
+
+* Resultado: S/ 0
+* Estado: "Sin saldo pendiente"
+
+### CB-3 Modalidad inexistente
+
+Resultado esperado:
+
+El sistema bloquea el cálculo e informa que la modalidad no existe para el ciclo seleccionado.
+
+### CB-4 Estado SUSPENDIDO
+
+Resultado esperado:
+
+El sistema bloquea el cálculo e informa que el estado no permite traslados.
+
+### CB-5 Estado RETIRADO
+
+Resultado esperado:
+
+El sistema bloquea el cálculo e informa que el estado no permite traslados.
+
+### CB-6 Resultado exactamente igual a cero
+
+Resultado esperado:
+
+El sistema muestra:
+
+* Resultado: S/ 0
+* Estado: "Sin saldo pendiente"
+
+### CB-7 Traslado durante la última semana académica
+
+Resultado esperado:
+
+El cálculo utiliza únicamente las semanas restantes efectivamente disponibles según las reglas de negocio.
+
+### CB-8 Estudiante con descuento activo
+
+Resultado esperado:
+
+El sistema utiliza el monto descontado para calcular el saldo disponible del ciclo origen y elimina el beneficio para el cálculo del ciclo destino.
+
+### CB-9 Estudiante con beca activa
+
+Resultado esperado:
+
+El sistema utiliza el beneficio vigente únicamente para determinar el saldo disponible del ciclo origen y aplica la tarifa regular del ciclo destino.
+
+---
+
+# 5. Assumptions
+
+### A-1
+
+El Excel oficial proporcionado por Gerencia contiene información correcta y actualizada.
+
+### A-2
+
+Las fechas académicas necesarias para determinar semanas restantes están disponibles en la fuente oficial.
+
+### A-3
+
+Los descuentos y beneficios vigentes se encuentran correctamente identificados antes de ejecutar el cálculo.
+
+### A-4
+
+Únicamente los estados MATRICULADO y PAGADO permiten realizar traslados. Cualquier otro estado deberá bloquear el cálculo.
+
+---
+
+# 6. NEEDS_CLARIFICATION
+
+### NC-1
+
+¿Cómo se actualizarán los parámetros cuando Gerencia publique una nueva versión del Excel oficial?
+
+### NC-2
+
+¿Existe una fecha límite institucional previa al cierre de un ciclo para permitir traslados?
+
+### NC-3
+
+¿Los resultados calculados deben almacenarse para auditoría o únicamente mostrarse al usuario?
+
+---
+
+# 7. Scope
+
+## DENTRO
+
+* Cálculo automático de montos de traslado.
+* Cálculo para modalidad al contado.
+* Cálculo para modalidad en cuotas.
+* Validación de fechas académicas.
+* Validación de estados de matrícula.
+* Validación de modalidades disponibles.
+* Determinación de saldo a favor.
+* Determinación de traslado cubierto.
+* Determinación de monto pendiente.
+* Aplicación de reglas de descuentos y beneficios.
+
+## FUERA
+
+* Registro histórico de traslados.
+* Integración con sistemas académicos.
+* Integración con sistemas financieros.
+* Generación de comprobantes.
+* Envío de correos electrónicos.
+* Gestión de matrículas.
+* Gestión de becas.
+* Gestión de descuentos.
+
 ```
-
-### Cálculo con saldo exacto
-```gherkin
-Dado que un estudiante solicita un traslado
-Y su saldo residual de origen es S/420
-Y el costo residual del ciclo destino es S/400
-Y aplica un costo administrativo de S/20
-Cuando el sistema realiza el cálculo del traslado
-Entonces el resultado financiero determinado es S/0 (Saldo exacto)
-Y el traslado se marca como completamente cubierto.
 ```
-
-### Cálculo con saldo negativo
-```gherkin
-Dado que un estudiante solicita un traslado
-Y su saldo residual de origen es S/300
-Y el costo residual del ciclo destino es S/400
-Y aplica un costo administrativo de S/20
-Cuando el sistema realiza el cálculo del traslado
-Entonces el resultado financiero determinado es -S/120 (Saldo negativo)
-Y el sistema requiere la confirmación de la decisión del estudiante ante la deuda para proceder.
-```
-
-### Aceptación de deuda
-```gherkin
-Dado que el cálculo del traslado del estudiante arroja un saldo negativo de -S/120
-Cuando el estudiante confirma por correo que acepta pagar la diferencia
-Entonces el agente de Helpdesk puede proceder con la ejecución del traslado en el sistema.
-```
-
-### Rechazo de deuda
-```gherkin
-Dado que el cálculo del traslado del estudiante arroja un saldo negativo de -S/120
-Cuando el estudiante rechaza pagar la diferencia o no brinda respuesta
-Entonces el agente de Helpdesk registra el rechazo y el traslado queda cancelado y no se ejecuta.
-```
-
-### Traslado exonerado
-```gherkin
-Dado que un estudiante solicita un traslado con una fecha efectiva que cae dentro de la primera semana académica del ciclo de destino
-Cuando el sistema calcula los costos del traslado
-Entonces el costo administrativo se calcula como S/0 (Exonerado).
-
-Dado que un estudiante se matricula el 03/06 en un ciclo iniciado el 01/06
-Y solicita un traslado con fecha efectiva el 10/06 (dentro de los primeros 7 días de su matrícula)
-Cuando el sistema calcula los costos del traslado
-Entonces el costo administrativo se calcula como S/0 (Exonerado).
-
-Dado que un estudiante se matricula el 03/06 en un ciclo iniciado el 01/06
-Y solicita un traslado con fecha efectiva el 11/06 (después de los primeros 7 días de su matrícula)
-Cuando el sistema calcula los costos del traslado
-Entonces el costo administrativo se establece en S/20.
-```
-
-### Traslado con costo administrativo
-```gherkin
-Dado que un estudiante solicita un traslado con una fecha efectiva posterior a la primera semana académica y fuera de la semana marketera del ciclo de destino
-Cuando el sistema calcula los costos del traslado
-Entonces el costo administrativo se establece en S/20.
-```
-
-### Modalidad contado
-```gherkin
-Dado que un estudiante pagó S/1200 al contado en un ciclo de origen de 12 semanas totales
-Y solicita traslado con fecha efectiva que deja 6 semanas restantes en el ciclo
-Cuando el sistema aplica la fórmula de modalidad contado
-Entonces el saldo residual de origen se calcula exactamente en S/600.
-```
-
-### Modalidad cuotas
-```gherkin
-Dado que un ciclo de origen en cuotas posee cuotas donde cada una representa 4 semanas académicas cobrables (28 días administrativos)
-Cuando el sistema calcula el prorrateo de una cuota en curso
-Entonces el avance se computa en base a las semanas consumidas y restantes según el calendario de jueves a miércoles.
-```
-
-### Semana marketera (Modalidad Cuotas con Semana Marketera)
-```gherkin
-Dado que un estudiante se traslada desde un ciclo con cuotas y semana marketera
-Y la fecha efectiva se encuentra entre el inicio del ciclo y el miércoles de la segunda semana administrativa
-Cuando el sistema evalúa el prorrateo de la cuota en curso
-Entonces el estudiante conserva el 100% del valor de la cuota sin ningún descuento por avance administrativo.
-```
-
-### Ejecución del traslado
-```gherkin
-Dado que un cálculo de traslado ha sido revisado por Helpdesk
-Y cumple con las condiciones financieras de aprobación (saldo positivo, exacto, o negativo aceptado y pagado)
-Cuando el agente de Helpdesk confirma la ejecución del traslado
-Entonces el estudiante es asignado al ciclo destino
-Y el saldo/excedente es aplicado al ciclo destino
-Y el estado del traslado cambia a "Ejecutado".
-```
-
-### Anulación del traslado
-```gherkin
-Dado que un traslado fue previamente ejecutado y registrado en el sistema con estado "Ejecutado"
-Cuando el estudiante solicita la anulación vía correo electrónico y el agente de Helpdesk ejecuta la acción de anular
-Entonces el sistema revierte todos los movimientos financieros del traslado
-And el estado del traslado cambia a "Anulado" en el registro histórico.
-```
-
-### Registro de auditoría
-```gherkin
-Dado que se ejecuta o anula un traslado de estudiantes
-Cuando la transacción se completa con éxito
-Entonces el sistema guarda de forma inmutable un registro en la tabla de auditoría con la fecha y hora, ID del estudiante, correos de respaldo, montos exactos calculados, usuario de Helpdesk que operó y el estado final del proceso.
-```
-
-## Fuera de alcance
-
-* Integración automática o sincronización directa con bandejas de entrada de correo electrónico (los correos se revisan y registran manualmente por Helpdesk).
-* Procesamiento de pagos, pasarelas de pago online o validación bancaria de transacciones.
-* Devoluciones de dinero físico o transferencias bancarias a estudiantes en caso de saldos a favor excedentes (el saldo se aplica únicamente a futuras cuotas).
-* Sincronización en tiempo real o lectura directa automatizada del archivo Excel institucional de programación académica (el archivo se asume importado o cargado previamente en el sistema).
-* Envío automatizado de correos de notificación de resultados a los estudiantes.

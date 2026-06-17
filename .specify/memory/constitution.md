@@ -16,7 +16,7 @@ La lógica de cálculo deberá mantener una cobertura mínima del 80% mediante p
 
 #### 3.3 Rendimiento
 
-La herramienta deberá generar el resultado del cálculo en menos de 200 milisegundos desde que el usuario envía los datos requeridos.
+La herramienta deberá generar el resultado del cálculo en menos de 2 segundos desde que el usuario envía los datos requeridos.
 
 #### 3.4 Calidad del código
 
