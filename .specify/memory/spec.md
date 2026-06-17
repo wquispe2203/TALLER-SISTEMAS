@@ -1,36 +1,36 @@
 # spec.md
 
-# Resumen ejecutivo
+# Resumen Ejecutivo
 
-Actualmente el área de TI realiza cálculos manuales para determinar el monto correspondiente a un traslado académico utilizando información proporcionada por Gerencia mediante un archivo Excel oficial. El proceso requiere entre 10 y 20 minutos por solicitud y depende de la correcta interpretación de reglas relacionadas con fechas académicas, modalidad de pago, semanas restantes, descuentos y beneficios.
-
-La presente feature propone una Calculadora de Montos de Traslado Académico que permita ingresar los parámetros necesarios y obtener automáticamente el resultado económico del traslado, reduciendo errores operativos, disminuyendo tiempos de atención y estandarizando la aplicación de las reglas de negocio.
+Se propone implementar una Calculadora de Montos de Traslado Académico para automatizar el cálculo actualmente realizado de forma manual por el área de TI utilizando un Excel oficial proporcionado por Gerencia. La solución permitirá determinar automáticamente si una solicitud de traslado genera saldo a favor, traslado cubierto o monto pendiente de pago, aplicando las reglas institucionales vigentes para modalidades al contado y en cuotas. El objetivo es reducir errores operativos, disminuir el tiempo de atención y estandarizar el proceso. Quedan pendientes definiciones relacionadas con la actualización de parámetros oficiales, el almacenamiento de resultados calculados y posibles restricciones institucionales adicionales para la ejecución de traslados.
 
 ---
 
-# 1. Contexto de negocio
+# 1. Contexto de Negocio
 
 ## Problema que resuelve
 
-El cálculo actual de traslados se realiza manualmente utilizando fórmulas contenidas en un Excel oficial. Esto genera dependencia del conocimiento del analista, riesgo de errores humanos y tiempos elevados de atención.
+Actualmente el cálculo de montos de traslado académico se realiza manualmente utilizando fórmulas contenidas en un Excel oficial. Este proceso requiere entre 10 y 20 minutos por solicitud y depende del conocimiento individual del analista, aumentando el riesgo de errores y diferencias de criterio.
 
-## Impacto
+## Por qué ahora / a quién impacta
 
-La solución beneficiará al área de TI reduciendo el tiempo promedio de cálculo y garantizando consistencia en la aplicación de las reglas de negocio, especialmente durante campañas donde el volumen de solicitudes aumenta significativamente.
+Durante campañas académicas el volumen de solicitudes de traslado puede duplicarse o triplicarse, incrementando la carga operativa del área de TI.
+
+La solución impacta directamente al equipo de Soporte TI, responsable de calcular y comunicar los resultados económicos de los traslados académicos.
 
 ---
 
-# 2. User Stories y criterios de aceptación
+# 2. User Stories y Criterios de Aceptación
 
-## US-1
+## US-1 (P1)
 
 Como analista de soporte,
 
-quiero ingresar los datos requeridos para un traslado académico,
+quiero ingresar los datos necesarios para un traslado académico,
 
 para obtener automáticamente el resultado económico del traslado.
 
-### AC-1.1 Saldo a favor
+### AC-1.1 (Saldo a favor)
 
 Dado un traslado válido donde:
 
@@ -44,7 +44,7 @@ Entonces el sistema muestra:
 * Resultado: S/ 200 de saldo a favor
 * Estado: "Saldo a favor"
 
-### AC-1.2 Traslado cubierto
+### AC-1.2 (Traslado cubierto)
 
 Dado un traslado válido donde:
 
@@ -58,7 +58,7 @@ Entonces el sistema muestra:
 * Resultado: S/ 0
 * Estado: "Sin saldo pendiente"
 
-### AC-1.3 Monto pendiente
+### AC-1.3 (Monto pendiente)
 
 Dado un traslado válido donde:
 
@@ -74,17 +74,17 @@ Entonces el sistema muestra:
 
 ---
 
-## US-2
+## US-2 (P1)
 
 Como analista de soporte,
 
-quiero que el sistema valide las reglas de negocio antes de calcular,
+quiero que el sistema valide las reglas de negocio antes de ejecutar el cálculo,
 
 para evitar resultados incorrectos.
 
-### AC-2.1 Fecha inválida
+### AC-2.1 (Fecha inválida)
 
-Dado una fecha que no pertenece al periodo válido del ciclo origen o destino,
+Dado una fecha que no pertenece al periodo académico válido del ciclo origen o destino,
 
 Cuando el usuario intenta calcular,
 
@@ -92,9 +92,9 @@ Entonces el sistema bloquea la operación y muestra:
 
 "Fecha de traslado inválida para los ciclos seleccionados."
 
-### AC-2.2 Estado no permitido
+### AC-2.2 (Estado no permitido)
 
-Dado cualquier estado diferente de:
+Dado un estado diferente de:
 
 * MATRICULADO
 * PAGADO
@@ -105,7 +105,7 @@ Entonces el sistema bloquea la operación y muestra:
 
 "El estado actual no permite realizar traslados."
 
-### AC-2.3 Modalidad inexistente
+### AC-2.3 (Modalidad inexistente)
 
 Dado que el ciclo seleccionado no posee la modalidad indicada,
 
@@ -117,21 +117,21 @@ Entonces el sistema bloquea la operación y muestra:
 
 ---
 
-# 3. Requisitos no funcionales
+# 3. Requisitos No Funcionales (NFR)
 
 ### NFR-1
 
-La generación del resultado deberá completarse en menos de 2 segundos.
+El cálculo deberá completarse en menos de 200 milisegundos desde el envío de los datos.
 
 ---
 
-# 4. Casos borde
+# 4. Casos Borde
 
 ### CB-1 Fecha fuera del rango académico
 
 Resultado esperado:
 
-El sistema bloquea el cálculo e informa que la fecha es inválida.
+El sistema bloquea el cálculo e informa que la fecha de traslado es inválida.
 
 ### CB-2 Ciclo origen igual a ciclo destino
 
@@ -142,7 +142,7 @@ El sistema muestra:
 * Resultado: S/ 0
 * Estado: "Sin saldo pendiente"
 
-### CB-3 Modalidad inexistente
+### CB-3 Modalidad inexistente para el ciclo seleccionado
 
 Resultado esperado:
 
@@ -152,13 +152,13 @@ El sistema bloquea el cálculo e informa que la modalidad no existe para el cicl
 
 Resultado esperado:
 
-El sistema bloquea el cálculo e informa que el estado no permite traslados.
+El sistema bloquea el cálculo e informa que el estado no permite realizar traslados.
 
 ### CB-5 Estado RETIRADO
 
 Resultado esperado:
 
-El sistema bloquea el cálculo e informa que el estado no permite traslados.
+El sistema bloquea el cálculo e informa que el estado no permite realizar traslados.
 
 ### CB-6 Resultado exactamente igual a cero
 
@@ -173,19 +173,19 @@ El sistema muestra:
 
 Resultado esperado:
 
-El cálculo utiliza únicamente las semanas restantes efectivamente disponibles según las reglas de negocio.
+El sistema calcula el resultado utilizando únicamente las semanas académicas restantes disponibles según las reglas vigentes.
 
 ### CB-8 Estudiante con descuento activo
 
 Resultado esperado:
 
-El sistema utiliza el monto descontado para calcular el saldo disponible del ciclo origen y elimina el beneficio para el cálculo del ciclo destino.
+El sistema utiliza el monto con descuento para calcular el saldo disponible del ciclo origen y elimina el descuento para calcular el costo del ciclo destino.
 
-### CB-9 Estudiante con beca activa
+### CB-9 Estudiante con beca o beneficio activo
 
 Resultado esperado:
 
-El sistema utiliza el beneficio vigente únicamente para determinar el saldo disponible del ciclo origen y aplica la tarifa regular del ciclo destino.
+El sistema utiliza el beneficio vigente únicamente para determinar el saldo disponible del ciclo origen y calcula el ciclo destino utilizando la tarifa regular sin beneficios.
 
 ---
 
@@ -193,31 +193,39 @@ El sistema utiliza el beneficio vigente únicamente para determinar el saldo dis
 
 ### A-1
 
-El Excel oficial proporcionado por Gerencia contiene información correcta y actualizada.
+Asumimos que el Excel oficial proporcionado por Gerencia contiene información correcta y actualizada.
+
+Si esta información es incorrecta, los resultados calculados serán inválidos.
 
 ### A-2
 
-Las fechas académicas necesarias para determinar semanas restantes están disponibles en la fuente oficial.
+Asumimos que las fechas académicas necesarias para determinar semanas restantes se encuentran disponibles en la fuente oficial.
+
+Si estas fechas no existen o son incorrectas, el sistema no podrá calcular correctamente los saldos.
 
 ### A-3
 
-Los descuentos y beneficios vigentes se encuentran correctamente identificados antes de ejecutar el cálculo.
+Asumimos que los descuentos y beneficios vigentes son conocidos antes de iniciar el cálculo.
+
+Si esta información es incorrecta o incompleta, el resultado económico será incorrecto.
 
 ### A-4
 
-Únicamente los estados MATRICULADO y PAGADO permiten realizar traslados. Cualquier otro estado deberá bloquear el cálculo.
+Asumimos que únicamente los estados MATRICULADO y PAGADO permiten realizar traslados.
+
+Si esta regla cambia, será necesario actualizar las validaciones de negocio.
 
 ---
 
-# 6. NEEDS_CLARIFICATION
+# 6. [NEEDS_CLARIFICATION]
 
 ### NC-1
 
-¿Cómo se actualizarán los parámetros cuando Gerencia publique una nueva versión del Excel oficial?
+¿Cómo se actualizarán los parámetros oficiales cuando Gerencia publique una nueva versión del Excel?
 
 ### NC-2
 
-¿Existe una fecha límite institucional previa al cierre de un ciclo para permitir traslados?
+¿Existe una fecha límite institucional previa al cierre del ciclo para permitir traslados?
 
 ### NC-3
 
@@ -250,6 +258,7 @@ Los descuentos y beneficios vigentes se encuentran correctamente identificados a
 * Gestión de matrículas.
 * Gestión de becas.
 * Gestión de descuentos.
+* Modificación de información académica o financiera.
 
 ```
 ```
