@@ -154,11 +154,11 @@ Entonces el sistema muestra además del resultado final:
 
 ## US-4 (P2)
 
-    Como analista de soporte,
-    
-    quiero visualizar en la pantalla de cálculo la fecha de la última actualización del tarifario vigente,
+Como analista de soporte,
 
-    para tener la seguridad de que el cálculo se está realizando con los parámetros oficiales más recientes enviados por Gerencia.
+quiero visualizar en la pantalla de cálculo la fecha de la última actualización del tarifario vigente,
+
+para tener la seguridad de que el cálculo se está realizando con los parámetros oficiales más recientes enviados por Gerencia.
 
 ### AC-4.1 (Visualización en la interfaz principal)
 
