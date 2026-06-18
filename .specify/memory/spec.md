@@ -180,6 +180,14 @@ Entonces el sistema bloquea los campos de entrada, deshabilita el botón de cál
 
 Ejemplo: "Advertencia: No se pudo verificar la vigencia de los parámetros oficiales. Por seguridad, la calculadora ha sido deshabilitada."
 
+### AC-4.3 (Trazabilidad en el desglose de resultados)
+
+Dado un cálculo de traslado académico ejecutado con éxito,
+
+Cuando el sistema muestra el desglose detallado de las operaciones matemáticas (según FR-006),
+
+Entonces el sistema debe incluir en el desglose y en el reporte final un campo con la versión y fecha del tarifario utilizado para asegurar la validez del cálculo ante auditorías.
+
 ---
 # 3. Requisitos Funcionales
 
