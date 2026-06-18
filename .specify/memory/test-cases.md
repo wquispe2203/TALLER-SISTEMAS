@@ -17,6 +17,25 @@ El sistema muestra:
 * Resultado: S/ 200 de saldo a favor
 * Estado: "Saldo a favor"
 
+## TC-2 (AC-1.2, Caso Traslado Cubierto)
+
+### Datos
+* Saldo disponible calculado: S/ 500
+* Costo requerido del ciclo destino: S/ 500
+
+
+### Pasos
+1. Ingresar los datos.
+2. Ejecutar el cálculo.
+
+### Esperado 
+El sistema muestra:
+
+* Resultado: S/0
+* Estado: “Sin saldo pendiente”
+
+
+
 ## TC-4 (AC-2.1, Caso Error - Fecha Inválida)
 
 ### Datos
