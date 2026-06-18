@@ -176,37 +176,36 @@ Entonces la interfaz debe proporcionar un botón de "Copiar resumen" que capture
 
 Como analista de soporte,
 
-quiero visualizar en la pantalla de cálculo la fecha de la última actualización del tarifario vigente,
+quiero visualizar el resultado de la simulación de forma clara y estructurada,
 
-para tener la seguridad de que el cálculo se está realizando con los parámetros oficiales más recientes enviados por Gerencia.
+para poder comunicar el resultado exacto (saldo a favor, monto a cancelar y diferencial) al estudiante de manera comprensible.
 
-### AC-4.1 (Visualización en la interfaz principal)
+### AC-4.1 (Mostrar saldos iniciales)
 
-Dado que el analista de soporte accede a la pantalla de la calculadora de traslados,
+Dado que se ha ejecutado el cálculo del traslado,
 
-Cuando la interfaz se carga completamente,
+Cuando el sistema muestra la sección "Resultado de la Simulación",
 
-Entonces el sistema muestra en un lugar visible (cabecera o pie de página) un indicador con la fecha de última actualización y versión del tarifario activo.
+Entonces debe mostrar claramente:
 
-Ejemplo visual esperado: "Tarifario vigente: Actualizado al DD/MM/YYYY - v1.2"
+* "Saldo a favor:" con el monto calculado del ciclo origen y su modalidad.
+* "Monto a cancelar:" con el costo total del ciclo destino y su modalidad.
 
-### AC-4.2 (Alerta por parámetros vencidos/sin conexión)
+### AC-4.2 (Mensaje conclusivo de saldo insuficiente/faltante)
 
-Dado que el sistema no puede cargar el archivo de parámetros oficial de Gerencia o la fecha de la última actualización excede el periodo permitido de vigencia,
+Dado que el saldo a favor es menor al costo del ciclo destino,
 
-Cuando el usuario ingresa a la pantalla de cálculo,
+Cuando el sistema presenta el resultado,
 
-Entonces el sistema bloquea los campos de entrada, deshabilita el botón de cálculo y muestra un mensaje de advertencia destacado:
+Entonces debe mostrar una alerta destacada en rojo indicando el monto faltante exacto. Ejemplo: "El saldo a favor del ciclo anterior no cubre el costo del nuevo ciclo. Faltan: S/ 1023.00".
 
-Ejemplo: "Advertencia: No se pudo verificar la vigencia de los parámetros oficiales. Por seguridad, la calculadora ha sido deshabilitada."
+### AC-4.3 (Nota sobre cobro adicional de traslado)
 
-### AC-4.3 (Trazabilidad en el desglose de resultados)
+Dado cualquier cálculo de traslado procesado,
 
-Dado un cálculo de traslado académico ejecutado con éxito,
+Cuando el sistema muestra la tarjeta de resultados,
 
-Cuando el sistema muestra el desglose detallado de las operaciones matemáticas (según FR-006),
-
-Entonces el sistema debe incluir en el desglose y en el reporte final un campo con la versión y fecha del tarifario utilizado para asegurar la validez del cálculo ante auditorías.
+Entonces debe incluir un pie de página visible que recuerde al usuario sobre los costos administrativos. Ejemplo: "* Recordar que se añade los S/ 20 por proceso de traslado si ya pasó una semana académica después de su fecha de matrícula."
 
 ---
 # 3. Requisitos Funcionales
