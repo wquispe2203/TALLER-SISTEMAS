@@ -152,6 +152,26 @@ Entonces el sistema muestra además del resultado final:
 * Fórmula y resultado del costo del ciclo destino
 * Operación final y resultado
 
+### AC-3.2 (Visibilidad de beneficios y descuentos aplicados)
+
+Dado un cálculo de traslado donde el estudiante tiene un descuento o beneficio activo,
+
+Cuando el sistema genera el desglose de las operaciones,
+
+Entonces el sistema debe incluir explícitamente en el detalle:
+
+* El porcentaje o tipo de descuento/beneficio aplicado.
+* La tarifa regular versus la tarifa con el beneficio aplicado utilizada para calcular el saldo disponible del ciclo origen.
+* La aclaración de que el ciclo destino se está cobrando con tarifa regular.
+
+### AC-3.3 (Exportación o copia rápida para atención de tickets)
+
+Dado que el sistema ha generado el desglose de operaciones con éxito,
+
+Cuando el analista necesita enviar la justificación del cálculo al estudiante,
+
+Entonces la interfaz debe proporcionar un botón de "Copiar resumen" que capture todo el desglose en formato de texto plano estructurado, listo para ser pegado en un ticket de soporte.
+
 ## US-4 (P2)
 
 Como analista de soporte,
