@@ -199,15 +199,7 @@ Cuando el sistema presenta el resultado,
 
 Entonces debe mostrar una alerta destacada en rojo indicando el monto faltante exacto. Ejemplo: "El saldo a favor del ciclo anterior no cubre el costo del nuevo ciclo. Faltan: S/ 1023.00".
 
-### AC-4.3 (Nota sobre cobro adicional de traslado)
 
-Dado cualquier cálculo de traslado procesado,
-
-Cuando el sistema muestra la tarjeta de resultados,
-
-Entonces debe incluir un pie de página visible que recuerde al usuario sobre los costos administrativos. Ejemplo: "* Recordar que se añade los S/ 20 por proceso de traslado si ya pasó una semana académica después de su fecha de matrícula."
-
----
 # 3. Requisitos Funcionales
 
 ### FR-001 Datos de entrada requeridos
