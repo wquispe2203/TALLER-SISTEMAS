@@ -184,7 +184,7 @@ de las operaciones matemáticas realizadas, incluyendo:
 * Fórmula y resultado del costo del ciclo destino
 * Operación final y resultado
 
-# 3. Requisitos No Funcionales (NFR)
+# 4. Requisitos No Funcionales (NFR)
 
 ### NFR-1
 
@@ -192,7 +192,7 @@ El cálculo deberá completarse en menos de 200 milisegundos desde el envío de 
 
 ---
 
-# 4. Casos Borde
+# 5. Casos Borde
 
 ### CB-1 Fecha fuera del rango académico
 
@@ -256,7 +256,7 @@ El sistema utiliza el beneficio vigente únicamente para determinar el saldo dis
 
 ---
 
-# 5. Assumptions
+# 6. Assumptions
 
 ### A-1
 
@@ -284,7 +284,7 @@ Si esta regla cambia, será necesario actualizar las validaciones de negocio.
 
 ---
 
-# 6. [NEEDS_CLARIFICATION]
+# 7. [NEEDS_CLARIFICATION]
 
 ### NC-1
 
@@ -300,7 +300,7 @@ Si esta regla cambia, será necesario actualizar las validaciones de negocio.
 
 ---
 
-# 7. Scope
+# 8. Scope
 
 ## DENTRO
 
