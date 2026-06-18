@@ -170,6 +170,16 @@ Entonces el sistema muestra en un lugar visible (cabecera o pie de página) un i
 
 Ejemplo visual esperado: "Tarifario vigente: Actualizado al DD/MM/YYYY - v1.2"
 
+### AC-4.2 (Alerta por parámetros vencidos/sin conexión)
+
+Dado que el sistema no puede cargar el archivo de parámetros oficial de Gerencia o la fecha de la última actualización excede el periodo permitido de vigencia,
+
+Cuando el usuario ingresa a la pantalla de cálculo,
+
+Entonces el sistema bloquea los campos de entrada, deshabilita el botón de cálculo y muestra un mensaje de advertencia destacado:
+
+Ejemplo: "Advertencia: No se pudo verificar la vigencia de los parámetros oficiales. Por seguridad, la calculadora ha sido deshabilitada."
+
 ---
 # 3. Requisitos Funcionales
 
