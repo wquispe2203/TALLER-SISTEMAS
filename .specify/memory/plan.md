@@ -20,7 +20,7 @@ No se contempla almacenamiento histórico de cálculos.
 
 ### Módulo de Captura de Datos
 
-Responsable de recibir:
+Responsable de recibir la información de entrada del usuario y pasarla al siguiente paso.
 
 * Fecha de traslado
 * Ciclo origen
@@ -33,15 +33,31 @@ Responsable de recibir:
 
 ---
 
+### Módulo de Normalización y Parseo
+
+Responsable de transformar los datos crudos recibidos en un formato estructurado, consistente y tipado antes de enviarlos a validación.
+
+* Convertir fechas a formato estándar
+* Normalizar nombres de modalidades y estados
+* Validar tipos numéricos de montos y descuentos
+* Construir un DTO / contrato de entrada
+* Rechazar entradas imposibles de parsear
+
+Este módulo asegura que la validación y el cálculo trabajen con datos limpios y predecibles.
+
+---
+
 ### Módulo de Validaciones
 
-Responsable de verificar:
+Responsable de verificar en cascada y en orden de prioridad:
 
-* Fecha válida
-* Estado permitido
-* Modalidad existente
-* Existencia de ciclos
-* Integridad de parámetros académicos
+1. Estado permitido
+2. Existencia de ciclo origen y ciclo destino
+3. Modalidad existente para el ciclo
+4. Fecha válida dentro del periodo académico
+5. Integridad de montos, descuentos y beneficios
+
+El módulo debe aplicar validaciones "fail-fast" para detener el proceso tan pronto se encuentre una condición inválida.
 
 ---
 
@@ -83,7 +99,7 @@ Responsable de presentar:
 * Monto pendiente
 * Mensajes de validación
 * Observaciones de negocio
-
+* Operaciones del resultado
 ---
 
 # 3. Decisiones de Arquitectura (Mini-ADR)

@@ -82,6 +82,20 @@ quiero que el sistema valide las reglas de negocio antes de ejecutar el cálculo
 
 para evitar resultados incorrectos.
 
+### AC-2.0 (Validación en cascada)
+
+Dado una solicitud de traslado,
+
+Cuando el usuario inicia el cálculo,
+
+Entonces el sistema debe validar en el siguiente orden y detenerse en el primer error encontrado:
+
+1. Estado del estudiante
+2. Existencia de ciclo origen y ciclo destino
+3. Modalidad válida para el ciclo seleccionado
+4. Fecha de traslado dentro del periodo académico
+5. Monto pagado, descuentos y beneficios
+
 ### AC-2.1 (Fecha inválida)
 
 Dado una fecha que no pertenece al periodo académico válido del ciclo origen o destino,
@@ -114,6 +128,65 @@ Cuando el usuario intenta calcular,
 Entonces el sistema bloquea la operación y muestra:
 
 "La modalidad seleccionada no existe para el ciclo indicado."
+
+## US-3 (P2)
+
+Como analista de soporte,
+
+quiero que el sistema muestre el desglose de las operaciones realizadas para obtener el resultado,
+
+para poder analizar y validar cómo se llegó al monto final.
+
+### AC-3.1 (Mostrar desglose completo)
+
+Dado un traslado válido,
+
+Cuando el usuario ejecuta el cálculo,
+
+Entonces el sistema muestra además del resultado final:
+
+* Semanas totales del ciclo origen
+* Semanas transcurridas a la fecha de traslado
+* Semanas restantes
+* Fórmula y resultado del saldo disponible
+* Fórmula y resultado del costo del ciclo destino
+* Operación final y resultado
+
+## US-4 (P2)
+
+Como analista de soporte,
+
+quiero visualizar en la pantalla de cálculo la fecha de la última actualización del tarifario vigente,
+
+para tener la seguridad de que el cálculo se está realizando con los parámetros oficiales más recientes enviados por Gerencia.
+
+### AC-4.1 (Visualización en la interfaz principal)
+
+Dado que el analista de soporte accede a la pantalla de la calculadora de traslados,
+
+Cuando la interfaz se carga completamente,
+
+Entonces el sistema muestra en un lugar visible (cabecera o pie de página) un indicador con la fecha de última actualización y versión del tarifario activo.
+
+Ejemplo visual esperado: "Tarifario vigente: Actualizado al DD/MM/YYYY - v1.2"
+
+### AC-4.2 (Alerta por parámetros vencidos/sin conexión)
+
+Dado que el sistema no puede cargar el archivo de parámetros oficial de Gerencia o la fecha de la última actualización excede el periodo permitido de vigencia,
+
+Cuando el usuario ingresa a la pantalla de cálculo,
+
+Entonces el sistema bloquea los campos de entrada, deshabilita el botón de cálculo y muestra un mensaje de advertencia destacado:
+
+Ejemplo: "Advertencia: No se pudo verificar la vigencia de los parámetros oficiales. Por seguridad, la calculadora ha sido deshabilitada."
+
+### AC-4.3 (Trazabilidad en el desglose de resultados)
+
+Dado un cálculo de traslado académico ejecutado con éxito,
+
+Cuando el sistema muestra el desglose detallado de las operaciones matemáticas (según FR-006),
+
+Entonces el sistema debe incluir en el desglose y en el reporte final un campo con la versión y fecha del tarifario utilizado para asegurar la validez del cálculo ante auditorías.
 
 ---
 # 3. Requisitos Funcionales
@@ -184,7 +257,19 @@ de las operaciones matemáticas realizadas, incluyendo:
 * Fórmula y resultado del costo del ciclo destino
 * Operación final y resultado
 
-# 4. Requisitos No Funcionales (NFR)
+### FR-007 Validación prioritaria en cascada
+
+El sistema MUST aplicar las validaciones en orden de criticidad y detener el proceso ante el primer error válido encontrado.
+
+El orden de validación será:
+
+1. Estado del estudiante
+2. Ciclo origen y ciclo destino válidos
+3. Modalidad disponible para el ciclo
+4. Fecha dentro del periodo académico
+5. Monto pagado, descuentos y beneficios
+
+# 3. Requisitos No Funcionales (NFR)
 
 ### NFR-1
 
