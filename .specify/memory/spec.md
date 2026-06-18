@@ -82,6 +82,20 @@ quiero que el sistema valide las reglas de negocio antes de ejecutar el cálculo
 
 para evitar resultados incorrectos.
 
+### AC-2.0 (Validación en cascada)
+
+Dado una solicitud de traslado,
+
+Cuando el usuario inicia el cálculo,
+
+Entonces el sistema debe validar en el siguiente orden y detenerse en el primer error encontrado:
+
+1. Estado del estudiante
+2. Existencia de ciclo origen y ciclo destino
+3. Modalidad válida para el ciclo seleccionado
+4. Fecha de traslado dentro del periodo académico
+5. Monto pagado, descuentos y beneficios
+
 ### AC-2.1 (Fecha inválida)
 
 Dado una fecha que no pertenece al periodo académico válido del ciclo origen o destino,
@@ -208,6 +222,18 @@ de las operaciones matemáticas realizadas, incluyendo:
 * Fórmula y resultado del saldo disponible
 * Fórmula y resultado del costo del ciclo destino
 * Operación final y resultado
+
+### FR-007 Validación prioritaria en cascada
+
+El sistema MUST aplicar las validaciones en orden de criticidad y detener el proceso ante el primer error válido encontrado.
+
+El orden de validación será:
+
+1. Estado del estudiante
+2. Ciclo origen y ciclo destino válidos
+3. Modalidad disponible para el ciclo
+4. Fecha dentro del periodo académico
+5. Monto pagado, descuentos y beneficios
 
 # 3. Requisitos No Funcionales (NFR)
 

@@ -35,13 +35,15 @@ Responsable de recibir:
 
 ### Módulo de Validaciones
 
-Responsable de verificar:
+Responsable de verificar en cascada y en orden de prioridad:
 
-* Fecha válida
-* Estado permitido
-* Modalidad existente
-* Existencia de ciclos
-* Integridad de parámetros académicos
+1. Estado permitido
+2. Existencia de ciclo origen y ciclo destino
+3. Modalidad existente para el ciclo
+4. Fecha válida dentro del periodo académico
+5. Integridad de montos, descuentos y beneficios
+
+El módulo debe aplicar validaciones "fail-fast" para detener el proceso tan pronto se encuentre una condición inválida.
 
 ---
 
@@ -83,7 +85,7 @@ Responsable de presentar:
 * Monto pendiente
 * Mensajes de validación
 * Observaciones de negocio
-
+* Operaciones del resultado
 ---
 
 # 3. Decisiones de Arquitectura (Mini-ADR)
