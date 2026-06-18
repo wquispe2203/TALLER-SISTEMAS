@@ -115,6 +115,31 @@ Entonces el sistema bloquea la operación y muestra:
 
 "La modalidad seleccionada no existe para el ciclo indicado."
 
+## US-3 (P2)
+
+Como analista de soporte,
+
+quiero que el sistema muestre el desglose de las operaciones realizadas para obtener el resultado,
+
+para poder analizar y validar cómo se llegó al monto final.
+
+### AC-3.1 (Mostrar desglose completo)
+
+Dado un traslado válido,
+
+Cuando el usuario ejecuta el cálculo,
+
+Entonces el sistema muestra además del resultado final:
+
+* Semanas totales del ciclo origen
+* Semanas transcurridas a la fecha de traslado
+* Semanas restantes
+* Fórmula y resultado del saldo disponible
+* Fórmula y resultado del costo del ciclo destino
+* Operación final y resultado
+
+
+
 ---
 # 3. Requisitos Funcionales
 
