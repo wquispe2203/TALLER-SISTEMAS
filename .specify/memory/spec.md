@@ -160,7 +160,15 @@ Entonces el sistema muestra además del resultado final:
 
     para tener la seguridad de que el cálculo se está realizando con los parámetros oficiales más recientes enviados por Gerencia.
 
+### AC-4.1 (Visualización en la interfaz principal)
 
+Dado que el analista de soporte accede a la pantalla de la calculadora de traslados,
+
+Cuando la interfaz se carga completamente,
+
+Entonces el sistema muestra en un lugar visible (cabecera o pie de página) un indicador con la fecha de última actualización y versión del tarifario activo.
+
+Ejemplo visual esperado: "Tarifario vigente: Actualizado al DD/MM/YYYY - v1.2"
 
 ---
 # 3. Requisitos Funcionales
