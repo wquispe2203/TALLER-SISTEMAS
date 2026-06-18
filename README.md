@@ -30,7 +30,7 @@ Mapeo de trazabilidad entre las reglas de negocio de traslados, los componentes 
 | **US-3 / AC-3.3** (Copiar resumen) | Sí → `Módulo de Resultados` | TC-10 | 🔹 |
 | **US-4 / AC-4.1** (Mostrar saldos iniciales) | Sí → `Módulo de Resultados` | TC-11 | 🔹 |
 | **US-4 / AC-4.2** (Mensaje conclusivo) | Sí → `Módulo de Resultados` | TC-12 | 🔹 |
-| **US-4 / AC-4.3** (Nota cobro adicional) | Sí → `Módulo de Resultados` | TC-13 | 🔹 |
+
 | **CB-1** (Fecha fuera del rango) | Sí → `Módulo de Validaciones` | TC-5 | 🔹 |
 | **CB-2** (Ciclo origen igual destino) | Sí → `Motor de Cálculo` | TC-14 | 🔹 |
 | **CB-3** (Modalidad inexistente) | Sí → `Módulo de Validaciones` | TC-7 | 🔹 |
