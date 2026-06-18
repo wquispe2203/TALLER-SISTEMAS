@@ -116,6 +116,73 @@ Entonces el sistema bloquea la operación y muestra:
 "La modalidad seleccionada no existe para el ciclo indicado."
 
 ---
+# 3. Requisitos Funcionales
+
+### FR-001 Datos de entrada requeridos
+
+El sistema MUST solicitar los siguientes campos obligatorios:
+
+* Fecha de traslado (formato DD/MM/YYYY)
+* Ciclo origen (ciclo donde está matriculado actualmente)
+* Ciclo destino (ciclo al que desea trasladarse)
+* Modalidad (Presencial o Virtual)
+* Estado del estudiante
+* Monto pagado (valor numérico en soles, mayor a 0)
+* Descuentos (opcional, Ninguno por defecto)
+* Beneficios (opcional, Ninguno por defecto)
+
+### FR-002 Estados permitidos
+
+El sistema MUST aceptar únicamente los siguientes estados:
+
+* MATRICULADO
+* PAGADO
+
+El sistema MUST bloquear el cálculo para los siguientes estados:
+
+* SUSPENDIDO
+* RETIRADO
+
+### FR-003 Modalidades disponibles
+
+El sistema MUST aceptar únicamente las siguientes modalidades:
+
+* Presencial
+* Virtual
+
+### FR-004 Descuentos aplicables
+
+El sistema MUST reconocer los siguientes tipos de descuento:
+
+* 15% (descuento estándar)
+* Descuento familiar
+* Ninguno (valor por defecto cuando no aplica)
+
+Regla: el descuento aplica únicamente al saldo disponible 
+del ciclo origen. El ciclo destino siempre usa tarifa regular.
+
+### FR-005 Beneficios aplicables
+
+El sistema MUST reconocer los siguientes beneficios:
+
+* 1/2 beca (50% de descuento sobre la tarifa)
+* 1/4 beca (25% de descuento sobre la tarifa)
+* Ninguno (valor por defecto cuando no aplica)
+
+Regla: el beneficio aplica únicamente al saldo disponible 
+del ciclo origen. El ciclo destino siempre usa tarifa regular.
+
+### FR-006 Desglose de operaciones
+
+El sistema MUST mostrar junto al resultado final el desglose 
+de las operaciones matemáticas realizadas, incluyendo:
+
+* Semanas totales del ciclo origen
+* Semanas transcurridas a la fecha de traslado
+* Semanas restantes
+* Fórmula y resultado del saldo disponible
+* Fórmula y resultado del costo del ciclo destino
+* Operación final y resultado
 
 # 3. Requisitos No Funcionales (NFR)
 
