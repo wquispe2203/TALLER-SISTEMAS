@@ -157,41 +157,47 @@ El sistema copia todo el desglose en formato texto plano estructurado al portapa
 
 ---
 
-## Historia de Usuario 4 (US-4) - Actualización de Tarifario
+## Historia de Usuario 4 (US-4) - Visualización de Resultados
 
-### TC-11 (AC-4.1, Visualización en la interfaz principal)
+### TC-11 (AC-4.1, Mostrar saldos iniciales)
 **Datos:**
-* Sistema accesible.
-* Tarifario vigente cargado.
-
-**Pasos:**
-1. Acceder a la pantalla de la calculadora de traslados.
-2. Esperar a que la interfaz se cargue completamente.
-
-**Esperado:**
-El sistema muestra en un lugar visible (cabecera o pie de página) un indicador con la fecha de última actualización y versión del tarifario activo. Ejemplo: "Tarifario vigente: Actualizado al DD/MM/YYYY - v1.2"
-
-### TC-12 (AC-4.2, Alerta por parámetros vencidos/sin conexión)
-**Datos:**
-* Sistema no puede cargar el archivo de parámetros oficial o la fecha excede vigencia.
-
-**Pasos:**
-1. Ingresar a la pantalla de cálculo.
-
-**Esperado:**
-El sistema bloquea los campos de entrada, deshabilita el botón de cálculo y muestra un mensaje de advertencia destacado:
-"Advertencia: No se pudo verificar la vigencia de los parámetros oficiales. Por seguridad, la calculadora ha sido deshabilitada."
-
-### TC-13 (AC-4.3, Trazabilidad en el desglose de resultados)
-**Datos:**
-* Cálculo ejecutado con éxito.
+* Cálculo de traslado ejecutado.
+* Saldo a favor calculado: S/ 324.00
+* Costo de ciclo destino: S/ 1347.00
 
 **Pasos:**
 1. Ejecutar el cálculo.
-2. Revisar el desglose detallado de las operaciones matemáticas.
+2. Observar la sección "Resultado de la Simulación".
 
 **Esperado:**
-El sistema incluye en el desglose y en el reporte final un campo con la versión y fecha del tarifario utilizado para asegurar la validez del cálculo.
+El sistema muestra los montos claramente con su respectiva modalidad:
+* "Saldo a favor: S/ 324.00 (Valor al Contado)"
+* "Monto a cancelar: S/ 1347.00 (Valor al Contado)"
+
+### TC-12 (AC-4.2, Mensaje conclusivo de saldo insuficiente/faltante)
+**Datos:**
+* Saldo a favor: S/ 324.00
+* Costo destino: S/ 1347.00
+* Faltante: S/ 1023.00
+
+**Pasos:**
+1. Ejecutar el cálculo.
+2. Observar la sección de resultados.
+
+**Esperado:**
+Aparece una alerta destacada en rojo con el texto exacto:
+"El saldo a favor del ciclo anterior no cubre el costo del nuevo ciclo. Faltan: S/ 1023.00"
+
+### TC-13 (AC-4.3, Nota sobre cobro adicional de traslado)
+**Datos:**
+* Cálculo ejecutado correctamente.
+
+**Pasos:**
+1. Observar la parte inferior de la tarjeta de resultados.
+
+**Esperado:**
+Aparece el texto informativo en tamaño menor:
+"* Recordar que se añade los S/ 20 por proceso de traslado si ya pasó una semana académica después de su fecha de matrícula."
 
 ---
 
