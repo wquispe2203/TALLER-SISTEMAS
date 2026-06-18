@@ -152,6 +152,14 @@ Entonces el sistema muestra además del resultado final:
 * Fórmula y resultado del costo del ciclo destino
 * Operación final y resultado
 
+## US-4 (P2)
+
+    Como analista de soporte,
+    
+    quiero visualizar en la pantalla de cálculo la fecha de la última actualización del tarifario vigente,
+
+    para tener la seguridad de que el cálculo se está realizando con los parámetros oficiales más recientes enviados por Gerencia.
+
 
 
 ---
