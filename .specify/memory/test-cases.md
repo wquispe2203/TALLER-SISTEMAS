@@ -188,16 +188,6 @@ El sistema muestra los montos claramente con su respectiva modalidad:
 Aparece una alerta destacada en rojo con el texto exacto:
 "El saldo a favor del ciclo anterior no cubre el costo del nuevo ciclo. Faltan: S/ 1023.00"
 
-### TC-13 (AC-4.3, Nota sobre cobro adicional de traslado)
-**Datos:**
-* Cálculo ejecutado correctamente.
-
-**Pasos:**
-1. Observar la parte inferior de la tarjeta de resultados.
-
-**Esperado:**
-Aparece el texto informativo en tamaño menor:
-"* Recordar que se añade los S/ 20 por proceso de traslado si ya pasó una semana académica después de su fecha de matrícula."
 
 ---
 
