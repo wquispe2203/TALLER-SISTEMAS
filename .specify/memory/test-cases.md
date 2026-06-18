@@ -129,11 +129,37 @@ El sistema muestra, además del resultado final, el siguiente desglose:
 * Fórmula y resultado del costo del ciclo destino
 * Operación final y resultado
 
+### TC-9 (AC-3.2, Visibilidad de beneficios y descuentos aplicados)
+**Datos:**
+* Traslado: Válido
+* Estudiante tiene descuento o beca activa
+
+**Pasos:**
+1. Ingresar los datos.
+2. Ejecutar el cálculo.
+
+**Esperado:**
+El sistema incluye explícitamente en el desglose:
+* El porcentaje o tipo de descuento/beneficio aplicado.
+* La tarifa regular vs tarifa con beneficio usada para calcular saldo disponible.
+* La aclaración de que el ciclo destino usa tarifa regular.
+
+### TC-10 (AC-3.3, Exportación o copia rápida)
+**Datos:**
+* Cálculo ejecutado exitosamente.
+
+**Pasos:**
+1. Visualizar resultados.
+2. Hacer clic en el botón "Copiar resumen".
+
+**Esperado:**
+El sistema copia todo el desglose en formato texto plano estructurado al portapapeles del usuario, dejándolo listo para pegar.
+
 ---
 
 ## Historia de Usuario 4 (US-4) - Actualización de Tarifario
 
-### TC-9 (AC-4.1, Visualización en la interfaz principal)
+### TC-11 (AC-4.1, Visualización en la interfaz principal)
 **Datos:**
 * Sistema accesible.
 * Tarifario vigente cargado.
@@ -145,7 +171,7 @@ El sistema muestra, además del resultado final, el siguiente desglose:
 **Esperado:**
 El sistema muestra en un lugar visible (cabecera o pie de página) un indicador con la fecha de última actualización y versión del tarifario activo. Ejemplo: "Tarifario vigente: Actualizado al DD/MM/YYYY - v1.2"
 
-### TC-10 (AC-4.2, Alerta por parámetros vencidos/sin conexión)
+### TC-12 (AC-4.2, Alerta por parámetros vencidos/sin conexión)
 **Datos:**
 * Sistema no puede cargar el archivo de parámetros oficial o la fecha excede vigencia.
 
@@ -156,7 +182,7 @@ El sistema muestra en un lugar visible (cabecera o pie de página) un indicador 
 El sistema bloquea los campos de entrada, deshabilita el botón de cálculo y muestra un mensaje de advertencia destacado:
 "Advertencia: No se pudo verificar la vigencia de los parámetros oficiales. Por seguridad, la calculadora ha sido deshabilitada."
 
-### TC-11 (AC-4.3, Trazabilidad en el desglose de resultados)
+### TC-13 (AC-4.3, Trazabilidad en el desglose de resultados)
 **Datos:**
 * Cálculo ejecutado con éxito.
 
@@ -171,7 +197,7 @@ El sistema incluye en el desglose y en el reporte final un campo con la versión
 
 ## Casos Borde (CB)
 
-### TC-12 (CB-2, Ciclo origen igual a ciclo destino)
+### TC-14 (CB-2, Ciclo origen igual a ciclo destino)
 **Datos:**
 * Ciclo origen: C01
 * Ciclo destino: C01
@@ -185,7 +211,7 @@ El sistema muestra:
 * Resultado: S/ 0
 * Estado: "Sin saldo pendiente"
 
-### TC-13 (CB-7, Última Semana Académica)
+### TC-15 (CB-7, Última Semana Académica)
 **Datos:**
 * Ciclo origen: C01
 * Fecha de traslado: 15/07/2026
@@ -204,7 +230,7 @@ El sistema calcula:
 * Saldo disponible = (800 / 16) × 1 = S/ 50
 El resultado mostrado utiliza únicamente la última semana académica disponible.
 
-### TC-14 (CB-8, Descuento Activo)
+### TC-16 (CB-8, Descuento Activo)
 **Datos:**
 * Descuento vigente: 20%
 * Monto cuota origen: S/ 400
@@ -224,7 +250,7 @@ El sistema muestra:
 * Resultado: S/ 80 pendiente
 * Estado: "Monto pendiente por cancelar"
 
-### TC-15 (CB-9, Beca Activa)
+### TC-17 (CB-9, Beca Activa)
 **Datos:**
 * Beca vigente: 25%
 * Tarifa regular ciclo origen: S/ 1000
