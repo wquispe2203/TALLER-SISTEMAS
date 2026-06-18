@@ -20,7 +20,7 @@ No se contempla almacenamiento histórico de cálculos.
 
 ### Módulo de Captura de Datos
 
-Responsable de recibir:
+Responsable de recibir la información de entrada del usuario y pasarla al siguiente paso.
 
 * Fecha de traslado
 * Ciclo origen
@@ -30,6 +30,20 @@ Responsable de recibir:
 * Monto pagado
 * Descuentos
 * Beneficios
+
+---
+
+### Módulo de Normalización y Parseo
+
+Responsable de transformar los datos crudos recibidos en un formato estructurado, consistente y tipado antes de enviarlos a validación.
+
+* Convertir fechas a formato estándar
+* Normalizar nombres de modalidades y estados
+* Validar tipos numéricos de montos y descuentos
+* Construir un DTO / contrato de entrada
+* Rechazar entradas imposibles de parsear
+
+Este módulo asegura que la validación y el cálculo trabajen con datos limpios y predecibles.
 
 ---
 
