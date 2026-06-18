@@ -51,4 +51,4 @@ El grupo revisor ha sometido la especificación (`spec.md`) a evaluación en las
 
 **Veredicto:** 🟢 **TODO PASA (Aprobado)**
 
-*Se cuenta con un nivel de especificación robusto y verificado por el equipo para proceder con la implementación.*
+Se realizaron pruebas unitarias para cada criterio de aceptación y estás aprobaron en su totalidad.
