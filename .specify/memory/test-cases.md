@@ -1,5 +1,22 @@
 # Correcciones al test-cases.md
 
+## TC-1 (AC-1.1, Caso Saldo a favor)
+
+### Datos
+* Saldo disponible calculado: S/700
+* Costo requerido del ciclo destino: S/500
+* Traslado: Valido
+
+### Pasos
+1. Ingresar los datos.
+2. Ejecutar el cálculo.
+
+### Esperado 
+El sistema muestra:
+
+* Resultado: S/ 200 de saldo a favor
+* Estado: "Saldo a favor"
+
 ## TC-4 (AC-2.1, Caso Error - Fecha Inválida)
 
 ### Datos
