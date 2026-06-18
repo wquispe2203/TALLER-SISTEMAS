@@ -152,7 +152,41 @@ Entonces el sistema muestra además del resultado final:
 * Fórmula y resultado del costo del ciclo destino
 * Operación final y resultado
 
+## US-4 (P2)
 
+Como analista de soporte,
+
+quiero visualizar en la pantalla de cálculo la fecha de la última actualización del tarifario vigente,
+
+para tener la seguridad de que el cálculo se está realizando con los parámetros oficiales más recientes enviados por Gerencia.
+
+### AC-4.1 (Visualización en la interfaz principal)
+
+Dado que el analista de soporte accede a la pantalla de la calculadora de traslados,
+
+Cuando la interfaz se carga completamente,
+
+Entonces el sistema muestra en un lugar visible (cabecera o pie de página) un indicador con la fecha de última actualización y versión del tarifario activo.
+
+Ejemplo visual esperado: "Tarifario vigente: Actualizado al DD/MM/YYYY - v1.2"
+
+### AC-4.2 (Alerta por parámetros vencidos/sin conexión)
+
+Dado que el sistema no puede cargar el archivo de parámetros oficial de Gerencia o la fecha de la última actualización excede el periodo permitido de vigencia,
+
+Cuando el usuario ingresa a la pantalla de cálculo,
+
+Entonces el sistema bloquea los campos de entrada, deshabilita el botón de cálculo y muestra un mensaje de advertencia destacado:
+
+Ejemplo: "Advertencia: No se pudo verificar la vigencia de los parámetros oficiales. Por seguridad, la calculadora ha sido deshabilitada."
+
+### AC-4.3 (Trazabilidad en el desglose de resultados)
+
+Dado un cálculo de traslado académico ejecutado con éxito,
+
+Cuando el sistema muestra el desglose detallado de las operaciones matemáticas (según FR-006),
+
+Entonces el sistema debe incluir en el desglose y en el reporte final un campo con la versión y fecha del tarifario utilizado para asegurar la validez del cálculo ante auditorías.
 
 ---
 # 3. Requisitos Funcionales
@@ -243,7 +277,7 @@ El cálculo deberá completarse en menos de 200 milisegundos desde el envío de 
 
 ---
 
-# 4. Casos Borde
+# 5. Casos Borde
 
 ### CB-1 Fecha fuera del rango académico
 
@@ -307,7 +341,7 @@ El sistema utiliza el beneficio vigente únicamente para determinar el saldo dis
 
 ---
 
-# 5. Assumptions
+# 6. Assumptions
 
 ### A-1
 
@@ -335,7 +369,7 @@ Si esta regla cambia, será necesario actualizar las validaciones de negocio.
 
 ---
 
-# 6. [NEEDS_CLARIFICATION]
+# 7. [NEEDS_CLARIFICATION]
 
 ### NC-1
 
@@ -351,7 +385,7 @@ Si esta regla cambia, será necesario actualizar las validaciones de negocio.
 
 ---
 
-# 7. Scope
+# 8. Scope
 
 ## DENTRO
 
