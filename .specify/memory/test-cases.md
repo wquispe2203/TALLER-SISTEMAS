@@ -1,6 +1,6 @@
 # Resumen Ejecutivo
 
-Este documento define 17 casos de prueba derivados de las 4 historias de usuario (US-1 a US-4) y 9 casos borde (CB-1 a CB-9) especificados en spec.md. Los casos cubren escenarios felices, de error y borde. No incluye pruebas de integración, UI ni rendimiento, las cuales se abordarán en la Parte 2.
+Este documento define la suite de 16 casos de prueba (Test Cases) diseñados para validar la Calculadora de Montos de Traslado Académico. El alcance comprende la verificación de escenarios de éxito ("camino feliz"), validaciones en cascada del estado y condiciones de pago, desglose matemático de operaciones y el comportamiento ante casos borde definidos en `spec.md`. El objetivo es asegurar que la lógica de cálculo y sus restricciones operen de forma correcta según las reglas institucionales vigentes.
 
 # Casos de Prueba (Test Cases)
 
@@ -10,12 +10,12 @@ Este documento contiene los casos de prueba derivados de las Historias de Usuari
 
 ### TC-1 (AC-1.1, Caso Saldo a favor)
 **Datos:**
-* Saldo disponible calculado: S/ 700
-* Costo requerido del ciclo destino: S/ 500
-* Traslado: Válido
+* Datos de entrada de un estudiante cuyo saldo disponible parametrizado (S/ 700) supera al costo del ciclo destino (S/ 500).
+* Condición de Pago: Contado.
+* Estado: MATRICULADO.
 
 **Pasos:**
-1. Ingresar los datos.
+1. Ingresar en el formulario: Ciclo origen, Ciclo destino, Fecha de traslado, Condición de pago, Estado del estudiante y Monto pagado.
 2. Ejecutar el cálculo.
 
 **Esperado:**
@@ -25,12 +25,12 @@ El sistema muestra:
 
 ### TC-2 (AC-1.2, Caso Traslado cubierto)
 **Datos:**
-* Saldo disponible calculado: S/ 500
-* Costo requerido del ciclo destino: S/ 500
-* Traslado: Válido
+* Datos de entrada de un estudiante cuyo saldo disponible parametrizado (S/ 500) es igual al costo del ciclo destino (S/ 500).
+* Condición de Pago: Contado.
+* Estado: MATRICULADO.
 
 **Pasos:**
-1. Ingresar los datos.
+1. Ingresar en el formulario: Ciclo origen, Ciclo destino, Fecha de traslado, Condición de pago, Estado del estudiante y Monto pagado.
 2. Ejecutar el cálculo.
 
 **Esperado:**
@@ -40,12 +40,12 @@ El sistema muestra:
 
 ### TC-3 (AC-1.3, Caso Monto pendiente)
 **Datos:**
-* Saldo disponible calculado: S/ 500
-* Costo requerido del ciclo destino: S/ 800
-* Traslado: Válido
+* Datos de entrada de un estudiante cuyo saldo disponible parametrizado (S/ 500) es menor al costo del ciclo destino (S/ 800).
+* Condición de Pago: Contado.
+* Estado: MATRICULADO.
 
 **Pasos:**
-1. Ingresar los datos.
+1. Ingresar en el formulario: Ciclo origen, Ciclo destino, Fecha de traslado, Condición de pago, Estado del estudiante y Monto pagado.
 2. Ejecutar el cálculo.
 
 **Esperado:**
@@ -59,29 +59,31 @@ El sistema muestra:
 
 ### TC-4 (AC-2.0, Validación en cascada)
 **Datos:**
-* Solicitud de traslado incompleta o inválida.
+* Estado del estudiante: SUSPENDIDO (Inválido, regla 1)
+* Ciclo origen: C01
+* Ciclo destino: C02
+* Condición de Pago: Cuotas
+* Fecha de traslado: 25/12/2026 (Fuera de rango académico, regla 4)
+* Monto pagado: S/ 500
 
 **Pasos:**
-1. Ingresar los datos.
-2. Iniciar el cálculo.
+1. Ingresar en el formulario los datos anteriores del estudiante.
+2. Ejecutar el cálculo.
 
 **Esperado:**
-El sistema debe validar en el siguiente orden y detenerse en el primer error encontrado:
-1. Estado del estudiante
-2. Existencia de ciclo origen y ciclo destino
-3. Modalidad válida para el ciclo seleccionado
-4. Fecha de traslado dentro del periodo académico
-5. Monto pagado, descuentos y beneficios
+El sistema bloquea la operación y se detiene en el primer error encontrado (Estado del estudiante), mostrando:
+"El estado actual no permite realizar traslados."
 
 ### TC-5 (AC-2.1, Caso Error - Fecha Inválida)
 **Datos:**
-* Estado: MATRICULADO
+* Estado del estudiante: MATRICULADO
 * Fecha de traslado: 25/12/2026 (No pertenece al periodo académico válido)
 * Ciclo origen: C01
 * Ciclo destino: C02
+* Condición de Pago: Contado
 
 **Pasos:**
-1. Ingresar los datos.
+1. Ingresar en el formulario los datos anteriores del estudiante.
 2. Ejecutar el cálculo.
 
 **Esperado:**
@@ -90,10 +92,14 @@ El sistema bloquea la operación y muestra:
 
 ### TC-6 (AC-2.2, Caso Error - Estado no permitido)
 **Datos:**
-* Estado: SUSPENDIDO o RETIRADO
+* Estado del estudiante: SUSPENDIDO o RETIRADO
+* Ciclo origen: C01
+* Ciclo destino: C02
+* Condición de Pago: Contado
+* Fecha de traslado: 15/05/2026 (Fecha válida)
 
 **Pasos:**
-1. Ingresar los datos.
+1. Ingresar en el formulario los datos anteriores del estudiante.
 2. Ejecutar el cálculo.
 
 **Esperado:**
@@ -102,10 +108,13 @@ El sistema bloquea la operación y muestra:
 
 ### TC-7 (AC-2.3, Caso Error - Modalidad inexistente)
 **Datos:**
-* Modalidad: Virtual (pero el ciclo seleccionado no posee dicha modalidad)
+* Ciclo origen: C01 (el cual solo ofrece condición de pago "Contado")
+* Condición de Pago: Cuotas (No existente para el ciclo origen)
+* Estado del estudiante: MATRICULADO
+* Fecha de traslado: 15/05/2026
 
 **Pasos:**
-1. Ingresar los datos.
+1. Ingresar en el formulario los datos anteriores del estudiante.
 2. Ejecutar el cálculo.
 
 **Esperado:**
@@ -118,10 +127,15 @@ El sistema bloquea la operación y muestra:
 
 ### TC-8 (AC-3.1, Mostrar desglose completo)
 **Datos:**
-* Traslado: Válido
+* Ciclo origen: C01
+* Ciclo destino: C02
+* Fecha de traslado: 15/05/2026
+* Condición de Pago: Contado
+* Estado: MATRICULADO
+* Monto pagado: S/ 2000
 
 **Pasos:**
-1. Ingresar los datos.
+1. Ingresar en el formulario los datos del traslado.
 2. Ejecutar el cálculo.
 
 **Esperado:**
@@ -135,25 +149,30 @@ El sistema muestra, además del resultado final, el siguiente desglose:
 
 ### TC-9 (AC-3.2, Visibilidad de beneficios y descuentos aplicados)
 **Datos:**
-* Traslado: Válido
-* Estudiante tiene descuento o beca activa
+* Ciclo origen: C01
+* Ciclo destino: C02
+* Fecha de traslado: 15/05/2026
+* Condición de Pago: Contado
+* Estado: MATRICULADO
+* Beneficio: 1/4 beca (25%)
+* Monto pagado en origen: S/ 750 (Tarifa con beneficio aplicado)
 
 **Pasos:**
-1. Ingresar los datos.
-2. Ejecutar el cálculo.
+1. Seleccionar el beneficio "1/4 beca" e ingresar los datos del traslado en el formulario.
+2. Ejecutar el cálculo haciendo clic en el botón correspondiente.
 
 **Esperado:**
 El sistema incluye explícitamente en el desglose:
 * El porcentaje o tipo de descuento/beneficio aplicado.
-* La tarifa regular vs tarifa con beneficio usada para calcular saldo disponible.
+* La tarifa regular vs tarifa con beneficio usada para calcular el saldo disponible.
 * La aclaración de que el ciclo destino usa tarifa regular.
 
 ### TC-10 (AC-3.3, Exportación o copia rápida)
 **Datos:**
-* Cálculo ejecutado exitosamente.
+* Simulación de traslado del caso TC-8 ejecutada con éxito.
 
 **Pasos:**
-1. Visualizar resultados.
+1. Visualizar los resultados de la simulación de TC-8.
 2. Hacer clic en el botón "Copiar resumen".
 
 **Esperado:**
@@ -165,9 +184,8 @@ El sistema copia todo el desglose en formato texto plano estructurado al portapa
 
 ### TC-11 (AC-4.1, Mostrar saldos iniciales)
 **Datos:**
-* Cálculo de traslado ejecutado.
-* Saldo a favor calculado: S/ 324.00
-* Costo de ciclo destino: S/ 1347.00
+* Simulación ejecutada (cuyos montos resultantes corresponden a S/ 324.00 de saldo a favor y S/ 1347.00 de costo destino).
+* Condición de Pago: Contado.
 
 **Pasos:**
 1. Ejecutar el cálculo.
@@ -180,9 +198,7 @@ El sistema muestra los montos claramente con su respectiva modalidad:
 
 ### TC-12 (AC-4.2, Mensaje conclusivo de saldo insuficiente/faltante)
 **Datos:**
-* Saldo a favor: S/ 324.00
-* Costo destino: S/ 1347.00
-* Faltante: S/ 1023.00
+* Simulación ejecutada (cuyos montos resultantes corresponden a S/ 324.00 de saldo a favor y S/ 1347.00 de costo destino, generando una diferencia de S/ 1023.00).
 
 **Pasos:**
 1. Ejecutar el cálculo.
@@ -192,7 +208,6 @@ El sistema muestra los montos claramente con su respectiva modalidad:
 Aparece una alerta destacada en rojo con el texto exacto:
 "El saldo a favor del ciclo anterior no cubre el costo del nuevo ciclo. Faltan: S/ 1023.00"
 
-
 ---
 
 ## Casos Borde (CB)
@@ -201,9 +216,10 @@ Aparece una alerta destacada en rojo con el texto exacto:
 **Datos:**
 * Ciclo origen: C01
 * Ciclo destino: C01
+* Condición de Pago: Contado
 
 **Pasos:**
-1. Ingresar los datos.
+1. Seleccionar el mismo ciclo "C01" tanto para el origen como para el destino en el formulario.
 2. Ejecutar el cálculo.
 
 **Esperado:**
@@ -211,62 +227,43 @@ El sistema muestra:
 * Resultado: S/ 0
 * Estado: "Sin saldo pendiente"
 
-### TC-15 (CB-7, Última Semana Académica)
+### TC-14 (CB-7, Última Semana Académica)
 **Datos:**
 * Ciclo origen: C01
-* Fecha de traslado: 15/07/2026
-* Total de semanas del ciclo: 16
-* Semana actual: 16
-* Semanas restantes: 1
-* Modalidad: Contado
-* Monto del ciclo: S/ 800
+* Fecha de traslado: 15/07/2026 (Semana 16 de 16)
+* Condición de Pago: Contado
 
 **Pasos:**
-1. Ingresar los datos.
+1. Ingresar una fecha correspondiente a la última semana académica, seleccionando el ciclo origen "C01" y Condición de Pago "Contado".
 2. Ejecutar el cálculo.
 
 **Esperado:**
-El sistema calcula:
-* Saldo disponible = (800 / 16) × 1 = S/ 50
-El resultado mostrado utiliza únicamente la última semana académica disponible.
+El sistema calcula el resultado utilizando únicamente las semanas académicas restantes disponibles (semana 16).
 
-### TC-16 (CB-8, Descuento Activo)
+### TC-15 (CB-8, Descuento Activo)
 **Datos:**
+* Ciclo origen: C01
+* Ciclo destino: C02
 * Descuento vigente: 20%
-* Monto cuota origen: S/ 400
-* Monto con descuento: S/ 320
-* Costo requerido ciclo destino: S/ 400
+* Condición de Pago: Cuotas
 
 **Pasos:**
-1. Ingresar los datos.
+1. Ingresar el descuento del 20% y completar el formulario con el ciclo origen C01 y destino C02 en modalidad "Cuotas".
 2. Ejecutar el cálculo.
 
 **Esperado:**
-El sistema calcula:
-* Saldo disponible = S/ 320
-* Costo destino = S/ 400
-* Resultado = S/ 80 pendiente
-El sistema muestra:
-* Resultado: S/ 80 pendiente
-* Estado: "Monto pendiente por cancelar"
+El sistema utiliza el monto con descuento para calcular el saldo disponible del ciclo origen y elimina el descuento para calcular el costo del ciclo destino (tarifa regular).
 
-### TC-17 (CB-9, Beca Activa)
+### TC-16 (CB-9, Beca Activa)
 **Datos:**
-* Beca vigente: 25%
-* Tarifa regular ciclo origen: S/ 1000
-* Saldo disponible calculado: S/ 750
-* Tarifa regular ciclo destino: S/ 1000
+* Ciclo origen: C01
+* Ciclo destino: C02
+* Beneficio vigente: 25% (Beca)
+* Condición de Pago: Contado
 
 **Pasos:**
-1. Ingresar los datos.
+1. Ingresar el beneficio de beca del 25% y completar el formulario con el ciclo origen C01 y destino C02 en modalidad "Contado".
 2. Ejecutar el cálculo.
 
 **Esperado:**
-El sistema calcula:
-* Saldo disponible = S/ 750
-* Costo destino = S/ 1000
-* Resultado = S/ 250 pendiente
-El sistema muestra:
-* Resultado: S/ 250 pendiente
-* Estado: "Monto pendiente por cancelar"
-Además, el cálculo utiliza tarifa regular para el ciclo destino, sin aplicar la beca previamente existente.
+El sistema utiliza el beneficio vigente únicamente para determinar el saldo disponible del ciclo origen y calcula el costo del ciclo destino utilizando la tarifa regular sin beneficios.
