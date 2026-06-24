@@ -58,4 +58,7 @@ El grupo revisor ha sometido la especificación (`spec.md`) a evaluación en las
 
 **Veredicto:** 🟢 **TODO PASA (Aprobado)**
 
-Se realizaron pruebas unitarias para cada criterio de aceptación y estás aprobaron en su totalidad.
+## Estado de pruebas
+
+Los casos de prueba definidos en test-cases.md corresponden a especificación. La implementación y ejecución de pruebas unitarias se realizará en la Parte 2 del taller.
+Estado: Especificado (no ejecutado)

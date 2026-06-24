@@ -1,3 +1,7 @@
+# Resumen Ejecutivo
+
+Este documento define 17 casos de prueba derivados de las 4 historias de usuario (US-1 a US-4) y 9 casos borde (CB-1 a CB-9) especificados en spec.md. Los casos cubren escenarios felices, de error y borde. No incluye pruebas de integración, UI ni rendimiento, las cuales se abordarán en la Parte 2.
+
 # Casos de Prueba (Test Cases)
 
 Este documento contiene los casos de prueba derivados de las Historias de Usuario (US) y los Casos Borde (CB) definidos en el documento `spec.md`.
@@ -193,7 +197,7 @@ Aparece una alerta destacada en rojo con el texto exacto:
 
 ## Casos Borde (CB)
 
-### TC-14 (CB-2, Ciclo origen igual a ciclo destino)
+### TC-13 (CB-2, Ciclo origen igual a ciclo destino)
 **Datos:**
 * Ciclo origen: C01
 * Ciclo destino: C01

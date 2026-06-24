@@ -50,6 +50,10 @@ No se permitirá:
 * Mezclar reglas de negocio con código de interfaz.
 * Modificar directamente la fuente oficial de datos desde la aplicación.
 
+#### 4.5 Stack Tecnológico
+
+El stack tecnológico de implementación será Python 3.11+, lo que justifica el requisito PEP8 definido en Art. 3.4 de la Constitución.
+
 ---
 
 ### Art. 7 · Boundaries
