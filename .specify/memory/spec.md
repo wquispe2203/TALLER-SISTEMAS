@@ -280,7 +280,7 @@ El orden de validación será:
 4. Fecha dentro del periodo académico
 5. Monto pagado, descuentos y beneficios
 
-# 3. Requisitos No Funcionales (NFR)
+# 4. Requisitos No Funcionales (NFR)
 
 ### NFR-1
 
