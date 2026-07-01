@@ -380,19 +380,23 @@ Si esta regla cambia, será necesario actualizar las validaciones de negocio.
 
 ---
 
-# 7. [NEEDS_CLARIFICATION]
+# 7. Decisiones de implementación adoptadas
 
-### NC-1
+### D-1
 
-¿Cómo se actualizarán los parámetros oficiales cuando Gerencia publique una nueva versión del Excel?
+Los parámetros oficiales se actualizarán mediante un archivo JSON estático generado a partir del Excel aprobado por Gerencia. En esta primera versión, la actualización será manual y se realizará por el área responsable cuando exista una nueva versión oficial.
 
-### NC-2
+### D-2
 
-¿Existe una fecha límite institucional previa al cierre del ciclo para permitir traslados?
+La solución permitirá calcular traslados únicamente cuando la fecha de traslado se encuentre dentro del periodo académico vigente definido en los parámetros oficiales. Si la fecha está fuera de rango, el sistema bloqueará el cálculo y mostrará el mensaje correspondiente.
 
-### NC-3
+### D-3
 
-¿Los resultados calculados deben almacenarse para auditoría o únicamente mostrarse al usuario?
+Los resultados se mostrarán en pantalla y podrán copiarse para soporte, pero no se almacenarán en una base de datos en esta versión. El objetivo es ofrecer una herramienta operativa rápida y sencilla para el analista.
+
+### D-4
+
+La solución será una aplicación web simple. La interfaz se implementará en HTML y CSS, mientras que la lógica de negocio se expondrá a través de un backend en Node.js con un endpoint para recibir los datos de traslado y devolver el resultado, el estado y el desglose del cálculo.
 
 ---
 

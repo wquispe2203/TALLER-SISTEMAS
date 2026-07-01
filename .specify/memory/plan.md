@@ -10,9 +10,9 @@ Este plan describe la implementación conceptual de una Calculadora de Montos de
 
 La solución se implementará mediante componentes independientes responsables de captura de datos, validaciones, cálculo y presentación de resultados.
 
-Los parámetros académicos y financieros se obtendrán desde un archivo estático `parameters.json`, generado previamente a partir del Excel oficial aprobado por Gerencia. Antes de ejecutar cualquier cálculo, el sistema validará estados, fechas y modalidades. Posteriormente, el motor de cálculo determinará semanas restantes, saldo disponible y costo requerido del ciclo destino. Finalmente, el módulo de resultados presentará el estado económico correspondiente.
+La interfaz será una aplicación web sencilla construida con HTML y CSS, con interacción básica en JavaScript. El backend se desarrollará en Node.js y expondrá un endpoint HTTP, por ejemplo `POST /api/transfer-calculator`, para recibir los datos del traslado y devolver el resultado, el estado y el desglose de operaciones. Los parámetros académicos y financieros se obtendrán desde un archivo estático `parameters.json`, generado previamente a partir del Excel oficial aprobado por Gerencia. Antes de ejecutar cualquier cálculo, el sistema validará estados, fechas y modalidades. Posteriormente, el motor de cálculo determinará semanas restantes, saldo disponible y costo requerido del ciclo destino. Finalmente, el módulo de resultados presentará el estado económico correspondiente.
 
-No se contempla almacenamiento histórico de cálculos.
+No se contempla almacenamiento histórico de cálculos en esta fase.
 
 ---
 

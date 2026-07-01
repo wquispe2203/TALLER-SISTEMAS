@@ -35,3 +35,16 @@ After a correction, failed gate, or stuck detection, append:
 ## Lessons
 
 <!-- Append new lessons below this line -->
+
+## 2026-07-01 Feature 001: Mantener la memoria sincronizada antes de seguir con la implementación
+
+**What Happened:** Se avanzó con la implementación de la aplicación antes de registrar en memoria la arquitectura y los acuerdos tomados.
+
+**Root Cause:** Los archivos de especificación estaban incompletos en algunas decisiones de implementación y la memoria seguía vacía en varias secciones.
+
+**What We Learned:**
+- Es mejor documentar la decisión de arquitectura y alcance antes de construir sobre ella.
+- La memoria debe reflejar tanto los requerimientos como la solución elegida para evitar ambigüedades.
+
+**Prevention Rule:**
+- Actualizar decisions.md, session-state.md y el índice de memoria antes de continuar con cambios de implementación.

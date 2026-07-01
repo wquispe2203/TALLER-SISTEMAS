@@ -9,12 +9,12 @@ reference_count: 0
 
 ## Active Feature
 
-- **Feature ID:** (none)
-- **Feature Name:** (none)
+- **Feature ID:** transfer-calculator
+- **Feature Name:** Calculadora de Montos de Traslado Académico
 - **Ceremony Level:** standard
-- **Current Phase:** —
-- **Last Gate Passed:** —
-- **Last Gate Timestamp:** —
+- **Current Phase:** Implementation
+- **Last Gate Passed:** Requirements clarified
+- **Last Gate Timestamp:** 2026-07-01
 
 ## Phase Progress
 
@@ -33,15 +33,22 @@ reference_count: 0
 ## Key Decisions (This Feature)
 
 <!-- Populated from feature-specific clarifications and plan -->
-- (none yet)
+- Se adoptó una app web simple con HTML/CSS y un backend en Node.js con endpoint HTTP para el cálculo.
+- Los parámetros del negocio se cargarán desde un archivo JSON controlado para separar reglas de negocio de la interfaz.
 
 ## Files Modified (This Session)
 
-- (none yet)
+- .specify/memory/spec.md
+- .specify/memory/plan.md
+- package.json
+- server.js
+- parameters.json
+- public/index.html
 
 ## Next Step
 
-- Initialize a feature with `sdd new "feature name"`
+- Refinar la lógica de cálculo y las validaciones del endpoint.
+- Añadir pruebas básicas para escenarios felices y de error.
 
 ## Memory Operations
 

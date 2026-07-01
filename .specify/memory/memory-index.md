@@ -19,7 +19,9 @@ Feature Context: (none)
 
 ## Feature Artifacts
 
-<!-- Populated automatically by sdd new and memory-sync -->
+- spec: .specify/memory/spec.md
+- plan: .specify/memory/plan.md
+- implementation: package.json, server.js, parameters.json, public/index.html
 
 ## Freshness Policy
 
