@@ -84,5 +84,3 @@ El stack tecnológico de implementación será Python 3.11+, lo que justifica el
 * Mostrar resultados cuando exista una validación fallida.
 * Duplicar reglas de negocio en diferentes componentes del sistema.
 
-```
-```
