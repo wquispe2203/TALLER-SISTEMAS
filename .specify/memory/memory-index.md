@@ -3,28 +3,28 @@
 last_referenced_at: "2026-04-11T16:24:38.145281+00:00"
 reference_count: 0
 ---
-# Memory Index
+# Índice de Memoria
 
-Last Updated: —
-Feature Context: (none)
+Última Actualización: —
+Contexto de la Funcionalidad: (ninguno)
 
-## Core Memory Files
+## Archivos Principales de Memoria
 
-- constitution: .specify/memory/constitution.md
-- session-state: .specify/memory/session-state.md
-- decisions: .specify/memory/decisions.md
-- lessons: .specify/memory/lessons.md
-- research-cache: .specify/memory/research-cache.md
-- metrics-log: .specify/memory/metrics-log.md
+- constitución: .specify/memory/constitution.md
+- estado-sesion: .specify/memory/session-state.md
+- decisiones: .specify/memory/decisions.md
+- lecciones: .specify/memory/lessons.md
+- cache-investigacion: .specify/memory/research-cache.md
+- registro-metricas: .specify/memory/metrics-log.md
 
-## Feature Artifacts
+## Artefactos de la Funcionalidad
 
-- spec: .specify/memory/spec.md
+- especificacion: .specify/memory/spec.md
 - plan: .specify/memory/plan.md
-- implementation: package.json, server.js, parameters.json, public/index.html
+- implementacion: package.json, server.js, parameters.json, public/index.html
 
-## Freshness Policy
+## Política de Frescura
 
-- stale-threshold-days: 30
-- recommended-sync-before-gate: true
+- dias-umbral-obsoleto: 30
+- sincronizacion-recomendada-antes-del-gate: true
 

@@ -3,38 +3,38 @@
 last_referenced_at: "2026-04-11T16:24:38.145323+00:00"
 reference_count: 0
 ---
-# Lessons Learned
+# Lecciones Aprendidas
 
-> **Project-wide** record of what worked and what didn't.
-> Agents append entries after corrections, stuck detection, or failed gates.
-> Reviewed at the start of each new feature.
-
----
-
-## How to Use
-
-After a correction, failed gate, or stuck detection, append:
-
-```
-## [YYYY-MM-DD] Feature NNN: [Lesson Title]
-
-**What Happened:** [Brief description of the issue]
-
-**Root Cause:** [Why it happened]
-
-**What We Learned:**
-- [Lesson 1]
-- [Lesson 2]
-
-**Prevention Rule:**
-- [How to avoid this in the future]
-```
+> Registro **a nivel de proyecto** de lo que funcionó y lo que no.
+> Los agentes añaden entradas después de correcciones, detección de bloqueos o gates fallidos.
+> Se revisa al inicio de cada nueva funcionalidad.
 
 ---
 
-## Lessons
+## Cómo Usar
 
-<!-- Append new lessons below this line -->
+Después de una corrección, gate fallido o detección de bloqueo, añade:
+
+```
+## [AAAA-MM-DD] Funcionalidad NNN: [Título de la Lección]
+
+**Qué Pasó:** [Breve descripción del problema]
+
+**Causa Raíz:** [Por qué ocurrió]
+
+**Qué Aprendimos:**
+- [Lección 1]
+- [Lección 2]
+
+**Regla de Prevención:**
+- [Cómo evitar esto en el futuro]
+```
+
+---
+
+## Lecciones
+
+<!-- Añadir nuevas lecciones debajo de esta línea -->
 
 ## 2026-07-01 Feature 001: Mantener la memoria sincronizada antes de seguir con la implementación
 

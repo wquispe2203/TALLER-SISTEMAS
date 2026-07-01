@@ -3,53 +3,52 @@
 last_referenced_at: "2026-04-11T13:18:21.979015+00:00"
 reference_count: 0
 ---
-# Research Cache
+# Caché de Investigación
 
-> **Project-wide** cache of external research findings.
-> Agents append entries after completing research (technology evaluation, pattern analysis,
-> library comparison, etc.)
-> Entries expire after 7 days by default — re-research if stale.
+> Caché **a nivel de proyecto** de los hallazgos de investigaciones externas.
+> Los agentes añaden entradas tras completar una investigación (evaluación tecnológica, análisis de patrones, comparación de librerías, etc.).
+> Las entradas expiran después de 7 días por defecto — investigue de nuevo si están obsoletas.
 
 ---
 
-## How to Use
+## Cómo Usar
 
-After researching a topic, append:
+Después de investigar un tema, añade:
 
 ```
-## [Topic Name]
+## [Nombre del Tema]
 
-**Researched:** [YYYY-MM-DD]
-**Feature:** [NNN or "project-wide"]
-**Relevance:** [HIGH / MEDIUM / LOW]
-**Expires:** [+7 days from research date]
+**Investigado:** [AAAA-MM-DD]
+**Funcionalidad:** [NNN o "a nivel de proyecto"]
+**Relevancia:** [ALTA / MEDIA / BAJA]
+**Expira:** [+7 días desde la fecha de investigación]
 
-### Key Findings
-- [Finding 1 with source reference]
-- [Finding 2 with source reference]
+### Hallazgos Clave
+- [Hallazgo 1 con referencia de fuente]
+- [Hallazgo 2 con referencia de fuente]
 
-### Patterns Found
-- [Pattern with context]
+### Patrones Encontrados
+- [Patrón con contexto]
 
-### Constraints Discovered
-- [Constraint from constitution or external source]
+### Restricciones Descubiertas
+- [Restricción de la constitución o fuente externa]
 
-### Open Questions
-- [Unanswered question]
+### Preguntas Abiertas
+- [Pregunta sin responder]
 ```
 
 ---
 
-## Freshness Guide
+## Guía de Frescura
 
-| Relevance | Age | Action |
-|-----------|-----|--------|
-| HIGH | < 3 days | Use directly |
-| MEDIUM | 3-7 days | Use with caution, verify if critical |
-| LOW | > 7 days | Re-research before using |
+| Relevancia | Edad | Acción |
+|------------|------|--------|
+| ALTA | < 3 días | Usar directamente |
+| MEDIA | 3-7 días | Usar con precaución, verificar si es crítica |
+| BAJA | > 7 días | Investigar de nuevo antes de usar |
 
 ---
 
-## Cache
+## Caché
 
-<!-- Append new research entries below this line -->
+<!-- Añadir nuevas entradas de investigación debajo de esta línea -->
