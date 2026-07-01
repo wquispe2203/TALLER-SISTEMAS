@@ -52,7 +52,7 @@ No se permitirá:
 
 #### 4.5 Stack Tecnológico
 
-El stack tecnológico de implementación será Python 3.11+, lo que justifica el requisito PEP8 definido en Art. 3.4 de la Constitución.
+El stack tecnológico de implementación será Python 3.11+ con Flask como framework web, frontend estático HTML/CSS/JS en `templates/` y `static/`, lo que justifica el requisito PEP8 definido en Art. 3.4 de la Constitución.
 
 ---
 

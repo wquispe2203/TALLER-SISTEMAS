@@ -10,13 +10,41 @@ Este plan describe la implementación conceptual de una Calculadora de Montos de
 
 La solución se implementará mediante componentes independientes responsables de captura de datos, validaciones, cálculo y presentación de resultados.
 
-La interfaz será una aplicación web sencilla construida con HTML y CSS, con interacción básica en JavaScript. El backend se desarrollará en Node.js y expondrá un endpoint HTTP, por ejemplo `POST /api/transfer-calculator`, para recibir los datos del traslado y devolver el resultado, el estado y el desglose de operaciones. Los parámetros académicos y financieros se obtendrán desde un archivo estático `parameters.json`, generado previamente a partir del Excel oficial aprobado por Gerencia. Antes de ejecutar cualquier cálculo, el sistema validará estados, fechas y modalidades. Posteriormente, el motor de cálculo determinará semanas restantes, saldo disponible y costo requerido del ciclo destino. Finalmente, el módulo de resultados presentará el estado económico correspondiente.
+La interfaz será una aplicación web sencilla con HTML, CSS y JavaScript vanilla servidos por Flask desde `templates/` y `static/`. El backend se desarrollará en Python 3.11+ con Flask y expondrá un endpoint HTTP `POST /api/transfer-calculator` que recibe JSON, valida en cascada, ejecuta el motor de cálculo y devuelve resultado, estado y desglose. Los parámetros académicos y financieros se cargarán desde `data/parameters.json`, generado a partir del Excel oficial aprobado por Gerencia. Antes de calcular, el sistema aplicará validaciones fail-fast. El motor determinará semanas restantes, saldo disponible y costo del ciclo destino usando `decimal.Decimal` para montos. Las pruebas unitarias usarán pytest con cobertura mínima del 80% sobre validación y cálculo; el estilo de código se validará con ruff (PEP8).
 
 No se contempla almacenamiento histórico de cálculos en esta fase.
 
 ---
 
-# 2. Componentes / Archivos Afectados
+# 2. Stack y Estructura de Archivos
+
+Estructura planificada (documentada; implementación pendiente):
+
+```
+TALLER-SISTEMAS/
+├── app.py                  # Rutas Flask (UI + API en un solo archivo al inicio)
+├── validation.py           # Validaciones en cascada
+├── calculator.py           # Motor de cálculo (sin Flask)
+├── data/parameters.json    # Parámetros oficiales
+├── templates/index.html
+├── static/css/styles.css
+├── static/js/app.js
+├── tests/
+└── requirements.txt
+```
+
+Convención de rutas (mismo origen, sin CORS):
+
+* `GET /` → página del formulario
+* `POST /api/transfer-calculator` → cálculo
+* Assets en `/static/...`
+* `fetch` con rutas relativas desde el frontend
+
+Dependencias (`requirements.txt`): Flask, pytest, pytest-cov, ruff.
+
+---
+
+# 3. Componentes / Archivos Afectados
 
 ### Módulo de Captura de Datos
 
@@ -74,7 +102,7 @@ Responsable de:
 
 ---
 
-### Fuente de Parámetros Académicos (`parameters.json`)
+### Fuente de Parámetros Académicos (`data/parameters.json`)
 
 Responsable de almacenar:
 
@@ -102,7 +130,7 @@ Responsable de presentar:
 * Operaciones del resultado
 ---
 
-# 3. Decisiones de Arquitectura (Mini-ADR)
+# 4. Decisiones de Arquitectura (Mini-ADR)
 
 ## ADR-1
 
@@ -164,7 +192,7 @@ Puede generar resultados inconsistentes, incrementar la complejidad del flujo y 
 
 ---
 
-# 4. Riesgos y Dependencias
+# 5. Riesgos y Dependencias
 
 ## Riesgos
 
@@ -210,7 +238,7 @@ Definición formal de políticas de descuentos y beneficios.
 
 ---
 
-# 5. Trazabilidad
+# 6. Trazabilidad
 
 ## US-1 (Obtener resultado económico del traslado)
 

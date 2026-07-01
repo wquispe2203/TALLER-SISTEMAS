@@ -21,7 +21,7 @@ Contexto de la Funcionalidad: (ninguno)
 
 - especificacion: .specify/memory/spec.md
 - plan: .specify/memory/plan.md
-- implementacion: package.json, server.js, parameters.json, public/index.html
+- implementacion: app.py, validation.py, calculator.py, data/parameters.json, templates/index.html, requirements.txt
 
 ## Política de Frescura
 

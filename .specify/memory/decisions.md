@@ -61,3 +61,37 @@ Después de tomar una decisión importante, añade una nueva entrada:
 - Se adopta un stack distinto al descrito inicialmente en la constitución, pero con un enfoque más práctico para la entrega del taller.
 
 **Confidence:** High
+
+---
+
+## 2026-07-01 Feature 001: Stack Python full-stack con Flask
+
+**Contexto:** Se evaluó usar Node para frontend y Python para API, Node puro, o Python full-stack. La constitución exige Python 3.11+, PEP8 y cobertura ≥80% con tests unitarios. Un stack híbrido añade complejidad (dos procesos, CORS) sin beneficio para una app web simple.
+
+**Opciones consideradas:**
+1. Node.js frontend + Python API — válido en enterprise, pero dos runtimes y CORS para un taller.
+2. Solo Node.js — simple, pero desalineado con la constitución.
+3. Solo Python con Flask sirviendo HTML/CSS/JS estáticos + endpoint REST — alineado con constitución y un solo proceso.
+
+**Elegida:** Opción 3
+
+**Razonamiento:**
+- Un solo comando levanta UI y API.
+- La lógica de cálculo y validación queda en Python puro, testeable con pytest.
+- Flask sirve `templates/` y `static/` sin framework frontend adicional.
+- Cumple separación de capas: `calculator.py` / `validation.py` independientes de rutas HTTP.
+
+**Stack acordado:**
+- Python 3.11+
+- Flask (HTTP + estáticos)
+- `decimal.Decimal` (montos en soles)
+- `datetime` (fechas DD/MM/YYYY)
+- pytest + pytest-cov (tests, ≥80% en lógica de negocio)
+- ruff (PEP8 / formato)
+
+**Compromisos aceptados:**
+- Se revoca la decisión previa de backend Node.js (2026-07-01, entrada anterior).
+- No se usa SPA ni bundler; frontend vanilla HTML/CSS/JS.
+- Dependencias declaradas en `requirements.txt` en la raíz del proyecto.
+
+**Nivel de confianza:** Alto

@@ -33,22 +33,28 @@ reference_count: 0
 ## Decisiones Clave (De esta Funcionalidad)
 
 <!-- Poblado a partir de aclaraciones específicas de la funcionalidad y el plan -->
-- Se adoptó una app web simple con HTML/CSS y un backend en Node.js con endpoint HTTP para el cálculo.
-- Los parámetros del negocio se cargarán desde un archivo JSON controlado para separar reglas de negocio de la interfaz.
+- Se adoptó stack Python full-stack: Flask + HTML/CSS/JS vanilla.
+- Endpoint: `POST /api/transfer-calculator`
+- Parámetros desde `data/parameters.json`
+- Dependencias en `requirements.txt` (Flask, pytest, pytest-cov, ruff)
 
 ## Archivos Modificados (En esta Sesión)
 
 - .specify/memory/spec.md
 - .specify/memory/plan.md
-- package.json
-- server.js
-- parameters.json
-- public/index.html
+- .specify/memory/decisions.md
+- .specify/memory/constitution.md
+- .specify/memory/session-state.md
+- .specify/memory/memory-index.md
+- requirements.txt
+- resumen_proyect.md
+- faltantes_a_revisar.md
 
 ## Siguiente Paso
 
-- Refinar la lógica de cálculo y las validaciones del endpoint.
-- Añadir pruebas básicas para escenarios felices y de error.
+- Definir esquema de `data/parameters.json`
+- Implementar módulos `validation.py`, `calculator.py` y `app.py` (futuro)
+- Añadir pruebas básicas con pytest para escenarios felices y de error
 
 ## Operaciones de Memoria
 

@@ -396,7 +396,11 @@ Los resultados se mostrarán en pantalla y podrán copiarse para soporte, pero n
 
 ### D-4
 
-La solución será una aplicación web simple. La interfaz se implementará en HTML y CSS, mientras que la lógica de negocio se expondrá a través de un backend en Node.js con un endpoint para recibir los datos de traslado y devolver el resultado, el estado y el desglose del cálculo.
+La solución será una aplicación web monolítica en Python 3.11+. Flask servirá la interfaz (HTML, CSS y JavaScript estático en `templates/` y `static/`) y expondrá un endpoint REST, por ejemplo `POST /api/transfer-calculator`, para recibir los datos del traslado y devolver el resultado, el estado y el desglose del cálculo. La lógica de negocio (validaciones y cálculo) residirá en módulos Python independientes de las rutas HTTP, testeables con pytest.
+
+### D-5
+
+Las dependencias de runtime y calidad se declararán en `requirements.txt` (Flask, pytest, pytest-cov, ruff). Los montos se manejarán con `decimal.Decimal` para evitar errores de redondeo. Las fechas de entrada del usuario se parsearán en formato DD/MM/YYYY usando `datetime` de la biblioteca estándar.
 
 ---
 
