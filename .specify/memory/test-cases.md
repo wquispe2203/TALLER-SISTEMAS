@@ -106,7 +106,7 @@ El sistema bloquea la operación y muestra:
 El sistema bloquea la operación y muestra:
 "El estado actual no permite realizar traslados."
 
-### TC-7 (AC-2.3, Caso Error - Modalidad inexistente)
+### TC-7 (AC-2.3, Caso Error - Condición de Pago inexistente)
 **Datos:**
 * Ciclo origen: C01 (el cual solo ofrece condición de pago "Contado")
 * Condición de Pago: Cuotas (No existente para el ciclo origen)
@@ -119,7 +119,7 @@ El sistema bloquea la operación y muestra:
 
 **Esperado:**
 El sistema bloquea la operación y muestra:
-"La modalidad seleccionada no existe para el ciclo indicado."
+"La condición de pago seleccionada no existe para el ciclo indicado."
 
 ---
 
@@ -192,9 +192,9 @@ El sistema copia todo el desglose en formato texto plano estructurado al portapa
 2. Observar la sección "Resultado de la Simulación".
 
 **Esperado:**
-El sistema muestra los montos claramente con su respectiva modalidad:
-* "Saldo a favor: S/ 324.00 (Valor al Contado)"
-* "Monto a cancelar: S/ 1347.00 (Valor al Contado)"
+El sistema muestra los montos claramente con su respectiva condición de pago:
+"Saldo a favor: S/ 324.00 (Condición: Contado)"
+"Monto a cancelar: S/ 1347.00 (Condición: Contado)"
 
 ### TC-12 (AC-4.2, Mensaje conclusivo de saldo insuficiente/faltante)
 **Datos:**
@@ -248,7 +248,7 @@ El sistema calcula el resultado utilizando únicamente las semanas académicas r
 * Condición de Pago: Cuotas
 
 **Pasos:**
-1. Ingresar el descuento del 20% y completar el formulario con el ciclo origen C01 y destino C02 en modalidad "Cuotas".
+1. Ingresar el descuento del 20% y completar el formulario con el ciclo origen C01 y destino C02 con condición de pago "Cuotas".
 2. Ejecutar el cálculo.
 
 **Esperado:**
@@ -262,7 +262,7 @@ El sistema utiliza el monto con descuento para calcular el saldo disponible del 
 * Condición de Pago: Contado
 
 **Pasos:**
-1. Ingresar el beneficio de beca del 25% y completar el formulario con el ciclo origen C01 y destino C02 en modalidad "Contado".
+1. Ingresar el beneficio de beca del 25% y completar el formulario con el ciclo origen C01 y destino C02 con condición de pago "Contado".
 2. Ejecutar el cálculo.
 
 **Esperado:**

@@ -2,7 +2,7 @@
 
 # Resumen Ejecutivo
 
-Se propone implementar una Calculadora de Montos de Traslado Académico para automatizar el cálculo actualmente realizado de forma manual por el área de TI utilizando un Excel oficial proporcionado por Gerencia. La solución permitirá determinar automáticamente si una solicitud de traslado genera saldo a favor, traslado cubierto o monto pendiente de pago, aplicando las reglas institucionales vigentes para modalidades al contado y en cuotas. El objetivo es reducir errores operativos, disminuir el tiempo de atención y estandarizar el proceso. Quedan pendientes definiciones relacionadas con la actualización de parámetros oficiales, el almacenamiento de resultados calculados y posibles restricciones institucionales adicionales para la ejecución de traslados.
+Se propone implementar una Calculadora de Montos de Traslado Académico para automatizar el cálculo actualmente realizado de forma manual por el área de TI utilizando un Excel oficial proporcionado por Gerencia. La solución permitirá determinar automáticamente si una solicitud de traslado genera saldo a favor, traslado cubierto o monto pendiente de pago, aplicando las reglas institucionales vigentes según la condición de pago (contado o cuotas) y la modalidad académica (presencial o virtual).
 
 ---
 
@@ -92,9 +92,10 @@ Entonces el sistema debe validar en el siguiente orden y detenerse en el primer 
 
 1. Estado del estudiante
 2. Existencia de ciclo origen y ciclo destino
-3. Modalidad válida para el ciclo seleccionado
-4. Fecha de traslado dentro del periodo académico
-5. Monto pagado, descuentos y beneficios
+3. Modalidad académica válida para el ciclo seleccionado
+4. Condición de pago válida para el ciclo seleccionado
+5. Fecha de traslado dentro del periodo académico
+6. Monto pagado, descuentos y beneficios
 
 ### AC-2.1 (Fecha inválida)
 
@@ -119,7 +120,7 @@ Entonces el sistema bloquea la operación y muestra:
 
 "El estado actual no permite realizar traslados."
 
-### AC-2.3 (Modalidad inexistente)
+### AC-2.3 (Condición de pago inexistente)
 
 Dado que el ciclo seleccionado no posee la modalidad indicada,
 
@@ -127,7 +128,8 @@ Cuando el usuario intenta calcular,
 
 Entonces el sistema bloquea la operación y muestra:
 
-"La modalidad seleccionada no existe para el ciclo indicado."
+"La condición de pago seleccionada no existe para el ciclo indicado."
+
 
 ## US-3 (P2)
 
@@ -209,7 +211,8 @@ El sistema MUST solicitar los siguientes campos obligatorios:
 * Fecha de traslado (formato DD/MM/YYYY)
 * Ciclo origen (ciclo donde está matriculado actualmente)
 * Ciclo destino (ciclo al que desea trasladarse)
-* Modalidad (Presencial o Virtual)
+* Modalidad Académica (Presencial o Virtual)
+* Condición de Pago (Contado o Cuotas)
 * Estado del estudiante
 * Monto pagado (valor numérico en soles, mayor a 0)
 * Descuentos (opcional, Ninguno por defecto)
@@ -229,7 +232,7 @@ El sistema MUST bloquear el cálculo para los siguientes estados:
 
 ### FR-003 Modalidades disponibles
 
-El sistema MUST aceptar únicamente las siguientes modalidades:
+El sistema MUST aceptar únicamente las siguientes modalidades académicas:
 
 * Presencial
 * Virtual
@@ -238,7 +241,7 @@ El sistema MUST aceptar únicamente las siguientes modalidades:
 
 El sistema MUST reconocer los siguientes tipos de descuento:
 
-* 15% (descuento estándar)
+* 20% (descuento estándar)
 * Descuento familiar
 * Ninguno (valor por defecto cuando no aplica)
 
@@ -279,6 +282,13 @@ El orden de validación será:
 3. Modalidad disponible para el ciclo
 4. Fecha dentro del periodo académico
 5. Monto pagado, descuentos y beneficios
+
+### FR-008 Condiciones de pago disponibles
+
+El sistema MUST aceptar únicamente las siguientes condiciones de pago:
+
+* Contado
+* Cuotas
 
 # 4. Requisitos No Funcionales (NFR)
 
@@ -409,8 +419,9 @@ Las dependencias de runtime y calidad se declararán en `requirements.txt` (Flas
 ## DENTRO
 
 * Cálculo automático de montos de traslado.
-* Cálculo para modalidad al contado.
-* Cálculo para modalidad en cuotas.
+* Cálculo para condición de pago al contado.
+* Cálculo para condición de pago en cuotas.
+* Validación de modalidad académica (presencial/virtual).
 * Validación de fechas académicas.
 * Validación de estados de matrícula.
 * Validación de modalidades disponibles.

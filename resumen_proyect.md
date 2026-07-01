@@ -47,7 +47,7 @@ Muestra el estado final (Saldo a favor, Sin saldo pendiente, o Monto pendiente) 
 
 ## Requisitos y Restricciones
 
-- Rendimiento: El cálculo debe completarse en menos de 2 segundos.
+- Rendimiento: El cálculo debe completarse en menos de 200 milisegundos.
 - Cobertura de Pruebas: Mínimo del 80% en la lógica de cálculo.
 - Calidad de Código: Debe cumplir con el estándar PEP8.
 - Alcance Externo: No se incluye almacenamiento histórico, integraciones con otros sistemas, ni generación de comprobantes.
