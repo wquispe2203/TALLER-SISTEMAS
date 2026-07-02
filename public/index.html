@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculadora de Traslado Académico</title>
+    <style>
+      :root {
+        --bg: #f2f6ff;
+        --card: #ffffff;
+        --border: #d9e4ff;
+        --text: #14213d;
+        --muted: #5b6b8a;
+        --primary: #2756d6;
+        --primary-dark: #1e43aa;
+        --success: #167b4f;
+        --neutral: #2563eb;
+        --warning: #b85a00;
+        --error: #b42318;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        min-height: 100vh;
+        background: linear-gradient(135deg, var(--bg), #e8f0ff);
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+      }
+      .card {
+        background: var(--card);
+        padding: 1.5rem;
+        border-radius: 18px;
+        max-width: 760px;
+        width: 100%;
+        box-shadow: 0 14px 40px rgba(39, 86, 214, 0.16);
+        border: 1px solid var(--border);
+      }
+      .hero { margin-bottom: 1rem; }
+      .hero h1 { margin: 0 0 0.4rem; font-size: 1.7rem; }
+      .hero p { margin: 0; color: var(--muted); line-height: 1.5; }
+      form { display: grid; gap: 0.9rem; }
+      .field-group { display: grid; gap: 0.4rem; }
+      label { font-weight: 700; color: var(--text); }
+      input, select {
+        padding: 0.75rem 0.9rem;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        font-size: 1rem;
+        background: #fbfdff;
+      }
+      button {
+        background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+        color: white;
+        border: none;
+        padding: 0.9rem 1rem;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 700;
+        margin-top: 0.3rem;
+      }
+      .result {
+        margin-top: 1rem;
+        padding: 1rem;
+        border-radius: 14px;
+        border: 1px solid transparent;
+      }
+      .result.success { background: #ebfdf4; border-color: #bdeed1; color: var(--success); }
+      .result.neutral { background: #eff6ff; border-color: #cfe0ff; color: var(--neutral); }
+      .result.warning { background: #fff4e8; border-color: #ffd7aa; color: var(--warning); }
+      .result.error { background: #fef3f2; border-color: #f7c6c2; color: var(--error); }
+      .result-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.35rem; }
+      .result-message { margin-bottom: 0.8rem; font-weight: 600; }
+      .result-grid {
+        display: grid;
+        gap: 0.6rem;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      }
+      .result-item {
+        background: rgba(255,255,255,0.8);
+        padding: 0.7rem;
+        border-radius: 10px;
+      }
+      .result-item span { display: block; font-size: 0.8rem; opacity: 0.8; margin-bottom: 0.25rem; }
+      .result-item strong { font-size: 1rem; }
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.7rem;
+        margin: 1rem 0 1.2rem;
+      }
+      .legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        border-radius: 999px;
+        padding: 0.35rem 0.7rem;
+        background: #f8fbff;
+        border: 1px solid var(--border);
+        font-size: 0.9rem;
+      }
+      .legend-dot {
+        width: 0.8rem;
+        height: 0.8rem;
+        border-radius: 50%;
+        display: inline-block;
+      }
+      .legend-dot.success { background: var(--success); }
+      .legend-dot.neutral { background: var(--neutral); }
+      .legend-dot.warning { background: var(--warning); }
+      .legend-dot.error { background: var(--error); }
+      .formula-card {
+        margin-top: 0.9rem;
+        border-top: 1px solid rgba(20,33,61,0.12);
+        padding-top: 0.8rem;
+      }
+      .formula-title { font-weight: 700; margin-bottom: 0.35rem; }
+      .formula-text { font-size: 0.95rem; margin-bottom: 0.5rem; }
+      .formula-list { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.35rem; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="hero">
+        <h1>Calculadora de Traslado Académico</h1>
+        <p>Evalúa si un traslado genera saldo a favor, cubre el costo del nuevo ciclo o deja un monto pendiente.</p>
+      </div>
+
+      <div class="legend" aria-label="Leyenda de colores">
+        <div class="legend-item"><span class="legend-dot success"></span>Saldo a favor</div>
+        <div class="legend-item"><span class="legend-dot neutral"></span>Sin saldo pendiente</div>
+        <div class="legend-item"><span class="legend-dot warning"></span>Monto pendiente</div>
+        <div class="legend-item"><span class="legend-dot error"></span>Error</div>
+      </div>
+
+      <form id="transfer-form">
+        <div class="field-group">
+          <label>Fecha de traslado</label>
+          <input type="date" id="fechaTraslado" required />
+        </div>
+
+        <div class="field-group">
+          <label>Ciclo origen</label>
+          <div class="result-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+            <select id="origenModalidad" required>
+              <option value="Presencial">Presencial</option>
+              <option value="Virtual">Virtual</option>
+            </select>
+            <select id="origenUniversidad" required>
+              <option value="SM">SM</option>
+              <option value="UNI">UNI</option>
+            </select>
+            <input type="text" id="origenCiclo" placeholder="Ej. SEMIANUAL ENERO" required />
+            <select id="origenPago" required>
+              <option value="Contado">Contado</option>
+              <option value="matricula">Matrícula</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>Ciclo destino</label>
+          <div class="result-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+            <select id="destinoModalidad" required>
+              <option value="Presencial">Presencial</option>
+              <option value="Virtual">Virtual</option>
+            </select>
+            <select id="destinoUniversidad" required>
+              <option value="SM">SM</option>
+              <option value="UNI">UNI</option>
+            </select>
+            <input type="text" id="destinoCiclo" placeholder="Ej. ANUAL ENERO" required />
+            <select id="destinoPago" required>
+              <option value="Contado">Contado</option>
+              <option value="matricula">Matrícula</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>Estado del estudiante</label>
+          <select id="estado" required>
+            <option value="MATRICULADO">MATRICULADO</option>
+            <option value="PAGADO">PAGADO</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label>Monto pagado</label>
+          <input type="number" id="montoPagado" min="0" step="0.01" required />
+        </div>
+
+        <div class="field-group">
+          <label>Descuento</label>
+          <select id="descuento">
+            <option value="Ninguno">Ninguno</option>
+            <option value="20%">20%</option>
+            <option value="Descuento familiar">Descuento familiar</option>
+            <option value="1/2 beca">1/2 beca</option>
+            <option value="1/4 beca">1/4 beca</option>
+          </select>
+        </div>
+
+        <button type="submit">Calcular resultado</button>
+      </form>
+
+      <div id="result" class="result" hidden></div>
+    </div>
+
+    <script>
+      document.getElementById('transfer-form').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const payload = {
+          fechaTraslado: document.getElementById('fechaTraslado').value,
+          cicloOrigen: {
+            modalidad: document.getElementById('origenModalidad').value,
+            universidad: document.getElementById('origenUniversidad').value,
+            nombreCiclo: document.getElementById('origenCiclo').value,
+            pago: document.getElementById('origenPago').value,
+          },
+          cicloDestino: {
+            modalidad: document.getElementById('destinoModalidad').value,
+            universidad: document.getElementById('destinoUniversidad').value,
+            nombreCiclo: document.getElementById('destinoCiclo').value,
+            pago: document.getElementById('destinoPago').value,
+          },
+          estado: document.getElementById('estado').value,
+          montoPagado: document.getElementById('montoPagado').value,
+          descuento: document.getElementById('descuento').value,
+        };
+
+        const response = await fetch('/api/transfer-calculator', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        const data = await response.json();
+        const resultBox = document.getElementById('result');
+        resultBox.hidden = false;
+
+        if (!response.ok || !data.success) {
+          resultBox.className = 'result error';
+          resultBox.innerHTML = `
+            <div class="result-title">No se pudo calcular</div>
+            <div class="result-message">${data.error || 'No se pudo calcular el traslado.'}</div>
+          `;
+          return;
+        }
+
+        const statusClass = data.result.estado === 'Saldo a favor'
+          ? 'success'
+          : data.result.estado === 'Monto pendiente'
+            ? 'warning'
+            : 'neutral';
+
+        resultBox.className = `result ${statusClass}`;
+        resultBox.innerHTML = `
+          <div class="result-title">${data.result.estado}</div>
+          <div class="result-message">${data.result.mensaje}</div>
+          <div class="result-grid">
+            <div class="result-item"><span>Semanas calculadas</span><strong>${data.result.detalle.semanas_calculadas}</strong></div>
+            <div class="result-item"><span>Saldo a favor</span><strong>S/ ${data.result.detalle.saldo_a_favor}</strong></div>
+            <div class="result-item"><span>Monto a cancelar</span><strong>S/ ${data.result.detalle.monto_a_cancelar}</strong></div>
+            <div class="result-item"><span>Resultado</span><strong>S/ ${data.result.detalle.resultado}</strong></div>
+          </div>
+          <div class="formula-card">
+            <div class="formula-title">Operaciones</div>
+            <div class="formula-text">${data.result.detalle.formula}</div>
+            <ul class="formula-list">
+              ${data.result.detalle.operaciones.map((step) => `<li>${step}</li>`).join('')}
+            </ul>
+          </div>
+        `;
+      });
+    </script>
+  </body>
+</html>

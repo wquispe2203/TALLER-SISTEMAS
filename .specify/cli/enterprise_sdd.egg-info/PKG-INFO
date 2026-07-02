@@ -1,0 +1,19 @@
+Metadata-Version: 2.4
+Name: enterprise-sdd
+Version: 0.1.0
+Summary: Enterprise Software Design Document (SDD) workflow CLI
+License: MIT
+Project-URL: Repository, https://github.com/your-org/enterprise-sdd
+Project-URL: Issues, https://github.com/your-org/enterprise-sdd/issues
+Keywords: sdd,specification,workflow,ai,copilot
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Application Frameworks
+Classifier: Topic :: Utilities
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: pyyaml>=6.0
