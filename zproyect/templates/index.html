@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora de Traslados Académicos</title>
+  <meta name="description" content="Herramienta oficial para calcular montos de traslado académico entre ciclos de pago al contado o en cuotas." />
+  <link rel="stylesheet" href="/static/css/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>" />
+</head>
+<body>
+
+<div class="page-wrapper">
+
+  <!-- ── Header ── -->
+  <header class="app-header">
+    <div class="badge">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+      Sistema Académico · Soporte TI
+    </div>
+    <h1>Calculadora de<br>Traslados Académicos</h1>
+    <p>Determina automáticamente si un traslado genera saldo a favor, traslado cubierto o monto pendiente.</p>
+  </header>
+
+  <!-- ── Formulario ── -->
+  <main>
+    <form id="calculadora-form" class="card" novalidate>
+
+      <!-- Fecha de traslado -->
+      <div class="form-section">
+        <div class="section-title">Datos del Traslado</div>
+        <div class="fields-grid">
+          <div class="field-group full-width">
+            <label for="fecha_traslado">Fecha de traslado</label>
+            <input type="date" id="fecha_traslado" name="fecha_traslado" required />
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Ciclo Origen -->
+      <div class="form-section">
+        <div class="section-title">Ciclo Origen</div>
+        <div class="fields-grid">
+          <div class="field-group">
+            <label for="origen_nombre">Nombre del ciclo</label>
+            <select id="origen_nombre" name="origen_nombre" required>
+              <option value="">— Selecciona ciclo —</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label for="origen_universidad">Universidad</label>
+            <select id="origen_universidad" name="origen_universidad" required>
+              <option value="">— Universidad —</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label for="origen_modalidad">Modalidad académica</label>
+            <select id="origen_modalidad" name="origen_modalidad" required>
+              <option value="">— Modalidad —</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label for="origen_pago">Condición de pago</label>
+            <select id="origen_pago" name="origen_pago" required>
+              <option value="">— Pago en —</option>
+              <option value="CONTADO">Contado</option>
+              <option value="CUOTAS">Cuotas</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Ciclo Destino -->
+      <div class="form-section">
+        <div class="section-title">Ciclo Destino</div>
+        <div class="fields-grid">
+          <div class="field-group">
+            <label for="destino_nombre">Nombre del ciclo</label>
+            <select id="destino_nombre" name="destino_nombre" required>
+              <option value="">— Selecciona ciclo —</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label for="destino_universidad">Universidad</label>
+            <select id="destino_universidad" name="destino_universidad" required>
+              <option value="">— Universidad —</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label for="destino_modalidad">Modalidad académica</label>
+            <select id="destino_modalidad" name="destino_modalidad" required>
+              <option value="">— Modalidad —</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label for="destino_pago">Condición de pago</label>
+            <select id="destino_pago" name="destino_pago" required>
+              <option value="">— Pago en —</option>
+              <option value="CONTADO">Contado</option>
+              <option value="CUOTAS">Cuotas</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Botón calcular -->
+      <button type="submit" id="btn-calcular" class="btn btn-primary">
+        <span class="spinner" aria-hidden="true"></span>
+        <span class="btn-label">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M9 19v-6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2z"/><path d="M15 5v14a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2z"/></svg>
+          Calcular Traslado
+        </span>
+      </button>
+
+    </form>
+
+    <!-- ── Panel de resultado ── -->
+    <section id="resultado-section" class="hidden" aria-live="polite">
+
+      <!-- Error de negocio -->
+      <div id="error-toast" class="error-toast hidden">
+        <span class="icon">⚠️</span>
+        <span class="msg" id="error-msg"></span>
+      </div>
+
+      <!-- Resultado exitoso -->
+      <div id="resultado-card" class="resultado-card hidden">
+        <div class="resultado-header">
+          <div id="estado-badge" class="estado-badge"></div>
+          <button type="button" class="copy-btn" id="btn-copy" title="Copiar resumen al portapapeles">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copiar resumen
+          </button>
+        </div>
+        <div class="resultado-mensaje" id="resultado-mensaje"></div>
+
+        <div class="montos-grid">
+          <div class="monto-box">
+            <div class="monto-label">Saldo disponible</div>
+            <div class="monto-valor" id="monto-saldo"></div>
+          </div>
+          <div class="monto-box">
+            <div class="monto-label">Costo destino</div>
+            <div class="monto-valor" id="monto-costo"></div>
+          </div>
+          <div class="monto-box">
+            <div class="monto-label">Diferencia</div>
+            <div class="monto-valor" id="monto-diff"></div>
+          </div>
+        </div>
+
+        <!-- Desglose de operaciones -->
+        <div class="desglose-section">
+          <div class="desglose-toggle" id="desglose-toggle" role="button" tabindex="0" aria-expanded="false">
+            <span>Ver desglose de operaciones</span>
+            <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="desglose-body" id="desglose-body">
+            <table class="desglose-table">
+              <thead>
+                <tr>
+                  <th>Concepto</th>
+                  <th>Origen</th>
+                  <th>Destino</th>
+                </tr>
+              </thead>
+              <tbody id="desglose-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div><!-- /resultado-card -->
+
+    </section><!-- /resultado-section -->
+  </main>
+
+</div><!-- /page-wrapper -->
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>

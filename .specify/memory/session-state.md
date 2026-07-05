@@ -12,9 +12,9 @@ reference_count: 0
 - **ID de la Funcionalidad:** transfer-calculator
 - **Nombre de la Funcionalidad:** Calculadora de Montos de Traslado Académico
 - **Nivel de Ceremonia:** estándar
-- **Fase Actual:** Implementación
+- **Fase Actual:** Implementación (alineación de artefactos con algoritmo v4)
 - **Último Gate Aprobado:** Requerimientos aclarados
-- **Marca de Tiempo del Último Gate:** 2026-07-01
+- **Marca de Tiempo del Último Gate:** 2026-07-04
 
 ## Progreso de Fases
 
@@ -40,21 +40,19 @@ reference_count: 0
 
 ## Archivos Modificados (En esta Sesión)
 
-- .specify/memory/spec.md
-- .specify/memory/plan.md
-- .specify/memory/decisions.md
-- .specify/memory/constitution.md
-- .specify/memory/session-state.md
-- .specify/memory/memory-index.md
-- requirements.txt
-- resumen_proyect.md
-- faltantes_a_revisar.md
+- .specify/memory/spec.md (alineación con algoritmo v4)
+- .specify/memory/plan.md (actualización de módulos y riesgos)
+- .specify/memory/test-cases.md (reemplazo por 12 casos del algoritmo)
+- .specify/memory/constitution.md (actualización de Boundaries)
+- .specify/memory/decisions.md (entrada sobre adopción del algoritmo v4)
+- .specify/memory/lessons.md (lección sobre definición previa del algoritmo)
+- .specify/memory/session-state.md (actualización de fase)
 
 ## Siguiente Paso
 
-- Definir esquema de `data/parameters.json`
+- Verificar que todos los artefactos referencien los mismos campos de entrada, las mismas validaciones y los mismos casos de prueba.
+- Ejecutar la suite de tests actualizada contra el algoritmo implementado para confirmar la coherencia.
 - Implementar módulos `validation.py`, `calculator.py` y `app.py` (futuro)
-- Añadir pruebas básicas con pytest para escenarios felices y de error
 
 ## Operaciones de Memoria
 

@@ -48,3 +48,17 @@ Después de una corrección, gate fallido o detección de bloqueo, añade:
 
 **Prevention Rule:**
 - Actualizar decisions.md, session-state.md y el índice de memoria antes de continuar con cambios de implementación.
+---
+
+## 2026-07-04 Feature 001: Definir el algoritmo completo antes de redactar la especificación
+
+**Qué Pasó:** Se redactó la especificación funcional (spec.md) antes de tener el algoritmo completo validado contra el Excel oficial, lo que generó discrepancias en campos de entrada, validaciones y casos de prueba.
+
+**Causa Raíz:** No se partió del Excel y del algoritmo acordado con el negocio como base para redactar la spec.
+
+**Qué Aprendimos:**
+- Definir el algoritmo completo antes de redactar la especificación evita discrepancias y retrabajo.
+- Los artefactos deben derivarse del algoritmo y del Excel, no al revés.
+
+**Regla de Prevención:**
+- En futuros proyectos, partir del Excel y del algoritmo acordado con el negocio, y luego redactar la spec, plan y casos de prueba basándose en esa base.

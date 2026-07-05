@@ -95,3 +95,25 @@ Después de tomar una decisión importante, añade una nueva entrada:
 - Dependencias declaradas en `requirements.txt` en la raíz del proyecto.
 
 **Nivel de confianza:** Alto
+---
+
+## 2026-07-04 Feature 001: Adoptar algoritmo v4 como referencia canónica
+
+**Contexto:** Se identificaron discrepancias entre la especificación original (spec.md), el plan (plan.md) y los casos de prueba (test-cases.md) con respecto al algoritmo de traslados académicos v4, el cual se considera la implementación definitiva basada en el Excel oficial de Gerencia.
+
+**Opciones Consideradas:**
+1. Mantener los artefactos actuales y ajustar el algoritmo a la especificación — inviable, el algoritmo ya está validado contra el Excel.
+2. Actualizar todos los artefactos para alinearlos con el algoritmo v4 — asegura consistencia con la fuente única de verdad.
+
+**Elegida:** Opción 2
+
+**Razonamiento:**
+- El algoritmo y el archivo parameters.json (generado desde el Excel oficial) son la única fuente de verdad.
+- Los artefactos anteriores (FR sobre estados, descuentos, beneficios) ya no aplican al algoritmo actual.
+- Alinear todo con el algoritmo v4 elimina ambigüedades y garantiza que los estándares de calidad se midan sobre la base correcta.
+
+**Compromisos Aceptados:**
+- Se requiere actualizar spec.md, plan.md, test-cases.md, constitution.md y otros archivos de memoria.
+- Los casos de prueba antiguos (TC-4 a TC-16) quedan obsoletos y se reemplazan por los 12 casos del algoritmo.
+
+**Nivel de Confianza:** Alto

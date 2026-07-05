@@ -51,13 +51,8 @@ Dependencias (`requirements.txt`): Flask, pytest, pytest-cov, ruff.
 Responsable de recibir la información de entrada del usuario y pasarla al siguiente paso.
 
 * Fecha de traslado
-* Ciclo origen
-* Ciclo destino
-* Modalidad
-* Estado del estudiante
-* Monto pagado
-* Descuentos
-* Beneficios
+* Ciclo origen (Nombre, Universidad, Modalidad Académica, Pago en)
+* Ciclo destino (Nombre, Universidad, Modalidad Académica, Pago en)
 
 ---
 
@@ -66,8 +61,8 @@ Responsable de recibir la información de entrada del usuario y pasarla al sigui
 Responsable de transformar los datos crudos recibidos en un formato estructurado, consistente y tipado antes de enviarlos a validación.
 
 * Convertir fechas a formato estándar
-* Normalizar nombres de modalidades y estados
-* Validar tipos numéricos de montos y descuentos
+* Normalizar nombres de modalidades
+* Validar tipos numéricos de montos
 * Construir un DTO / contrato de entrada
 * Rechazar entradas imposibles de parsear
 
@@ -79,11 +74,10 @@ Este módulo asegura que la validación y el cálculo trabajen con datos limpios
 
 Responsable de verificar en cascada y en orden de prioridad:
 
-1. Estado permitido
-2. Existencia de ciclo origen y ciclo destino
-3. Modalidad existente para el ciclo
-4. Fecha válida dentro del periodo académico
-5. Integridad de montos, descuentos y beneficios
+1. Existencia de ciclo origen y ciclo destino en parameters.json
+2. Igualdad de modalidad de pago entre origen y destino
+3. Fecha válida dentro del periodo académico de ambos ciclos
+4. (Opcional) Integridad de los datos de entrada (tipos, formato de fecha)
 
 El módulo debe aplicar validaciones "fail-fast" para detener el proceso tan pronto se encuentre una condición inválida.
 
@@ -93,12 +87,13 @@ El módulo debe aplicar validaciones "fail-fast" para detener el proceso tan pro
 
 Responsable de:
 
-* Calcular semanas restantes
+* Calcular semanas restantes (con ajuste por semanas de feriado)
 * Calcular saldo disponible
 * Calcular costo requerido del ciclo destino
 * Aplicar reglas para modalidad al contado
 * Aplicar reglas para modalidad en cuotas
 * Determinar saldo a favor, traslado cubierto o monto pendiente
+* Calcular semanas consumidas con ajuste de fecha por feriados
 
 ---
 
@@ -160,7 +155,7 @@ Centralizar todos los parámetros académicos y financieros en una única fuente
 
 ### POR QUÉ
 
-Garantiza consistencia con la información aprobada por Gerencia y cumple el principio de Single Source of Truth (SSoT) definido en la Constitución.
+Garantiza consistencia con la información aprobada por Gerencia y cumple el principio de Single Source of Truth (SSoT) definido en la Constitución. El Excel también define las fechas de feriados que afectan el conteo de semanas.
 
 ### ALTERNATIVA DESCARTADA
 
@@ -216,9 +211,9 @@ Interpretaciones ambiguas de fechas académicas o semanas restantes.
 
 ### R-4
 
-Nuevos estados académicos que modifiquen las reglas actuales de traslado.
+Cambio en el calendario de feriados institucionales.
 
-**Mitigación:** Centralizar las validaciones de estado en un único componente para facilitar actualizaciones.
+**Mitigación:** Actualizar las constantes de semanas de feriado en el código cuando cambie la política institucional.
 
 ---
 
@@ -234,7 +229,7 @@ Disponibilidad de las fechas académicas necesarias para calcular semanas restan
 
 ### D-3
 
-Definición formal de políticas de descuentos y beneficios.
+Definición clara de las semanas de feriados institucionales.
 
 ---
 

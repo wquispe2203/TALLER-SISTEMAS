@@ -32,45 +32,42 @@ para obtener automáticamente el resultado económico del traslado.
 
 ### AC-1.1 (Saldo a favor)
 
-Dado un traslado válido donde:
-
-* Saldo disponible calculado = S/ 700
-* Costo requerido del ciclo destino = S/ 500
+Dado un traslado válido (TC-1 del algoritmo):
+* Fecha de traslado: 15/05/2026
+* Ciclo origen: ANUAL MARZO, SM, PRESENCIAL, CONTADO (cash_price: S/ 4590, duration_weeks: 40, fecha_inicio: 16/03/2026, fecha_fin: 31/12/2026)
+* Ciclo destino: ANUAL MARZO, SM, VIRTUAL, CONTADO (cash_price: S/ 3240, duration_weeks: 40, fecha_inicio: 16/03/2026, fecha_fin: 31/12/2026)
 
 Cuando el usuario ejecuta el cálculo,
 
 Entonces el sistema muestra:
-
-* Resultado: S/ 200 de saldo a favor
+* Resultado: S/ 1060.72 de saldo a favor
 * Estado: "Saldo a favor"
 
 ### AC-1.2 (Traslado cubierto)
 
-Dado un traslado válido donde:
-
-* Saldo disponible calculado = S/ 500
-* Costo requerido del ciclo destino = S/ 500
+Dado un traslado válido (TC-3 del algoritmo):
+* Fecha de traslado: 20/04/2026
+* Ciclo origen: ANUAL MARZO, SM, PRESENCIAL, CUOTAS (10 cuotas de S/ 510)
+* Ciclo destino: ANUAL MARZO, SM, PRESENCIAL, CUOTAS (10 cuotas de S/ 510)
 
 Cuando el usuario ejecuta el cálculo,
 
 Entonces el sistema muestra:
-
 * Resultado: S/ 0
-* Estado: "Sin saldo pendiente"
+* Estado: "Traslado cubierto exactamente"
 
 ### AC-1.3 (Monto pendiente)
 
-Dado un traslado válido donde:
-
-* Saldo disponible calculado = S/ 500
-* Costo requerido del ciclo destino = S/ 800
+Dado un traslado válido (TC-2 del algoritmo):
+* Fecha de traslado: 15/05/2026
+* Ciclo origen: ANUAL MARZO, SM, VIRTUAL, CONTADO (cash_price: S/ 3240, duration_weeks: 40, fecha_inicio: 16/03/2026, fecha_fin: 31/12/2026)
+* Ciclo destino: ANUAL MARZO, SM, PRESENCIAL, CONTADO (cash_price: S/ 4590, duration_weeks: 40, fecha_inicio: 16/03/2026, fecha_fin: 31/12/2026)
 
 Cuando el usuario ejecuta el cálculo,
 
 Entonces el sistema muestra:
-
-* Resultado: S/ 300 pendiente de pago
-* Estado: "Monto pendiente por cancelar"
+* Resultado: S/ 1060.72 pendiente de pago
+* Estado: "Monto pendiente"
 
 ---
 
@@ -90,12 +87,10 @@ Cuando el usuario inicia el cálculo,
 
 Entonces el sistema debe validar en el siguiente orden y detenerse en el primer error encontrado:
 
-1. Estado del estudiante
-2. Existencia de ciclo origen y ciclo destino
-3. Modalidad académica válida para el ciclo seleccionado
-4. Condición de pago válida para el ciclo seleccionado
-5. Fecha de traslado dentro del periodo académico
-6. Monto pagado, descuentos y beneficios
+1. Existencia de ciclo origen y ciclo destino en parameters.json
+2. Igualdad de modalidad de pago entre origen y destino
+3. Fecha de traslado dentro del periodo académico de ambos ciclos
+4. (Opcional) Integridad de los datos de entrada
 
 ### AC-2.1 (Fecha inválida)
 
@@ -105,30 +100,27 @@ Cuando el usuario intenta calcular,
 
 Entonces el sistema bloquea la operación y muestra:
 
-"Fecha de traslado inválida para los ciclos seleccionados."
+"La fecha de traslado está fuera del rango del ciclo [ORIGEN/DESTINO]."
 
-### AC-2.2 (Estado no permitido)
+### AC-2.2 (Modalidad de pago diferente)
 
-Dado un estado diferente de:
-
-* MATRICULADO
-* PAGADO
+Dado que pago_en_origen != pago_en_destino,
 
 Cuando el usuario intenta calcular,
 
 Entonces el sistema bloquea la operación y muestra:
 
-"El estado actual no permite realizar traslados."
+"No se permiten traslados entre modalidades de pago diferentes. Si requiere este tipo de traslado, debe procesarlo manualmente."
 
-### AC-2.3 (Condición de pago inexistente)
+### AC-2.3 (Ciclo no encontrado)
 
-Dado que el ciclo seleccionado no posee la modalidad indicada,
+Dado que el ciclo origen o destino no existe en parameters.json,
 
 Cuando el usuario intenta calcular,
 
 Entonces el sistema bloquea la operación y muestra:
 
-"La condición de pago seleccionada no existe para el ciclo indicado."
+"Ciclo [origen/destino] no encontrado en la base de datos"
 
 
 ## US-3 (P2)
@@ -147,24 +139,24 @@ Cuando el usuario ejecuta el cálculo,
 
 Entonces el sistema muestra además del resultado final:
 
-* Semanas totales del ciclo origen
-* Semanas transcurridas a la fecha de traslado
+* Semanas totales del ciclo origen (incluyendo semanas de feriado)
+* Semanas transcurridas a la fecha de traslado (ajustado por feriados)
 * Semanas restantes
-* Fórmula y resultado del saldo disponible
+* Fórmula y resultado del saldo disponible (con valor residual de contado/cuotas)
 * Fórmula y resultado del costo del ciclo destino
 * Operación final y resultado
 
-### AC-3.2 (Visibilidad de beneficios y descuentos aplicados)
+### AC-3.2 (Ajuste por feriados)
 
-Dado un cálculo de traslado donde el estudiante tiene un descuento o beneficio activo,
+Dado un cálculo de traslado donde la fecha cae en una semana de feriado (Fiestas Patrias o Navidad),
 
 Cuando el sistema genera el desglose de las operaciones,
 
 Entonces el sistema debe incluir explícitamente en el detalle:
 
-* El porcentaje o tipo de descuento/beneficio aplicado.
-* La tarifa regular versus la tarifa con el beneficio aplicado utilizada para calcular el saldo disponible del ciclo origen.
-* La aclaración de que el ciclo destino se está cobrando con tarifa regular.
+* Las semanas de feriado que se cancelan y se saltan en el calendario académico.
+* La fecha ajustada usada para el cálculo de semanas consumidas.
+* La aclaración de que las semanas efectivas incluyen las semanas de feriado.
 
 ### AC-3.3 (Exportación o copia rápida para atención de tickets)
 
@@ -209,55 +201,23 @@ Entonces debe mostrar una alerta destacada en rojo indicando el monto faltante e
 El sistema MUST solicitar los siguientes campos obligatorios:
 
 * Fecha de traslado (formato DD/MM/YYYY)
-* Ciclo origen (ciclo donde está matriculado actualmente)
-* Ciclo destino (ciclo al que desea trasladarse)
-* Modalidad Académica (Presencial o Virtual)
-* Condición de Pago (Contado o Cuotas)
-* Estado del estudiante
-* Monto pagado (valor numérico en soles, mayor a 0)
-* Descuentos (opcional, Ninguno por defecto)
-* Beneficios (opcional, Ninguno por defecto)
+* Ciclo origen:
+  - Nombre del ciclo
+  - Universidad
+  - Modalidad Académica (Presencial o Virtual)
+  - Pago en (Contado o Cuotas)
+* Ciclo destino:
+  - Nombre del ciclo
+  - Universidad
+  - Modalidad Académica (Presencial o Virtual)
+  - Pago en (Contado o Cuotas)
 
-### FR-002 Estados permitidos
-
-El sistema MUST aceptar únicamente los siguientes estados:
-
-* MATRICULADO
-* PAGADO
-
-El sistema MUST bloquear el cálculo para los siguientes estados:
-
-* SUSPENDIDO
-* RETIRADO
 
 ### FR-003 Modalidades disponibles
 
-El sistema MUST aceptar únicamente las siguientes modalidades académicas:
+El sistema MUST aceptar únicamente las modalidades académicas que aparecen en parameters.json para cada ciclo (Presencial o Virtual).
 
-* Presencial
-* Virtual
 
-### FR-004 Descuentos aplicables
-
-El sistema MUST reconocer los siguientes tipos de descuento:
-
-* 20% (descuento estándar)
-* Descuento familiar
-* Ninguno (valor por defecto cuando no aplica)
-
-Regla: el descuento aplica únicamente al saldo disponible 
-del ciclo origen. El ciclo destino siempre usa tarifa regular.
-
-### FR-005 Beneficios aplicables
-
-El sistema MUST reconocer los siguientes beneficios:
-
-* 1/2 beca (50% de descuento sobre la tarifa)
-* 1/4 beca (25% de descuento sobre la tarifa)
-* Ninguno (valor por defecto cuando no aplica)
-
-Regla: el beneficio aplica únicamente al saldo disponible 
-del ciclo origen. El ciclo destino siempre usa tarifa regular.
 
 ### FR-006 Desglose de operaciones
 
@@ -277,11 +237,10 @@ El sistema MUST aplicar las validaciones en orden de criticidad y detener el pro
 
 El orden de validación será:
 
-1. Estado del estudiante
-2. Ciclo origen y ciclo destino válidos
-3. Modalidad disponible para el ciclo
-4. Fecha dentro del periodo académico
-5. Monto pagado, descuentos y beneficios
+1. Existencia de ciclo origen y ciclo destino en parameters.json
+2. Igualdad de modalidad de pago entre origen y destino
+3. Fecha de traslado dentro del periodo académico de ambos ciclos
+4. (Opcional) Integridad de los datos de entrada (tipos, formato de fecha)
 
 ### FR-008 Condiciones de pago disponibles
 
@@ -290,11 +249,21 @@ El sistema MUST aceptar únicamente las siguientes condiciones de pago:
 * Contado
 * Cuotas
 
+### FR-009 Validación de igualdad de modalidad de pago
+
+El sistema MUST rechazar el traslado si pago_en_origen != pago_en_destino.
+
+Mensaje de error: "No se permiten traslados entre modalidades de pago diferentes. Si requiere este tipo de traslado, debe procesarlo manualmente."
+
 # 4. Requisitos No Funcionales (NFR)
 
 ### NFR-1
 
 El cálculo deberá completarse en menos de 200 milisegundos desde el envío de los datos.
+
+### NFR-2
+
+El sistema MUST utilizar `decimal.Decimal` para todos los cálculos de montos en soles para evitar errores de redondeo.
 
 ---
 
@@ -304,7 +273,7 @@ El cálculo deberá completarse en menos de 200 milisegundos desde el envío de 
 
 Resultado esperado:
 
-El sistema bloquea el cálculo e informa que la fecha de traslado es inválida.
+El sistema bloquea el cálculo e informa que la fecha de traslado es inválida con el mensaje exacto: "La fecha de traslado está fuera del rango del ciclo [ORIGEN/DESTINO]."
 
 ### CB-2 Ciclo origen igual a ciclo destino
 
@@ -313,7 +282,7 @@ Resultado esperado:
 El sistema muestra:
 
 * Resultado: S/ 0
-* Estado: "Sin saldo pendiente"
+* Estado: "Traslado cubierto exactamente"
 
 ### CB-3 Modalidad inexistente para el ciclo seleccionado
 
@@ -321,17 +290,17 @@ Resultado esperado:
 
 El sistema bloquea el cálculo e informa que la modalidad no existe para el ciclo seleccionado.
 
-### CB-4 Estado SUSPENDIDO
+### CB-4 Semana de feriado (Fiestas Patrias)
 
 Resultado esperado:
 
-El sistema bloquea el cálculo e informa que el estado no permite realizar traslados.
+El sistema ajusta el cálculo saltando la semana de feriado y usa la fecha ajustada para determinar semanas consumidas.
 
-### CB-5 Estado RETIRADO
+### CB-5 Semana de feriado (Navidad)
 
 Resultado esperado:
 
-El sistema bloquea el cálculo e informa que el estado no permite realizar traslados.
+El sistema ajusta el cálculo saltando la semana de feriado y usa la fecha ajustada para determinar semanas consumidas.
 
 ### CB-6 Resultado exactamente igual a cero
 
@@ -348,17 +317,11 @@ Resultado esperado:
 
 El sistema calcula el resultado utilizando únicamente las semanas académicas restantes disponibles según las reglas vigentes.
 
-### CB-8 Estudiante con descuento activo
+### CB-6 Ciclo inexistente
 
 Resultado esperado:
 
-El sistema utiliza el monto con descuento para calcular el saldo disponible del ciclo origen y elimina el descuento para calcular el costo del ciclo destino.
-
-### CB-9 Estudiante con beca o beneficio activo
-
-Resultado esperado:
-
-El sistema utiliza el beneficio vigente únicamente para determinar el saldo disponible del ciclo origen y calcula el ciclo destino utilizando la tarifa regular sin beneficios.
+El sistema bloquea el cálculo e informa: "Ciclo [origen/destino] no encontrado en la base de datos"
 
 ---
 
@@ -378,15 +341,9 @@ Si estas fechas no existen o son incorrectas, el sistema no podrá calcular corr
 
 ### A-3
 
-Asumimos que los descuentos y beneficios vigentes son conocidos antes de iniciar el cálculo.
+Asumimos que el Excel define claramente las semanas de feriados institucionales (Fiestas Patrias y Navidad) que afectan el calendario académico.
 
-Si esta información es incorrecta o incompleta, el resultado económico será incorrecto.
-
-### A-4
-
-Asumimos que únicamente los estados MATRICULADO y PAGADO permiten realizar traslados.
-
-Si esta regla cambia, será necesario actualizar las validaciones de negocio.
+Si esta definición cambia, será necesario actualizar las constantes en el código.
 
 ---
 
@@ -423,12 +380,12 @@ Las dependencias de runtime y calidad se declararán en `requirements.txt` (Flas
 * Cálculo para condición de pago en cuotas.
 * Validación de modalidad académica (presencial/virtual).
 * Validación de fechas académicas.
-* Validación de estados de matrícula.
 * Validación de modalidades disponibles.
+* Validación de igualdad de modalidad de pago.
 * Determinación de saldo a favor.
 * Determinación de traslado cubierto.
 * Determinación de monto pendiente.
-* Aplicación de reglas de descuentos y beneficios.
+* Cálculo de semanas con ajuste por feriados.
 
 ## FUERA
 

@@ -1,0 +1,78 @@
+{
+  "valid_states": ["MATRICULADO", "PAGADO"],
+  "blocked_states": ["SUSPENDIDO", "RETIRADO"],
+  "valid_modalities": ["Presencial", "Virtual"],
+  "valid_conditions_of_payment": ["Contado", "Cuotas"],
+  "cycles": [
+    {"code":"SM_ANUAL_MARZO_PRESENCIAL","institution":"SM","cycle_name":"ANUAL MARZO","modality":"Presencial","start_date":"16/3/2026","end_date":"31/12/2026","duration_weeks":40,
+     "payment_plans":{
+       "Contado":{"installments":[{"number":1,"amount":510,"due_date":"En la matrícula"},{"number":2,"amount":510,"due_date":"11/4/2026"},{"number":3,"amount":510,"due_date":"9/5/2026"},{"number":4,"amount":510,"due_date":"6/6/2026"},{"number":5,"amount":510,"due_date":"4/7/2026"},{"number":6,"amount":510,"due_date":"8/8/2026"},{"number":7,"amount":510,"due_date":"5/9/2026"},{"number":8,"amount":510,"due_date":"3/10/2026"},{"number":9,"amount":510,"due_date":"31/10/2026"},{"number":10,"amount":510,"due_date":"28/11/2026"}],"total":5100,"discount_percent":10,"cash_price":4590},
+       "Cuotas":{"installments":[{"number":1,"amount":510,"due_date":"En la matrícula"},{"number":2,"amount":510,"due_date":"11/4/2026"},{"number":3,"amount":510,"due_date":"9/5/2026"},{"number":4,"amount":510,"due_date":"6/6/2026"},{"number":5,"amount":510,"due_date":"4/7/2026"},{"number":6,"amount":510,"due_date":"8/8/2026"},{"number":7,"amount":510,"due_date":"5/9/2026"},{"number":8,"amount":510,"due_date":"3/10/2026"},{"number":9,"amount":510,"due_date":"31/10/2026"},{"number":10,"amount":510,"due_date":"28/11/2026"}],"total":5100,"cash_price":5100}
+     }},
+    {"code":"SM_ANUAL_MARZO_VIRTUAL","institution":"SM","cycle_name":"ANUAL MARZO","modality":"Virtual","start_date":"16/3/2026","end_date":"31/12/2026","duration_weeks":40,
+     "payment_plans":{
+       "Contado":{"installments":[{"number":1,"amount":360,"due_date":"En la matrícula"},{"number":2,"amount":360,"due_date":"11/4/2026"},{"number":3,"amount":360,"due_date":"9/5/2026"},{"number":4,"amount":360,"due_date":"6/6/2026"},{"number":5,"amount":360,"due_date":"4/7/2026"},{"number":6,"amount":360,"due_date":"8/8/2026"},{"number":7,"amount":360,"due_date":"5/9/2026"},{"number":8,"amount":360,"due_date":"3/10/2026"},{"number":9,"amount":360,"due_date":"31/10/2026"},{"number":10,"amount":360,"due_date":"28/11/2026"}],"total":3600,"discount_percent":10,"cash_price":3240},
+       "Cuotas":{"installments":[{"number":1,"amount":360,"due_date":"En la matrícula"},{"number":2,"amount":360,"due_date":"11/4/2026"},{"number":3,"amount":360,"due_date":"9/5/2026"},{"number":4,"amount":360,"due_date":"6/6/2026"},{"number":5,"amount":360,"due_date":"4/7/2026"},{"number":6,"amount":360,"due_date":"8/8/2026"},{"number":7,"amount":360,"due_date":"5/9/2026"},{"number":8,"amount":360,"due_date":"3/10/2026"},{"number":9,"amount":360,"due_date":"31/10/2026"},{"number":10,"amount":360,"due_date":"28/11/2026"}],"total":3600,"cash_price":3600}
+     }},
+    {"code":"SM_SEMIANUAL_MARZO_PRESENCIAL","institution":"SM","cycle_name":"SEMIANUAL MARZO","modality":"Presencial","start_date":"16/3/2026","end_date":"2/10/2026","duration_weeks":28,
+     "payment_plans":{
+       "Contado":{"installments":[{"number":1,"amount":510,"due_date":"En la matrícula"},{"number":2,"amount":510,"due_date":"11/4/2026"},{"number":3,"amount":510,"due_date":"9/5/2026"},{"number":4,"amount":510,"due_date":"6/6/2026"},{"number":5,"amount":510,"due_date":"4/7/2026"},{"number":6,"amount":510,"due_date":"8/8/2026"},{"number":7,"amount":510,"due_date":"5/9/2026"}],"total":3570,"discount_percent":10,"cash_price":3213},
+       "Cuotas":{"installments":[{"number":1,"amount":510,"due_date":"En la matrícula"},{"number":2,"amount":510,"due_date":"11/4/2026"},{"number":3,"amount":510,"due_date":"9/5/2026"},{"number":4,"amount":510,"due_date":"6/6/2026"},{"number":5,"amount":510,"due_date":"4/7/2026"},{"number":6,"amount":510,"due_date":"8/8/2026"},{"number":7,"amount":510,"due_date":"5/9/2026"}],"total":3570,"cash_price":3570}
+     }},
+    {"code":"SM_SEMIANUAL_MARZO_VIRTUAL","institution":"SM","cycle_name":"SEMIANUAL MARZO","modality":"Virtual","start_date":"16/3/2026","end_date":"2/10/2026","duration_weeks":28,
+     "payment_plans":{
+       "Contado":{"installments":[{"number":1,"amount":360,"due_date":"En la matrícula"},{"number":2,"amount":360,"due_date":"11/4/2026"},{"number":3,"amount":360,"due_date":"9/5/2026"},{"number":4,"amount":360,"due_date":"6/6/2026"},{"number":5,"amount":360,"due_date":"4/7/2026"},{"number":6,"amount":360,"due_date":"8/8/2026"},{"number":7,"amount":360,"due_date":"5/9/2026"}],"total":2520,"discount_percent":10,"cash_price":2268},
+       "Cuotas":{"installments":[{"number":1,"amount":360,"due_date":"En la matrícula"},{"number":2,"amount":360,"due_date":"11/4/2026"},{"number":3,"amount":360,"due_date":"9/5/2026"},{"number":4,"amount":360,"due_date":"6/6/2026"},{"number":5,"amount":360,"due_date":"4/7/2026"},{"number":6,"amount":360,"due_date":"8/8/2026"},{"number":7,"amount":360,"due_date":"5/9/2026"}],"total":2520,"cash_price":2520}
+     }},
+    {"code":"SM_SEMIANUAL_TARDE_MARZO_VIRTUAL","institution":"SM","cycle_name":"SEMIANUAL TARDE MARZO","modality":"Virtual","start_date":"16/3/2026","end_date":"2/10/2026","duration_weeks":28,
+     "payment_plans":{
+       "Contado":{"installments":[{"number":1,"amount":299,"due_date":"En la matrícula"},{"number":2,"amount":299,"due_date":"11/4/2026"},{"number":3,"amount":299,"due_date":"9/5/2026"},{"number":4,"amount":299,"due_date":"6/6/2026"},{"number":5,"amount":299,"due_date":"4/7/2026"},{"number":6,"amount":299,"due_date":"8/8/2026"},{"number":7,"amount":299,"due_date":"5/9/2026"}],"total":2093,"discount_percent":10,"cash_price":1884},
+       "Cuotas":{"installments":[{"number":1,"amount":299,"due_date":"En la matrícula"},{"number":2,"amount":299,"due_date":"11/4/2026"},{"number":3,"amount":299,"due_date":"9/5/2026"},{"number":4,"amount":299,"due_date":"6/6/2026"},{"number":5,"amount":299,"due_date":"4/7/2026"},{"number":6,"amount":299,"due_date":"8/8/2026"},{"number":7,"amount":299,"due_date":"5/9/2026"}],"total":2093,"cash_price":2093}
+     }},
+    {"code":"SM_INTENSIVO_MARZO_PRESENCIAL","institution":"SM","cycle_name":"INTENSIVO MARZO","modality":"Presencial","start_date":"16/3/2026","end_date":"2/10/2026","duration_weeks":28,
+     "payment_plans":{
+       "Contado":{"installments":[{"number":1,"amount":510,"due_date":"En la matrícula"},{"number":2,"amount":510,"due_date":"11/4/2026"},{"number":3,"amount":510,"due_date":"9/5/2026"},{"number":4,"amount":510,"due_date":"6/6/2026"},{"number":5,"amount":510,"due_date":"4/7/2026"},{"number":6,"amount":510,"due_date":"8/8/2026"},{"number":7,"amount":510,"due_date":"5/9/2026"}],"total":3570,"discount_percent":10,"cash_price":3213},
+       "Cuotas":{"installments":[{"number":1,"amount":510,"due_date":"En la matrícula"},{"number":2,"amount":510,"due_date":"11/4/2026"},{"number":3,"amount":510,"due_date":"9/5/2026"},{"number":4,"amount":510,"due_date":"6/6/2026"},{"number":5,"amount":510,"due_date":"4/7/2026"},{"number":6,"amount":510,"due_date":"8/8/2026"},{"number":7,"amount":510,"due_date":"5/9/2026"}],"total":3570,"cash_price":3570}
+     }},
+    {"code":"SM_INTENSIVO_MARZO_VIRTUAL","institution":"SM","cycle_name":"INTENSIVO MARZO","modality":"Virtual","start_date":"16/3/2026","end_date":"2/10/2026","duration_weeks":28,
+     "payment_plans":{
+       "Contado":{"installments":[{"number":1,"amount":360,"due_date":"En la matrícula"},{"number":2,"amount":360,"due_date":"11/4/2026"},{"number":3,"amount":360,"due_date":"9/5/2026"},{"number":4,"amount":360,"due_date":"6/6/2026"},{"number":5,"amount":360,"due_date":"4/7/2026"},{"number":6,"amount":360,"due_date":"8/8/2026"},{"number":7,"amount":360,"due_date":"5/9/2026"}],"total":2520,"discount_percent":10,"cash_price":2268},
+       "Cuotas":{"installments":[{"number":1,"amount":360,"due_date":"En la matrícula"},{"number":2,"amount":360,"due_date":"11/4/2026"},{"number":3,"amount":360,"due_date":"9/5/2026"},{"number":4,"amount":360,"due_date":"6/6/2026"},{"number":5,"amount":360,"due_date":"4/7/2026"},{"number":6,"amount":360,"due_date":"8/8/2026"},{"number":7,"amount":360,"due_date":"5/9/2026"}],"total":2520,"cash_price":2520}
+     }},
+    {"code":"SM_INTENSIVO_TARDE_MARZO_VIRTUAL","institution":"SM","cycle_name":"INTENSIVO TARDE MARZO","modality":"Virtual","start_date":"16/3/2026","end_date":"2/10/2026","duration_weeks":28,
+     "payment_plans":{
+       "Contado":{"installments":[{"number":1,"amount":299,"due_date":"En la matrícula"},{"number":2,"amount":299,"due_date":"11/4/2026"},{"number":3,"amount":299,"due_date":"9/5/2026"},{"number":4,"amount":299,"due_date":"6/6/2026"},{"number":5,"amount":299,"due_date":"4/7/2026"},{"number":6,"amount":299,"due_date":"8/8/2026"},{"number":7,"amount":299,"due_date":"5/9/2026"}],"total":2093,"discount_percent":10,"cash_price":1884},
+       "Cuotas":{"installments":[{"number":1,"amount":299,"due_date":"En la matrícula"},{"number":2,"amount":299,"due_date":"11/4/2026"},{"number":3,"amount":299,"due_date":"9/5/2026"},{"number":4,"amount":299,"due_date":"6/6/2026"},{"number":5,"amount":299,"due_date":"4/7/2026"},{"number":6,"amount":299,"due_date":"8/8/2026"},{"number":7,"amount":299,"due_date":"5/9/2026"}],"total":2093,"cash_price":2093}
+     }},
+    {"code":"SM_ESCOLAR_PRE_PRESENCIAL","institution":"SM","cycle_name":"ESCOLAR PRE","modality":"Presencial","start_date":"6/4/2026","end_date":"3/7/2026","duration_weeks":13,
+     "payment_plans":{
+       "Contado":{"installments":[{"number":1,"amount":330,"due_date":"En la matrícula"},{"number":2,"amount":330,"due_date":"9/5/2026"},{"number":3,"amount":330,"due_date":"6/6/2026"}],"total":990,"discount_percent":10,"cash_price":891},
+       "Cuotas":{"installments":[{"number":1,"amount":330,"due_date":"En la matrícula"},{"number":2,"amount":330,"due_date":"9/5/2026"},{"number":3,"amount":330,"due_date":"6/6/2026"}],"total":990,"cash_price":990}
+     }},
+    {"code":"UNI_SEMIANUAL_PRESENCIAL","institution":"UNI","cycle_name":"SEMIANUAL","modality":"Presencial","start_date":"2/3/2026","end_date":"14/8/2026","duration_weeks":24,
+     "payment_plans":{
+       "Contado":{"installments":[{"number":1,"amount":510,"due_date":"En la matrícula"},{"number":2,"amount":510,"due_date":"28/3/2026"},{"number":3,"amount":510,"due_date":"25/4/2026"},{"number":4,"amount":510,"due_date":"23/5/2026"},{"number":5,"amount":510,"due_date":"20/6/2026"},{"number":6,"amount":510,"due_date":"18/7/2026"}],"total":3060,"discount_percent":10,"cash_price":2754},
+       "Cuotas":{"installments":[{"number":1,"amount":510,"due_date":"En la matrícula"},{"number":2,"amount":510,"due_date":"28/3/2026"},{"number":3,"amount":510,"due_date":"25/4/2026"},{"number":4,"amount":510,"due_date":"23/5/2026"},{"number":5,"amount":510,"due_date":"20/6/2026"},{"number":6,"amount":510,"due_date":"18/7/2026"}],"total":3060,"cash_price":3060}
+     }},
+    {"code":"UNI_SEMIANUAL_TARDE_VIRTUAL","institution":"UNI","cycle_name":"SEMIANUAL TARDE","modality":"Virtual","start_date":"2/3/2026","end_date":"14/8/2026","duration_weeks":24,
+     "payment_plans":{
+       "Contado":{"installments":[{"number":1,"amount":299,"due_date":"En la matrícula"},{"number":2,"amount":299,"due_date":"28/3/2026"},{"number":3,"amount":299,"due_date":"25/4/2026"},{"number":4,"amount":299,"due_date":"23/5/2026"},{"number":5,"amount":299,"due_date":"20/6/2026"},{"number":6,"amount":299,"due_date":"18/7/2026"}],"total":1794,"discount_percent":10,"cash_price":1615},
+       "Cuotas":{"installments":[{"number":1,"amount":299,"due_date":"En la matrícula"},{"number":2,"amount":299,"due_date":"28/3/2026"},{"number":3,"amount":299,"due_date":"25/4/2026"},{"number":4,"amount":299,"due_date":"23/5/2026"},{"number":5,"amount":299,"due_date":"20/6/2026"},{"number":6,"amount":299,"due_date":"18/7/2026"}],"total":1794,"cash_price":1794}
+     }},
+    {"code":"UNI_SEMESTRAL_INTENSIVO_PRESENCIAL","institution":"UNI","cycle_name":"SEMESTRAL INTENSIVO","modality":"Presencial","start_date":"2/3/2026","end_date":"14/8/2026","duration_weeks":24,
+     "payment_plans":{
+       "Contado":{"installments":[{"number":1,"amount":510,"due_date":"En la matrícula"},{"number":2,"amount":510,"due_date":"28/3/2026"},{"number":3,"amount":510,"due_date":"25/4/2026"},{"number":4,"amount":510,"due_date":"23/5/2026"},{"number":5,"amount":510,"due_date":"20/6/2026"},{"number":6,"amount":510,"due_date":"18/7/2026"}],"total":3060,"discount_percent":10,"cash_price":2754},
+       "Cuotas":{"installments":[{"number":1,"amount":510,"due_date":"En la matrícula"},{"number":2,"amount":510,"due_date":"28/3/2026"},{"number":3,"amount":510,"due_date":"25/4/2026"},{"number":4,"amount":510,"due_date":"23/5/2026"},{"number":5,"amount":510,"due_date":"20/6/2026"},{"number":6,"amount":510,"due_date":"18/7/2026"}],"total":3060,"cash_price":3060}
+     }},
+    {"code":"UNHEVAL_SEMESTRAL_PRESENCIAL","institution":"UNHEVAL","cycle_name":"SEMESTRAL","modality":"Presencial","start_date":"9/3/2026","end_date":"4/9/2026","duration_weeks":26,
+     "payment_plans":{
+       "Contado":{"installments":[{"number":1,"amount":399,"due_date":"En la matrícula"},{"number":2,"amount":399,"due_date":"4/4/2026"},{"number":3,"amount":399,"due_date":"2/5/2026"},{"number":4,"amount":399,"due_date":"30/5/2026"},{"number":5,"amount":399,"due_date":"27/6/2026"},{"number":6,"amount":399,"due_date":"25/7/2026"},{"number":7,"amount":199.5,"due_date":"22/8/2026"}],"total":2594,"discount_percent":10,"cash_price":2334},
+       "Cuotas":{"installments":[{"number":1,"amount":399,"due_date":"En la matrícula"},{"number":2,"amount":399,"due_date":"4/4/2026"},{"number":3,"amount":399,"due_date":"2/5/2026"},{"number":4,"amount":399,"due_date":"30/5/2026"},{"number":5,"amount":399,"due_date":"27/6/2026"},{"number":6,"amount":399,"due_date":"25/7/2026"},{"number":7,"amount":199.5,"due_date":"22/8/2026"}],"total":2594,"cash_price":2594}
+     }},
+    {"code":"UNHEVAL_4_5_PREFERENCIAL_PRESENCIAL","institution":"UNHEVAL","cycle_name":"4° y 5° PREFERENCIAL","modality":"Presencial","start_date":"23/3/2026","end_date":"7/8/2026","duration_weeks":20,
+     "payment_plans":{
+       "Contado":{"installments":[{"number":1,"amount":235,"due_date":"En la matrícula"},{"number":2,"amount":235,"due_date":"18/4/2026"},{"number":3,"amount":235,"due_date":"16/5/2026"},{"number":4,"amount":235,"due_date":"13/6/2026"},{"number":5,"amount":235,"due_date":"11/7/2026"}],"total":1175,"discount_percent":10,"cash_price":1058},
+       "Cuotas":{"installments":[{"number":1,"amount":235,"due_date":"En la matrícula"},{"number":2,"amount":235,"due_date":"18/4/2026"},{"number":3,"amount":235,"due_date":"16/5/2026"},{"number":4,"amount":235,"due_date":"13/6/2026"},{"number":5,"amount":235,"due_date":"11/7/2026"}],"total":1175,"cash_price":1175}
+     }}
+  ]
+}

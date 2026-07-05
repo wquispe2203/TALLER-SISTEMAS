@@ -1,4 +1,4 @@
-﻿#Requires -Version 5.1
+#Requires -Version 5.1
 <#
 .SYNOPSIS
     Show status dashboard for all features.
@@ -21,9 +21,9 @@ $SpecsDir   = Join-Path $RepoRoot '.specify\specs'
 $MemoryDir  = Join-Path $RepoRoot '.specify\memory'
 $WorktreesDir = Join-Path $RepoRoot '.sdd\worktrees'
 
-function Write-Info { param([string]$Msg) Write-Host "ℹ️  $Msg" -ForegroundColor Blue }
-function Write-Ok   { param([string]$Msg) Write-Host "✅ $Msg" -ForegroundColor Green }
-function Write-Warn { param([string]$Msg) Write-Host "⚠️  $Msg" -ForegroundColor Yellow }
+function Write-Info { param([string]$Msg) Write-Host "$([char]0x2139)$([char]0xFE0F)  $Msg" -ForegroundColor Blue }
+function Write-Ok   { param([string]$Msg) Write-Host "$([char]0x2705) $Msg" -ForegroundColor Green }
+function Write-Warn { param([string]$Msg) Write-Host "$([char]0x26A0)$([char]0xFE0F)  $Msg" -ForegroundColor Yellow }
 
 function Test-FileReady {
     param([string]$Path)
@@ -61,9 +61,9 @@ function Get-GateStatus {
     switch -Wildcard ($Phase) {
         '5-Ship'      { 'Gate 4' }
         '4-Impl'      { 'Gate 3' }
-        '3*'          { '→ Gate 3' }
+        '3*'          { '-> Gate 3' }
         '2-Design'    { 'Gate 2' }
-        '1.3-Clarify' { '→ Gate 1' }
+        '1.3-Clarify' { '-> Gate 1' }
         '1*'          { 'Pre-Gate' }
         default       { '-' }
     }
@@ -140,7 +140,7 @@ function Get-CostMetrics {
         $trend = '-'
     } else {
         $keys = $phaseTotals.Keys | Sort-Object {[int]($_ -replace '[^0-9]','')}
-        $trend = ($keys | ForEach-Object { "p$_:{0:N2}" -f $phaseTotals[$_] }) -join ','
+        $trend = ($keys | ForEach-Object { "p$($_):{0:N2}" -f $phaseTotals[$_] }) -join ','
     }
 
     $budgetRaw = $payload.budgetCeiling
@@ -236,18 +236,18 @@ foreach ($d in $featureDirs) {
     if ($cost.Util -ne 'N/A') {
         $utilNum = [double]($cost.Util -replace '%','')
         if ($utilNum -ge 80) {
-            Write-Host "⚠ Budget warning for $name: $($cost.Total) / $($cost.Budget) ($($cost.Util))" -ForegroundColor Yellow
+            Write-Host "⚠ Budget warning for $($name): $($cost.Total) / $($cost.Budget) ($($cost.Util))" -ForegroundColor Yellow
         }
     }
 }
 
 Write-Host ''
-Write-Host '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+Write-Host '---------------------------------------------------------------------------------'
 Write-Host ''
 Write-Host '  Legend:'
 Write-Host '    P = Present (real content)    T = Template (not compiled)    M = Missing'
 Write-Host ''
-Write-Host '  Phases: 1.1-Vision → 1.2-Spec → 1.3-Clarify → 2-Design → 3.1-Tests → 3.2-Tasks → 4-Impl → 5-Ship'
+Write-Host '  Phases: 1.1-Vision -> 1.2-Spec -> 1.3-Clarify -> 2-Design -> 3.1-Tests -> 3.2-Tasks -> 4-Impl -> 5-Ship'
 Write-Host ''
 Write-Host '  Commands:'
 Write-Host '    .\validate-gate.ps1 <feature> <1|2|3|4>  - Validate gate criteria' -ForegroundColor Cyan

@@ -1,269 +1,215 @@
 # Resumen Ejecutivo
 
-Este documento define la suite de 16 casos de prueba (Test Cases) diseñados para validar la Calculadora de Montos de Traslado Académico. El alcance comprende la verificación de escenarios de éxito ("camino feliz"), validaciones en cascada del estado y condiciones de pago, desglose matemático de operaciones y el comportamiento ante casos borde definidos en `spec.md`. El objetivo es asegurar que la lógica de cálculo y sus restricciones operen de forma correcta según las reglas institucionales vigentes.
+Este documento define la suite de 12 casos de prueba (Test Cases) diseñados para validar la Calculadora de Montos de Traslado Académico según el algoritmo v4. Los casos están basados en datos reales del Excel oficial y cubren escenarios de éxito, validaciones y casos borde.
 
 # Casos de Prueba (Test Cases)
 
-Este documento contiene los casos de prueba derivados de las Historias de Usuario (US) y los Casos Borde (CB) definidos en el documento `spec.md`.
+## TC-1: Traslado CONTADO con saldo a favor
 
-## Historia de Usuario 1 (US-1) - Cálculo de Montos
-
-### TC-1 (AC-1.1, Caso Saldo a favor)
-**Datos:**
-* Datos de entrada de un estudiante cuyo saldo disponible parametrizado (S/ 700) supera al costo del ciclo destino (S/ 500).
-* Condición de Pago: Contado.
-* Estado: MATRICULADO.
+**Entradas:**
+- Fecha de traslado: 15/05/2026
+- Ciclo Origen: ANUAL MARZO, SM, PRESENCIAL, CONTADO (cash_price: S/ 4590, duration_weeks: 40, fecha_inicio: 16/03/2026, fecha_fin: 31/12/2026)
+- Ciclo Destino: SEMIANUAL ENERO, SM, VIRTUAL, CONTADO (cash_price: S/ 1350, duration_weeks: 20, fecha_inicio: 05/01/2026, fecha_fin: 19/06/2026)
 
 **Pasos:**
-1. Ingresar en el formulario: Ciclo origen, Ciclo destino, Fecha de traslado, Condición de pago, Estado del estudiante y Monto pagado.
+1. Ingresar los datos del traslado en el formulario.
 2. Ejecutar el cálculo.
 
 **Esperado:**
-El sistema muestra:
-* Resultado: S/ 200 de saldo a favor
-* Estado: "Saldo a favor"
-
-### TC-2 (AC-1.2, Caso Traslado cubierto)
-**Datos:**
-* Datos de entrada de un estudiante cuyo saldo disponible parametrizado (S/ 500) es igual al costo del ciclo destino (S/ 500).
-* Condición de Pago: Contado.
-* Estado: MATRICULADO.
-
-**Pasos:**
-1. Ingresar en el formulario: Ciclo origen, Ciclo destino, Fecha de traslado, Condición de pago, Estado del estudiante y Monto pagado.
-2. Ejecutar el cálculo.
-
-**Esperado:**
-El sistema muestra:
-* Resultado: S/ 0
-* Estado: "Sin saldo pendiente"
-
-### TC-3 (AC-1.3, Caso Monto pendiente)
-**Datos:**
-* Datos de entrada de un estudiante cuyo saldo disponible parametrizado (S/ 500) es menor al costo del ciclo destino (S/ 800).
-* Condición de Pago: Contado.
-* Estado: MATRICULADO.
-
-**Pasos:**
-1. Ingresar en el formulario: Ciclo origen, Ciclo destino, Fecha de traslado, Condición de pago, Estado del estudiante y Monto pagado.
-2. Ejecutar el cálculo.
-
-**Esperado:**
-El sistema muestra:
-* Resultado: S/ 300 pendiente de pago
-* Estado: "Monto pendiente por cancelar"
+- Estado: SALDO_A_FAVOR
+- Mensaje: "Saldo a favor: S/ 3489.75"
+- Saldo origen: S/ 3557.25
+- Costo destino: S/ 67.50
+- Diferencia: S/ 3489.75
 
 ---
 
-## Historia de Usuario 2 (US-2) - Validación de Reglas
+## TC-2: Traslado CONTADO con monto pendiente
 
-### TC-4 (AC-2.0, Validación en cascada)
-**Datos:**
-* Estado del estudiante: SUSPENDIDO (Inválido, regla 1)
-* Ciclo origen: C01
-* Ciclo destino: C02
-* Condición de Pago: Cuotas
-* Fecha de traslado: 25/12/2026 (Fuera de rango académico, regla 4)
-* Monto pagado: S/ 500
+**Entradas:**
+- Fecha de traslado: 20/03/2026
+- Ciclo Origen: SEMIANUAL ENERO, SM, VIRTUAL, CONTADO (cash_price: S/ 1350, duration_weeks: 20, fecha_inicio: 05/01/2026)
+- Ciclo Destino: ANUAL MARZO, SM, PRESENCIAL, CONTADO (cash_price: S/ 4590, duration_weeks: 40, fecha_inicio: 16/03/2026)
 
 **Pasos:**
-1. Ingresar en el formulario los datos anteriores del estudiante.
+1. Ingresar los datos del traslado en el formulario.
 2. Ejecutar el cálculo.
 
 **Esperado:**
-El sistema bloquea la operación y se detiene en el primer error encontrado (Estado del estudiante), mostrando:
-"El estado actual no permite realizar traslados."
-
-### TC-5 (AC-2.1, Caso Error - Fecha Inválida)
-**Datos:**
-* Estado del estudiante: MATRICULADO
-* Fecha de traslado: 25/12/2026 (No pertenece al periodo académico válido)
-* Ciclo origen: C01
-* Ciclo destino: C02
-* Condición de Pago: Contado
-
-**Pasos:**
-1. Ingresar en el formulario los datos anteriores del estudiante.
-2. Ejecutar el cálculo.
-
-**Esperado:**
-El sistema bloquea la operación y muestra:
-"Fecha de traslado inválida para los ciclos seleccionados."
-
-### TC-6 (AC-2.2, Caso Error - Estado no permitido)
-**Datos:**
-* Estado del estudiante: SUSPENDIDO o RETIRADO
-* Ciclo origen: C01
-* Ciclo destino: C02
-* Condición de Pago: Contado
-* Fecha de traslado: 15/05/2026 (Fecha válida)
-
-**Pasos:**
-1. Ingresar en el formulario los datos anteriores del estudiante.
-2. Ejecutar el cálculo.
-
-**Esperado:**
-El sistema bloquea la operación y muestra:
-"El estado actual no permite realizar traslados."
-
-### TC-7 (AC-2.3, Caso Error - Condición de Pago inexistente)
-**Datos:**
-* Ciclo origen: C01 (el cual solo ofrece condición de pago "Contado")
-* Condición de Pago: Cuotas (No existente para el ciclo origen)
-* Estado del estudiante: MATRICULADO
-* Fecha de traslado: 15/05/2026
-
-**Pasos:**
-1. Ingresar en el formulario los datos anteriores del estudiante.
-2. Ejecutar el cálculo.
-
-**Esperado:**
-El sistema bloquea la operación y muestra:
-"La condición de pago seleccionada no existe para el ciclo indicado."
+- Estado: MONTO_PENDIENTE
+- Mensaje: "Monto pendiente: S/ 3867.75"
+- Saldo origen: S/ 607.50
+- Costo destino: S/ 4475.25
+- Diferencia: -S/ 3867.75
 
 ---
 
-## Historia de Usuario 3 (US-3) - Desglose de Operaciones
+## TC-3: Traslado CUOTAS cubierto exactamente (mismas cuotas)
 
-### TC-8 (AC-3.1, Mostrar desglose completo)
-**Datos:**
-* Ciclo origen: C01
-* Ciclo destino: C02
-* Fecha de traslado: 15/05/2026
-* Condición de Pago: Contado
-* Estado: MATRICULADO
-* Monto pagado: S/ 2000
+**Entradas:**
+- Fecha de traslado: 20/04/2026
+- Ciclo Origen: ANUAL MARZO, SM, PRESENCIAL, CUOTAS (10 cuotas de S/ 510)
+- Ciclo Destino: ANUAL MARZO, UNI, VIRTUAL, CUOTAS (10 cuotas de S/ 510)
 
 **Pasos:**
-1. Ingresar en el formulario los datos del traslado.
+1. Ingresar los datos del traslado en el formulario.
 2. Ejecutar el cálculo.
 
 **Esperado:**
-El sistema muestra, además del resultado final, el siguiente desglose:
-* Semanas totales del ciclo origen
-* Semanas transcurridas a la fecha de traslado
-* Semanas restantes
-* Fórmula y resultado del saldo disponible
-* Fórmula y resultado del costo del ciclo destino
-* Operación final y resultado
-
-### TC-9 (AC-3.2, Visibilidad de beneficios y descuentos aplicados)
-**Datos:**
-* Ciclo origen: C01
-* Ciclo destino: C02
-* Fecha de traslado: 15/05/2026
-* Condición de Pago: Contado
-* Estado: MATRICULADO
-* Beneficio: 1/4 beca (25%)
-* Monto pagado en origen: S/ 750 (Tarifa con beneficio aplicado)
-
-**Pasos:**
-1. Seleccionar el beneficio "1/4 beca" e ingresar los datos del traslado en el formulario.
-2. Ejecutar el cálculo haciendo clic en el botón correspondiente.
-
-**Esperado:**
-El sistema incluye explícitamente en el desglose:
-* El porcentaje o tipo de descuento/beneficio aplicado.
-* La tarifa regular vs tarifa con beneficio usada para calcular el saldo disponible.
-* La aclaración de que el ciclo destino usa tarifa regular.
-
-### TC-10 (AC-3.3, Exportación o copia rápida)
-**Datos:**
-* Simulación de traslado del caso TC-8 ejecutada con éxito.
-
-**Pasos:**
-1. Visualizar los resultados de la simulación de TC-8.
-2. Hacer clic en el botón "Copiar resumen".
-
-**Esperado:**
-El sistema copia todo el desglose en formato texto plano estructurado al portapapeles del usuario, dejándolo listo para pegar.
+- Estado: TRASLADO_CUBIERTO
+- Mensaje: "Traslado cubierto exactamente"
+- Saldo origen: S/ 4080.00
+- Costo destino: S/ 4080.00
+- Diferencia: S/ 0.00
 
 ---
 
-## Historia de Usuario 4 (US-4) - Visualización de Resultados
+## TC-4: Modalidad de pago diferente (bloqueo)
 
-### TC-11 (AC-4.1, Mostrar saldos iniciales)
-**Datos:**
-* Simulación ejecutada (cuyos montos resultantes corresponden a S/ 324.00 de saldo a favor y S/ 1347.00 de costo destino).
-* Condición de Pago: Contado.
-
-**Pasos:**
-1. Ejecutar el cálculo.
-2. Observar la sección "Resultado de la Simulación".
-
-**Esperado:**
-El sistema muestra los montos claramente con su respectiva condición de pago:
-"Saldo a favor: S/ 324.00 (Condición: Contado)"
-"Monto a cancelar: S/ 1347.00 (Condición: Contado)"
-
-### TC-12 (AC-4.2, Mensaje conclusivo de saldo insuficiente/faltante)
-**Datos:**
-* Simulación ejecutada (cuyos montos resultantes corresponden a S/ 324.00 de saldo a favor y S/ 1347.00 de costo destino, generando una diferencia de S/ 1023.00).
+**Entradas:**
+- Fecha de traslado: 15/05/2026
+- Ciclo Origen: ANUAL MARZO, SM, PRESENCIAL, CONTADO
+- Ciclo Destino: ANUAL MARZO, UNI, VIRTUAL, CUOTAS
 
 **Pasos:**
-1. Ejecutar el cálculo.
-2. Observar la sección de resultados.
+1. Ingresar los datos del traslado en el formulario.
+2. Ejecutar el cálculo.
 
 **Esperado:**
-Aparece una alerta destacada en rojo con el texto exacto:
-"El saldo a favor del ciclo anterior no cubre el costo del nuevo ciclo. Faltan: S/ 1023.00"
+- Error: "No se permiten traslados entre modalidades de pago diferentes. Si requiere este tipo de traslado, debe procesarlo manualmente."
 
 ---
 
-## Casos Borde (CB)
+## TC-5: Fecha fuera del rango del ciclo origen
 
-### TC-13 (CB-2, Ciclo origen igual a ciclo destino)
-**Datos:**
-* Ciclo origen: C01
-* Ciclo destino: C01
-* Condición de Pago: Contado
+**Entradas:**
+- Fecha de traslado: 15/01/2026
+- Ciclo Origen: ANUAL MARZO, SM, PRESENCIAL, CONTADO (fecha_inicio: 16/03/2026)
+- Ciclo Destino: SEMIANUAL ENERO, SM, VIRTUAL, CONTADO (fecha_inicio: 05/01/2026)
 
 **Pasos:**
-1. Seleccionar el mismo ciclo "C01" tanto para el origen como para el destino en el formulario.
+1. Ingresar los datos del traslado en el formulario.
 2. Ejecutar el cálculo.
 
 **Esperado:**
-El sistema muestra:
-* Resultado: S/ 0
-* Estado: "Sin saldo pendiente"
+- Error: "La fecha de traslado está fuera del rango del ciclo origen (ANUAL MARZO)"
 
-### TC-14 (CB-7, Última Semana Académica)
-**Datos:**
-* Ciclo origen: C01
-* Fecha de traslado: 15/07/2026 (Semana 16 de 16)
-* Condición de Pago: Contado
+---
+
+## TC-6: Lunes - semana no consumida
+
+**Entradas:**
+- Fecha de traslado: 13/04/2026 (lunes)
+- Ciclo Origen: ANUAL MARZO, SM, PRESENCIAL, CONTADO (cash_price: 4590, duration_weeks: 40, fecha_inicio: 16/03/2026)
+- Ciclo Destino: SEMIANUAL ENERO, SM, VIRTUAL, CONTADO (cash_price: 1350, duration_weeks: 20, fecha_inicio: 05/01/2026)
 
 **Pasos:**
-1. Ingresar una fecha correspondiente a la última semana académica, seleccionando el ciclo origen "C01" y Condición de Pago "Contado".
+1. Ingresar los datos del traslado en el formulario.
 2. Ejecutar el cálculo.
 
 **Esperado:**
-El sistema calcula el resultado utilizando únicamente las semanas académicas restantes disponibles (semana 16).
+- Saldo origen: S/ 4131.00 (la semana del 13/04 no se cuenta como consumida)
 
-### TC-15 (CB-8, Descuento Activo)
-**Datos:**
-* Ciclo origen: C01
-* Ciclo destino: C02
-* Descuento vigente: 20%
-* Condición de Pago: Cuotas
+---
+
+## TC-7: Martes - semana no consumida
+
+**Entradas:**
+- Fecha de traslado: 14/04/2026 (martes)
+- Ciclo Origen: ANUAL MARZO, SM, PRESENCIAL, CONTADO (cash_price: 4590, duration_weeks: 40, fecha_inicio: 16/03/2026)
+- Ciclo Destino: SEMIANUAL ENERO, SM, VIRTUAL, CONTADO (cash_price: 1350, duration_weeks: 20, fecha_inicio: 05/01/2026)
 
 **Pasos:**
-1. Ingresar el descuento del 20% y completar el formulario con el ciclo origen C01 y destino C02 con condición de pago "Cuotas".
+1. Ingresar los datos del traslado en el formulario.
 2. Ejecutar el cálculo.
 
 **Esperado:**
-El sistema utiliza el monto con descuento para calcular el saldo disponible del ciclo origen y elimina el descuento para calcular el costo del ciclo destino (tarifa regular).
+- Saldo origen: S/ 4131.00 (igual que TC-6)
 
-### TC-16 (CB-9, Beca Activa)
-**Datos:**
-* Ciclo origen: C01
-* Ciclo destino: C02
-* Beneficio vigente: 25% (Beca)
-* Condición de Pago: Contado
+---
+
+## TC-8: Miércoles - semana SÍ consumida
+
+**Entradas:**
+- Fecha de traslado: 15/04/2026 (miércoles)
+- Ciclo Origen: ANUAL MARZO, SM, PRESENCIAL, CONTADO (cash_price: 4590, duration_weeks: 40, fecha_inicio: 16/03/2026)
+- Ciclo Destino: SEMIANUAL ENERO, SM, VIRTUAL, CONTADO (cash_price: 1350, duration_weeks: 20, fecha_inicio: 05/01/2026)
 
 **Pasos:**
-1. Ingresar el beneficio de beca del 25% y completar el formulario con el ciclo origen C01 y destino C02 con condición de pago "Contado".
+1. Ingresar los datos del traslado en el formulario.
 2. Ejecutar el cálculo.
 
 **Esperado:**
-El sistema utiliza el beneficio vigente únicamente para determinar el saldo disponible del ciclo origen y calcula el costo del ciclo destino utilizando la tarifa regular sin beneficios.
+- Saldo origen: S/ 4016.25 (miércoles cuenta como semana consumida)
+
+---
+
+## TC-9: Traslado CUOTAS con saldo a favor (cuotas diferentes)
+
+**Entradas:**
+- Fecha de traslado: 25/05/2026
+- Ciclo Origen: ANUAL MARZO, SM, PRESENCIAL, CUOTAS (10 cuotas de S/ 510)
+- Ciclo Destino: ANUAL MARZO, UNI, VIRTUAL, CUOTAS (8 cuotas de S/ 400)
+
+**Pasos:**
+1. Ingresar los datos del traslado en el formulario.
+2. Ejecutar el cálculo.
+
+**Esperado:**
+- Estado: SALDO_A_FAVOR
+- Mensaje: "Saldo a favor: S/ 1570.00"
+- Saldo origen: S/ 3570.00
+- Costo destino: S/ 2000.00
+- Diferencia: S/ 1570.00
+
+---
+
+## TC-10: Ciclo no encontrado
+
+**Entradas:**
+- Fecha de traslado: 15/05/2026
+- Ciclo Origen: CICLO INEXISTENTE, SM, PRESENCIAL, CONTADO
+- Ciclo Destino: SEMIANUAL ENERO, SM, VIRTUAL, CONTADO
+
+**Pasos:**
+1. Ingresar los datos del traslado en el formulario.
+2. Ejecutar el cálculo.
+
+**Esperado:**
+- Error: "Ciclo origen no encontrado en la base de datos"
+
+---
+
+## TC-11: Semana de feriado - traslado durante feriado de julio
+
+**Entradas:**
+- Fecha de traslado: 29/07/2026 (miércoles, durante Fiestas Patrias)
+- Ciclo Origen: ANUAL MARZO, SM, PRESENCIAL, CONTADO (cash_price: 4590, duration_weeks: 40, fecha_inicio: 16/03/2026, fecha_fin: 31/12/2026)
+- Ciclo Destino: ANUAL MARZO, UNI, VIRTUAL, CONTADO (cash_price: 4590, duration_weeks: 40, fecha_inicio: 16/03/2026, fecha_fin: 31/12/2026)
+
+**Pasos:**
+1. Ingresar los datos del traslado en el formulario.
+2. Ejecutar el cálculo.
+
+**Esperado:**
+- Estado: TRASLADO_CUBIERTO
+- Diferencia: S/ 0.00
+- Semanas efectivas: 42 (40 + 2 feriados)
+- Saldo = Costo = S/ 2513.57
+
+---
+
+## TC-12: Cuota con vencimiento en semana de feriado
+
+**Entradas:**
+- Fecha de traslado: 01/08/2026
+- Ciclo Origen: ANUAL MARZO, SM, PRESENCIAL, CUOTAS
+- Cuota 6: due_date 08/08/2026 (después del feriado de julio, ya ajustada en el Excel)
+
+**Pasos:**
+1. Ingresar los datos del traslado en el formulario.
+2. Ejecutar el cálculo.
+
+**Esperado:**
+- Cuota 6 (08/08/2026) está pendiente (01/08 < 08/08)
+- Valor residual incluye cuota 6 y siguientes

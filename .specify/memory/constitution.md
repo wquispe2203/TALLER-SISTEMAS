@@ -8,7 +8,7 @@
 
 #### 3.1 Exactitud de resultados
 
-Todo cálculo generado por la herramienta deberá coincidir con el resultado obtenido mediante el procedimiento manual vigente utilizando el Excel oficial aprobado por Gerencia.
+Todo cálculo generado por la herramienta deberá coincidir con el resultado obtenido mediante el procedimiento manual vigente utilizando el JSON **parameters.json** que contiene los datos.
 
 #### 3.2 Cobertura mínima de pruebas
 
@@ -28,7 +28,7 @@ El código deberá cumplir el estándar PEP8 y superar la validación automátic
 
 #### 4.1 Fuente única de verdad
 
-Los parámetros académicos y financieros deberán obtenerse de una representación digital controlada cuyo origen sea el Excel oficial aprobado por Gerencia.
+Los parámetros académicos y financieros deberán obtenerse de una representación digital controlada cuyo origen sea el JSON **parameters.json** que contiene los datos, que son sacados del Excel aprovado por Gerencia.
 
 #### 4.2 Separación de responsabilidades
 
@@ -70,9 +70,9 @@ El stack tecnológico de implementación será Python 3.11+ con Flask como frame
 
 * Cambios en fórmulas de negocio.
 * Nuevas modalidades de pago.
-* Nuevos estados de matrícula.
 * Nuevos tipos de traslado.
-* Cambios en políticas de descuentos o beneficios.
+* Cambios en la definición de semanas de feriado.
+* Nuevos campos requeridos en el Excel que afecten la estructura de parameters.json.
 * Integraciones con otros sistemas institucionales.
 
 #### NEVER DO
