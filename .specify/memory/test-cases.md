@@ -144,7 +144,7 @@ Este documento define la suite de 12 casos de prueba (Test Cases) diseñados par
 
 ---
 
-## TC-9: Traslado CUOTAS con saldo a favor (cuotas diferentes)
+## TC-9: Traslado CUOTAS con saldo a favor (prorrateo de cuota vigente)
 
 **Entradas:**
 - Fecha de traslado: 25/05/2026
@@ -155,12 +155,13 @@ Este documento define la suite de 12 casos de prueba (Test Cases) diseñados par
 1. Ingresar los datos del traslado en el formulario.
 2. Ejecutar el cálculo.
 
+**Nota sobre el cálculo:**
+- El algoritmo prorratea **solo la cuota vigente** en la fecha del traslado, no suma el monto completo de las cuotas futuras.
+- El valor residual depende de cuántas semanas de la cuota vigente ya se han consumido.
+
 **Esperado:**
-- Estado: SALDO_A_FAVOR
-- Mensaje: "Saldo a favor: S/ 1570.00"
-- Saldo origen: S/ 3570.00
-- Costo destino: S/ 2000.00
-- Diferencia: S/ 1570.00
+- Estado: según el prorrateo de la cuota vigente en 25/05/2026
+- El cálculo usa: monto de la cuota × (semanas restantes del periodo / semanas totales del periodo)
 
 ---
 
@@ -191,11 +192,15 @@ Este documento define la suite de 12 casos de prueba (Test Cases) diseñados par
 1. Ingresar los datos del traslado en el formulario.
 2. Ejecutar el cálculo.
 
+**Nota sobre feriados:**
+- Los feriados definidos son: 28/07, 29/07 (Fiestas Patrias) y 25/12 (Navidad).
+- Cada feriado "cancela" la semana completa (lunes-domingo) en la que cae.
+- El algoritmo extiende la duración efectiva del ciclo sumando las semanas de feriado.
+
 **Esperado:**
 - Estado: TRASLADO_CUBIERTO
-- Diferencia: S/ 0.00
-- Semanas efectivas: 42 (40 + 2 feriados)
-- Saldo = Costo = S/ 2513.57
+- Diferencia: S/ 0.00 (mismo ciclo, mismo precio)
+- Las semanas de feriado se descuentan del cálculo de semanas consumidas
 
 ---
 
@@ -204,12 +209,18 @@ Este documento define la suite de 12 casos de prueba (Test Cases) diseñados par
 **Entradas:**
 - Fecha de traslado: 01/08/2026
 - Ciclo Origen: ANUAL MARZO, SM, PRESENCIAL, CUOTAS
-- Cuota 6: due_date 08/08/2026 (después del feriado de julio, ya ajustada en el Excel)
+- Cuota vigente: identificada por la fecha de traslado dentro de su periodo
 
 **Pasos:**
 1. Ingresar los datos del traslado en el formulario.
 2. Ejecutar el cálculo.
 
+**Nota sobre el cálculo en CUOTAS:**
+- El algoritmo prorratea **solo la cuota vigente** según las semanas consumidas de su periodo.
+- Las semanas se anclan a la fecha de inicio del periodo de la cuota, no al lunes del calendario.
+- Las semanas de feriado dentro del periodo de la cuota no se consideran consumidas.
+
 **Esperado:**
-- Cuota 6 (08/08/2026) está pendiente (01/08 < 08/08)
-- Valor residual incluye cuota 6 y siguientes
+- El cálculo identifica la cuota vigente a la fecha 01/08/2026.
+- Valor residual = monto de la cuota × (semanas restantes del periodo / semanas totales del periodo)
+- Las semanas de feriado (28/07, 29/07) se descuentan del conteo de semanas consumidas si caen dentro del periodo de la cuota

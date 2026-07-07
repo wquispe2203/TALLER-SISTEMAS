@@ -95,6 +95,20 @@ Responsable de:
 * Determinar saldo a favor, traslado cubierto o monto pendiente
 * Calcular semanas consumidas con ajuste de fecha por feriados
 
+#### Reglas específicas para CONTADO
+
+* Las semanas se anclan al **calendario global** (lunes-domingo).
+* Si la fecha de traslado cae en **lunes o martes**, la semana actual NO se considera consumida.
+* Si la fecha de traslado cae entre **miércoles y domingo**, la semana actual SÍ se considera consumida.
+* Las semanas de feriado completas no se cuentan como consumidas.
+
+#### Reglas específicas para CUOTAS
+
+* Las semanas se anclan a la **fecha de inicio del periodo de la cuota**, no al lunes del calendario.
+* El algoritmo calcula solo el **valor residual de la cuota vigente** (no suma todas las cuotas futuras).
+* El periodo de una cuota va desde su fecha de inicio hasta la fecha de la siguiente cuota.
+* Las semanas feriado dentro del periodo de la cuota no se consideran consumidas.
+
 ---
 
 ### Fuente de Parámetros Académicos (`data/parameters.json`)
@@ -213,7 +227,7 @@ Interpretaciones ambiguas de fechas académicas o semanas restantes.
 
 Cambio en el calendario de feriados institucionales.
 
-**Mitigación:** Actualizar las constantes de semanas de feriado en el código cuando cambie la política institucional.
+**Mitigación:** Los feriados están definidos en el código como `FERIADOS_DIAS = [(7, 28), (7, 29), (12, 25)]`. Actualizar estas constantes cuando cambie la política institucional.
 
 ---
 
