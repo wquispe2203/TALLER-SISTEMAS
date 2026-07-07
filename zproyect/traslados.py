@@ -43,10 +43,8 @@ def obtener_semanas_feriado_lunes(year: int) -> set[date]:
 
 
 def es_semana_feriado(fecha: date) -> bool:
-    """Determina si `fecha` cae dentro de alguna semana de feriado."""
+    """Determina si `fecha` cae dentro de alguna semana de feriado (lunes-domingo, calendario global)."""
     lunes_actual = _lunes_de_semana(fecha)
-    # Se consideran años adyacentes por si la semana de una fecha feriado
-    # de fin de año cruza el límite de año calendario.
     candidatos = (
         obtener_semanas_feriado_lunes(fecha.year - 1)
         | obtener_semanas_feriado_lunes(fecha.year)
@@ -57,9 +55,9 @@ def es_semana_feriado(fecha: date) -> bool:
 
 def contar_semanas_feriado_entre(fecha_inicio: date, fecha_fin: date) -> int:
     """
-    Cuenta cuántas semanas de feriado (lunes de esa semana) caen dentro del
-    rango [fecha_inicio, fecha_fin], inclusive. Puede devolver 0, 1, 2 o 3
-    según cuántas semanas de feriado distintas haya en el rango.
+    Cuenta cuántas semanas de feriado (lunes de esa semana, calendario global)
+    caen dentro del rango [fecha_inicio, fecha_fin], inclusive.
+    Se usa para el cálculo de CONTADO (semanas ancladas al calendario global).
     """
     if fecha_fin < fecha_inicio:
         return 0
@@ -67,6 +65,70 @@ def contar_semanas_feriado_entre(fecha_inicio: date, fecha_fin: date) -> int:
     for year in range(fecha_inicio.year - 1, fecha_fin.year + 2):
         lunes_feriados |= obtener_semanas_feriado_lunes(year)
     return sum(1 for lunes in lunes_feriados if fecha_inicio <= lunes <= fecha_fin)
+
+
+# ---------------------------------------------------------------------------
+# Semanas ancladas a un periodo específico (usado en el prorrateo de CUOTAS)
+# ---------------------------------------------------------------------------
+#
+# A diferencia de CONTADO (que ancla las semanas al lunes del calendario
+# global), cada cuota puede empezar cualquier día de la semana (p. ej.
+# sábado). Aquí la "semana 1" de un periodo siempre empieza el mismo día
+# en que empezó ese periodo, sin importar qué día calendario sea.
+
+def _semana_indices_feriado(inicio: date, fin: date) -> set[int]:
+    """
+    Devuelve los índices de semana (0-based, en bloques de 7 días ancladas
+    a `inicio`) que contienen un feriado, dentro del rango [inicio, fin).
+    """
+    indices: set[int] = set()
+    if fin <= inicio:
+        return indices
+    for year in range(inicio.year - 1, fin.year + 2):
+        for mes, dia in FERIADOS_DIAS:
+            try:
+                f = date(year, mes, dia)
+            except ValueError:
+                continue
+            if inicio <= f < fin:
+                indices.add((f - inicio).days // 7)
+    return indices
+
+
+def _semanas_en_periodo(inicio: date, fin: date) -> int:
+    """
+    Número de semanas del periodo [inicio, fin), redondeado a entero.
+    Prohibido dejarlo como fracción (p. ej. 3.71): el negocio trabaja
+    siempre en semanas completas.
+    """
+    dias = (fin - inicio).days
+    return max(1, round(dias / 7))
+
+
+def _prorratear_cuota(
+    monto: Decimal,
+    inicio_periodo: date,
+    fin_periodo: date,
+    fecha_traslado: date,
+) -> Decimal:
+    """
+    Prorratea el monto de la cuota vigente según las semanas ya consumidas
+    dentro de SU PROPIO periodo (ancladas al día en que empezó ese periodo,
+    no al lunes del calendario). La semana que contiene un feriado se
+    "cancela": no cuenta como consumida.
+    """
+    semanas_totales = _semanas_en_periodo(inicio_periodo, fin_periodo)
+    feriado_indices = _semana_indices_feriado(inicio_periodo, fin_periodo)
+
+    idx_actual = (fecha_traslado - inicio_periodo).days // 7
+    idx_actual = max(0, min(idx_actual, semanas_totales - 1))
+
+    # Semanas completas antes del índice actual, sin contar semanas feriado.
+    semanas_consumidas = sum(1 for i in range(idx_actual) if i not in feriado_indices)
+    semanas_restantes = max(0, semanas_totales - semanas_consumidas)
+
+    valor = monto * Decimal(semanas_restantes) / Decimal(semanas_totales)
+    return valor.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
 
 # ---------------------------------------------------------------------------
@@ -118,7 +180,7 @@ def buscar_ciclo(parametros: dict, nombre: str, institucion: str, modalidad: str
 
 
 # ---------------------------------------------------------------------------
-# Cálculo de semanas consumidas
+# Cálculo de semanas consumidas (CONTADO — ancladas al calendario global)
 # ---------------------------------------------------------------------------
 
 def calcular_semanas_consumidas(fecha_traslado: date, fecha_inicio: date) -> int:
@@ -126,6 +188,7 @@ def calcular_semanas_consumidas(fecha_traslado: date, fecha_inicio: date) -> int
     Calcula cuántas semanas se han consumido desde fecha_inicio hasta
     fecha_traslado, saltando semanas de feriado completas y aplicando la
     regla lunes/martes = semana actual NO consumida.
+    Usado únicamente para el plan CONTADO.
     """
     semanas_feriado = contar_semanas_feriado_entre(fecha_inicio, fecha_traslado)
     fecha_ajustada = fecha_traslado - timedelta(weeks=semanas_feriado)
@@ -158,13 +221,37 @@ def calcular_valor_contado(
     return valor.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
 
-def calcular_valor_cuotas(installments: list[dict], fecha_traslado: date, fecha_inicio_ciclo: date) -> Decimal:
-    cuotas_pendientes = Decimal("0.00")
-    for cuota in installments:
-        fecha_vencimiento = parse_fecha(cuota["due_date"], fallback=fecha_inicio_ciclo)
-        if fecha_vencimiento > fecha_traslado:
-            cuotas_pendientes += Decimal(str(cuota["amount"]))
-    return cuotas_pendientes.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+def calcular_valor_cuotas(
+    installments: list[dict],
+    fecha_traslado: date,
+    fecha_inicio_ciclo: date,
+    fecha_fin_ciclo: date,
+) -> Decimal:
+    """
+    Calcula el valor residual en modalidad CUOTAS.
+
+    A diferencia de la versión anterior (que sumaba el monto completo de
+    TODAS las cuotas futuras), ahora se prorratea SOLO la cuota vigente a
+    la fecha de traslado, según cuántas semanas de su propio periodo ya
+    se consumieron (sin contar la semana feriado, si la hay). No se suman
+    cuotas futuras completas.
+    """
+    fechas = [parse_fecha(c["due_date"], fallback=fecha_inicio_ciclo) for c in installments]
+    montos = [Decimal(str(c["amount"])) for c in installments]
+
+    n = len(installments)
+    for i in range(n):
+        inicio_periodo = fechas[i]
+        fin_periodo = fechas[i + 1] if i + 1 < n else fecha_fin_ciclo
+        if inicio_periodo <= fecha_traslado < fin_periodo:
+            return _prorratear_cuota(montos[i], inicio_periodo, fin_periodo, fecha_traslado)
+
+    # fecha_traslado antes de la primera cuota: se debe la cuota 1 completa.
+    if fechas and fecha_traslado < fechas[0]:
+        return montos[0].quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    # fecha_traslado en o después del fin del ciclo: nada pendiente.
+    return Decimal("0.00")
 
 
 # ---------------------------------------------------------------------------
@@ -226,7 +313,8 @@ def calcular_traslado(
             f"La fecha de traslado está fuera del rango del ciclo destino ({ciclo_destino['cycle_name']})"
         )
 
-    # PASO 4: semanas consumidas
+    # PASO 4: semanas consumidas (solo aplica/reporta para CONTADO; en CUOTAS
+    # el detalle usa las semanas del periodo de la cuota vigente).
     semanas_consumidas_origen = calcular_semanas_consumidas(fecha_traslado, fecha_inicio_origen)
     semanas_consumidas_destino = calcular_semanas_consumidas(fecha_traslado, fecha_inicio_destino)
 
@@ -254,8 +342,12 @@ def calcular_traslado(
         plan_origen = ciclo_origen["payment_plans"][plan_key]
         plan_destino = ciclo_destino["payment_plans"][plan_key]
 
-        saldo_origen = calcular_valor_cuotas(plan_origen["installments"], fecha_traslado, fecha_inicio_origen)
-        costo_destino = calcular_valor_cuotas(plan_destino["installments"], fecha_traslado, fecha_inicio_destino)
+        saldo_origen = calcular_valor_cuotas(
+            plan_origen["installments"], fecha_traslado, fecha_inicio_origen, fecha_fin_origen
+        )
+        costo_destino = calcular_valor_cuotas(
+            plan_destino["installments"], fecha_traslado, fecha_inicio_destino, fecha_fin_destino
+        )
 
     # PASO 6: diferencia
     diferencia = saldo_origen - costo_destino
