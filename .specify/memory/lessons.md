@@ -79,3 +79,20 @@ Después de una corrección, gate fallido o detección de bloqueo, añade:
 **Regla de Prevención:**
 - Ningún valor numérico en `spec.md` o `test-cases.md` se escribe a mano. Se genera con un script que llama a `calcular_traslado()` (o el módulo equivalente) y se copia el resultado literal.
 - Antes de marcar `[x]` una tarea de alineación de documentos con código, ejecutar la suite de tests real y confirmar que pasa — no basta con "revisar visualmente".
+
+---
+
+## 2026-07-07 Feature 001: Un test con datos reales puede pasar sin probar nada — verificar con mutation testing
+
+**Qué Pasó:** Al implementar FR-011 (clamp de `semana_actual` en CONTADO), se escribió un test (CB-10) usando un ciclo real de `parameters.json` en la fecha límite del ciclo, verificando `semana_actual <= semanas_totales`. El agente Review corrió el mismo escenario quitando el clamp del código (mutation testing) y el test **siguió pasando** — porque ningún ciclo real de `parameters.json` genera un `indice_semana_actual` que realmente exceda `semanas_totales`. El test daba una falsa sensación de cobertura.
+
+**Causa Raíz:** Se asumió que "probar con datos reales" es automáticamente más riguroso que probar con datos sintéticos. Pero un caso borde de código (un `if`/clamp que protege contra un valor fuera de rango) solo se prueba de verdad si el escenario elegido realmente fuerza ese valor fuera de rango — y los datos de negocio reales no siempre generan esos escenarios (de hecho, casi nunca: si el negocio los generara, probablemente ya habría un bug reportado).
+
+**Qué Aprendimos:**
+- Una aserción `<=`/`>=` que es trivialmente cierta en el escenario de prueba no es una prueba — es una tautología con apariencia de test.
+- Ya habíamos aprendido esto para CB-8 (rama del código inalcanzable con datos reales) pero no se aplicó el mismo razonamiento a CB-10 en el momento de escribirlo — la lección no se generalizó automáticamente de un caso al otro.
+- Mutation testing (cambiar deliberadamente el código para ver si el test lo detecta) es la forma más directa de responder "¿este test realmente prueba algo?".
+
+**Regla de Prevención:**
+- Para cualquier test de un caso borde defensivo (clamp, guard clause, validación de rango), verificar explícitamente: "si borro esta línea de protección, ¿el test falla?". Si la respuesta no es obviamente sí, agregar un caso con datos sintéticos que sí fuerce el escenario — documentado como sintético (no fabricar un ciclo/entidad falsa en los datos de negocio).
+- Cuando un agente Review (u otra revisión independiente) señale este tipo de hallazgo, no basta con "estar de acuerdo" — hay que reproducir el mutation test uno mismo antes de dar el hallazgo por resuelto.

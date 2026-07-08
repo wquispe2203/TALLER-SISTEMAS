@@ -40,9 +40,28 @@ La memoria del proyecto debe documentar la lógica actual de `traslados.py` y la
    - Cada ciclo requiere `start_date`, `end_date`, `duration_weeks` y `payment_plans`.
    - Los planes de pago incluyen `cash_price` e `installments`.
 
-## Dónde registrar los cambios
+## Dónde registrar los cambios y cómo se relaciona con la memoria
 
-Actualiza los siguientes documentos de memoria del repositorio cuando la lógica cambie:
+La memoria no reemplaza a la especificación ni al plan; cada documento tiene un rol distinto:
+
+- La memoria registra el estado real del algoritmo, las reglas de negocio actuales y los cambios observados en el comportamiento del sistema.
+- La especificación (`.specify/memory/spec.md`) define qué debe cumplir el sistema y qué comportamiento es obligatorio desde el punto de vista del negocio.
+- El plan (`.specify/memory/plan.md`) describe cómo se implementará o modificará la solución.
+- La constitución (`.specify/memory/constitution.md`) establece los principios, límites y estándares que no deben violarse.
+- Las decisiones (`.specify/memory/decisions.md`) documentan por qué se tomó una decisión concreta cuando el cambio afecta el diseño o la interpretación de la regla.
+
+### Contraste con la memoria
+
+Si un cambio contradice lo que está documentado en la memoria, esa discrepancia debe dejarse explícita y resolverse en el documento adecuado:
+
+- Si el cambio modifica el comportamiento esperado del sistema, se documenta en `.specify/memory/spec.md`.
+- Si el cambio afecta la forma de implementar o ajustar la solución, se documenta en `.specify/memory/plan.md`.
+- Si el cambio afecta principios o límites del proyecto, se documenta en `.specify/memory/constitution.md`.
+- Si el cambio responde a una decisión de diseño o criterio de negocio, se documenta en `.specify/memory/decisions.md`.
+
+### Registros recomendados
+
+Actualiza los siguientes documentos cuando la lógica cambie:
 
 - `.specify/memory/spec.md`: reglas de negocio actuales y cambios en la especificación.
 - `.specify/memory/decisions.md`: decisiones importantes como el manejo de fechas de feriado y el prorrateo de cuotas.
@@ -54,7 +73,7 @@ Actualiza los siguientes documentos de memoria del repositorio cuando la lógica
 - Actualizar la memoria para reflejar que `CUOTAS` ya no suma cuotas futuras completas, sino que prorratea solo la cuota vigente.
 - Documentar la regla de `lunes/martes = semana no consumida` en `CONTADO`.
 - Documentar que los feriados son semanas completas y se manejan de forma distinta entre `CONTADO` y `CUOTAS`.
-- Añadir una nota explicando el formato especial `"En la matrícula"` y su fallback a la fecha de inicio del ciclo.
+- Añadir una nota explicando el formato especial `"En la matrícula"` y su fallback a la fecha de inicio del ciclo.1
 - Señalar que la memoria debe indicar explícitamente que el código normaliza `CONTADO`/`CUOTAS` y `Presencial`/`Virtual` con mayúsculas.
 
 ## Recomendación

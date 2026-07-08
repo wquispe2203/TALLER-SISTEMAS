@@ -192,6 +192,49 @@ Cuando el analista necesita enviar la justificación del cálculo al estudiante,
 
 Entonces la interfaz debe proporcionar un botón de "Copiar resumen" que capture todo el desglose en formato de texto plano estructurado, listo para ser pegado en un ticket de soporte.
 
+---
+
+## Extensión a US-3 — Campos estructurados de fecha y semana actual en el desglose
+
+> Producida vía SDD Enterprise real (2026-07-07): elaborada por el agente **Requirement Analyst** (`.github/agents/requirement-analyst.agent.md`, Detailed Mode) a partir de un hallazgo de soporte sobre FR-010/AC-3.4/AC-3.5 — el analista necesita tabular en la UI las fechas de inicio/fin del periodo relevante y la semana en la que cae la fecha de traslado, hoy solo disponibles embebidas en el texto narrativo de `pasos`. Las decisiones de diseño quedaron resueltas por el agente **Architect** en `plan.md` → ADR-4 (ver también `decisions.md`, entrada 2026-07-07).
+
+### FR-011 Campos estructurados de periodo y semana actual en `detalle.origen`/`detalle.destino`
+
+El sistema MUST exponer, como campos independientes dentro de `detalle.origen` y `detalle.destino` de la respuesta de `POST /api/traslados/calcular` (no solo embebidos en el texto narrativo de `pasos`):
+
+* `fecha_inicio_periodo` (string `DD/MM/YYYY` o `null` — ver ADR-4 §4.2/4.3)
+* `fecha_fin_periodo` (string `DD/MM/YYYY` o `null`)
+* `semana_actual` (integer, **1-based** — ADR-4 §4.1, o `null`)
+
+Significado según modalidad (reutilizando exactamente los valores internos que ya usa la narrativa de FR-010 — Art. 4.4 constitución, prohibido duplicar fórmulas):
+
+* **CONTADO**: `fecha_inicio_periodo`/`fecha_fin_periodo` = fechas del CICLO COMPLETO. `semana_actual` = `indice_semana_actual` (1-based), **con clamp a `[1, semanas_totales]`** (ADR-4 §4.4 — antes CONTADO no clampeaba, a diferencia de CUOTAS).
+* **CUOTAS**: `fecha_inicio_periodo`/`fecha_fin_periodo` = fechas del PERIODO DE LA CUOTA VIGENTE (no del ciclo completo). `semana_actual` = `idx_actual + 1` de `_detalle_semanas_periodo`.
+* **CUOTAS, caso `antes_primera_cuota`** (fecha anterior al vencimiento de la cuota 1): `fecha_inicio_periodo = null`, `fecha_fin_periodo` = fecha de vencimiento de la cuota 1, `semana_actual = 1` (ADR-4 §4.3).
+* **CUOTAS, caso `fuera_de_ciclo`** (fecha ≥ fin del ciclo, nada pendiente): los tres campos van `null` explícito (ADR-4 §4.3) — nunca se omiten ni se rellenan con un fallback (Art. 7 NEVER DO: "asumir valores por defecto cuando falten datos obligatorios").
+
+No modifica `semanas_totales`, `semanas_consumidas` ni `semanas_restantes` (ya existentes desde FR-010) — solo agrega estos tres campos.
+
+### AC-3.6 (Campos de periodo y semana actual — CONTADO)
+
+Dado un traslado CONTADO válido (fecha 15/05/2026, SEMIANUAL MARZO SM Presencial→Virtual — ver `test-cases.md` TC-15),
+
+Cuando el sistema genera el desglose,
+
+Entonces `detalle.origen` debe incluir `fecha_inicio_periodo: "16/03/2026"`, `fecha_fin_periodo: "02/10/2026"`, `semana_actual: 9` — coincidentes exactamente con lo ya narrado en `pasos`.
+
+### AC-3.7 (Campos de periodo y semana actual — CUOTAS)
+
+Dado un traslado CUOTAS válido (fecha 25/03/2026, ANUAL MARZO SM Presencial→Virtual — ver `test-cases.md` TC-14),
+
+Cuando el sistema genera el desglose,
+
+Entonces `detalle.origen` debe incluir `fecha_inicio_periodo: "16/03/2026"` (inicio del periodo de la cuota 1 vigente, NO el inicio del ciclo), `fecha_fin_periodo: "11/04/2026"`, `semana_actual: 2`.
+
+### AC-3.8 (Simetría origen/destino)
+
+Dado cualquier traslado válido (CONTADO o CUOTAS), `detalle.destino` debe exponer los mismos tres campos, calculados con la misma regla que `detalle.origen`, usando las fechas/cuota vigente del CICLO DESTINO.
+
 ## US-4 (P2)
 
 Como analista de soporte,
@@ -348,6 +391,24 @@ El sistema calcula el resultado utilizando únicamente las semanas académicas r
 Resultado esperado:
 
 El sistema bloquea el cálculo e informa: "Ciclo [origen/destino] no encontrado en la base de datos"
+
+### CB-8 CUOTAS: fecha de traslado anterior al inicio de la primera cuota (FR-011)
+
+Dado un traslado CUOTAS donde `fecha_traslado` es anterior al vencimiento de la cuota 1 (caso `antes_primera_cuota`),
+
+Resultado esperado (ADR-4 §4.3): `fecha_inicio_periodo: null`, `fecha_fin_periodo` = fecha de vencimiento de la cuota 1, `semana_actual: 1`.
+
+### CB-9 CUOTAS: fecha de traslado en o después del fin del ciclo (FR-011)
+
+Dado un traslado CUOTAS donde `fecha_traslado >= fecha_fin_ciclo` (caso `fuera_de_ciclo`, nada pendiente),
+
+Resultado esperado (ADR-4 §4.3): `fecha_inicio_periodo: null`, `fecha_fin_periodo: null`, `semana_actual: null` — explícitos, no omitidos.
+
+### CB-10 CONTADO: `semana_actual` no debe exceder `semanas_totales` (FR-011)
+
+Dado un traslado CONTADO donde el cálculo crudo de `indice_semana_actual` podría exceder `semanas_totales` (ciclo que no calza en semanas completas),
+
+Resultado esperado (ADR-4 §4.4): `semana_actual` se clampea a `min(indice_semana_actual, semanas_totales)`, garantizando el invariante `semana_actual ≤ semanas_totales` en ambas modalidades.
 
 ---
 

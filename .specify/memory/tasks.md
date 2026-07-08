@@ -79,6 +79,24 @@ Este documento contiene la lista de tareas ordenadas por dependencias para la ca
 
 ---
 
+## Fase 9: User Story 6 (US-6 / FR-011: campos estructurados de periodo y semana actual)
+
+* **Meta de la historia:** exponer `fecha_inicio_periodo`, `fecha_fin_periodo`, `semana_actual` como campos independientes del `detalle`, no solo embebidos en `pasos`.
+* **Criterios de prueba:** AC-3.6 (CONTADO), AC-3.7 (CUOTAS), AC-3.8 (simetría origen/destino), CB-8, CB-9, CB-10.
+* **Producida vía SDD Enterprise real:** `spec.md` (Requirement Analyst, subagente real) → `plan.md` ADR-4 (Architect, subagente real) → implementación → tests → Review (subagente real). Ver `decisions.md`, entrada 2026-07-07 "FR-011", para el registro completo de la ejecución.
+
+- [x] T021 [US6] Agregar helper `_fmt_fecha_opt` y extender `generar_pasos_contado`/`generar_pasos_cuotas` en `zproyect/traslados.py` con los 3 campos nuevos, siguiendo ADR-4. Verificado 2026-07-07 ejecutando `calcular_traslado()` contra AC-3.6/AC-3.7/CB-9/CB-10 con valores exactos.
+- [x] T022 [US6] Agregar tests para AC-3.6, AC-3.7, AC-3.8, CB-8, CB-9, CB-10 en `zproyect/test/test_traslados.py`. `pytest -s`: 49 verificaciones `check()`, todas OK (2026-07-07).
+- [x] T023 [US6] Ejecutado el agente Review (pasada trivial-complexity combinada) sobre la implementación real — verdicto inicial **APPROVED WITH CONDITIONS**: encontró vía mutation testing que el test original de CB-10 no forzaba el clamp con datos reales de `parameters.json` (ningún ciclo real lo activa). Se agregó un caso sintético que sí lo fuerza (confirmado con mutation test propio: al quitar el clamp, el nuevo test falla; restaurado, todo pasa). Con eso, la condición del Review queda resuelta. Ver `decisions.md`, entrada "FR-011", para el reporte completo del Review.
+
+---
+
+## Fase 10: Mantenimiento
+
+- [x] T024 Agregar `sys.path.insert` en `zproyect/test/test_traslados.py` para que corra con `python test_traslados.py` directo (sin depender de `python -m pytest` ni del directorio actual). Verificado 2026-07-07 ejecutándolo desde `zproyect/test/` y desde `zproyect/`, ambos OK; `pytest` normal sigue funcionando igual (sin regresión).
+
+---
+
 ## Grafo de Dependencia
 
 ```mermaid
@@ -98,4 +116,7 @@ graph TD
     T006 --> T018
     T018 --> T019
     T019 --> T020
+    T020 --> T021
+    T021 --> T022
+    T022 --> T023
 ```

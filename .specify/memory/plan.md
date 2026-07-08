@@ -188,6 +188,50 @@ Puede generar resultados inconsistentes, incrementar la complejidad del flujo y 
 
 ---
 
+## ADR-4
+
+> Producido vía SDD Enterprise real (2026-07-07) por el agente **Architect** (`.github/agents/architect.agent.md`), resolviendo las preguntas abiertas que dejó el agente **Requirement Analyst** al formalizar FR-011 en `spec.md`.
+
+### DECISIÓN
+
+Exponer `fecha_inicio_periodo`, `fecha_fin_periodo` (string) y `semana_actual` (integer) como campos estructurados dentro de los diccionarios que ya retornan `generar_pasos_contado` y `generar_pasos_cuotas` (el bloque `detalle`), en vez de crear una ruta de cálculo paralela. Los tres campos se derivan leyendo variables que esas funciones **ya calculan** para construir la narrativa de `pasos` — no se introduce ninguna fórmula nueva.
+
+**4.1 Base de `semana_actual`: 1-based.** El propio código ya narra "semana X" en base 1; el campo estructurado debe ser consistente con lo ya narrado, no con el índice interno 0-based (`idx_actual`) que es un detalle de implementación.
+
+**4.2 Formato de fecha: `DD/MM/YYYY`.** Toda la app (narrativa de `pasos`, `parse_fecha`, `parameters.json`) ya usa ese formato; introducir ISO en un campo estructurado del mismo payload crearía dos formatos de fecha en una misma respuesta.
+
+**4.3 CB-8/CB-9: `null` explícito, sin fallback inventado.** Art. 7 NEVER DO prohíbe asumir valores por defecto cuando faltan datos obligatorios. `fuera_de_ciclo` → los 3 campos `null`. `antes_primera_cuota` → `fecha_inicio_periodo: null` (no ha empezado ningún periodo), `fecha_fin_periodo` = vencimiento de la cuota 1 (ya se calcula y ya se narra), `semana_actual: 1` (consistente con `semanas_totales:1, semanas_restantes:1` que esa rama ya retorna). Los campos van `null` explícito, nunca se omiten — un contrato de forma estable evita que cada consumidor tenga que chequear existencia de la clave.
+
+**4.4 Clamp de `semana_actual` en CONTADO: sí, agregar.** CUOTAS ya clampea `idx_actual` a `[0, semanas_totales-1]`; CONTADO no clampeaba `indice_semana_actual`, una asimetría no justificada para el mismo concepto de negocio. Se agrega `semana_actual = max(1, min(indice_semana_actual, semanas_totales))`.
+
+**4.5 Nombres de campo: unificados, sin prefijo por modalidad.** `detalle.origen/destino` ya tiene campos (`semanas_totales`, etc.) cuyo significado depende de `pago_en` sin llevarlo en el nombre — mismo patrón se aplica a los 3 campos nuevos.
+
+### ALTERNATIVA DESCARTADA
+
+Base 0 para `semana_actual`; ISO para fechas; fallback a fechas del ciclo completo en CB-8/CB-9; sin clamp en CONTADO; nombres de campo prefijados por modalidad (`semana_actual_contado`/`semana_actual_cuotas`).
+
+### MOTIVO DEL DESCARTE
+
+Cada alternativa introducía una inconsistencia con una convención que el código YA establece en otro lugar de la misma respuesta (narrativa en base 1, fechas en `DD/MM/YYYY`, clamp ya presente en CUOTAS, campos sin prefijo de modalidad ya existentes) — mantenerlas habría creado dos convenciones distintas para el mismo concepto dentro de un solo payload JSON.
+
+### Componentes / Archivos Afectados
+
+| Componente (`zproyect/traslados.py`) | Cambio conceptual |
+|---|---|
+| `generar_pasos_contado` | `detalle` agrega `fecha_inicio_periodo`/`fecha_fin_periodo` (fechas del ciclo) y `semana_actual` (clampeado). No toca la fórmula del monto ni `pasos`. |
+| `generar_pasos_cuotas` | `detalle` agrega los 3 campos según el `caso` de `_seleccionar_cuota_vigente` (`vigente`/`antes_primera_cuota`/`fuera_de_ciclo`). |
+| `_detalle_semanas_periodo`, `_seleccionar_cuota_vigente` | Sin cambios — ya retornan lo necesario. |
+| *(nuevo)* `_fmt_fecha_opt(f)` | Helper de una línea para no repetir `strftime(...) if f else None` (Synthesis · Simplificación). |
+| `calcular_traslado` | Sin cambios — reenvía `det_origen`/`det_destino` tal cual. |
+
+### Synthesis Assessment
+
+**Generalización:** se evaluó un helper único para "semana_actual + periodo" en ambas modalidades; se descarta porque CONTADO y CUOTAS anclan las semanas a reglas de negocio distintas (calendario global vs. inicio del periodo de cuota) ya documentadas como tales en el código — solo se generaliza el *nombre* de los campos de salida, no la fórmula.
+**Build vs. Adopt:** no aplica — no se necesita librería externa; es una ampliación del contrato de salida sobre cálculo ya construido.
+**Simplificación:** cambio mínimo (agregar 3 claves a dicts existentes); único riesgo es repetir el formateo de fecha, mitigado con el helper `_fmt_fecha_opt`.
+
+---
+
 # 5. Riesgos y Dependencias
 
 ## Riesgos

@@ -1,11 +1,11 @@
 ---
 # Wave 23 §23.A.9/§23.A.10 — memory frontmatter for time-decay ranking
-last_referenced_at: "2026-07-07T00:00:00.000000+00:00"
-reference_count: 1
+last_referenced_at: "2026-07-07T02:00:00.000000+00:00"
+reference_count: 3
 ---
 # Índice de Memoria
 
-Última Actualización: 2026-07-07 (sincronización manual de spec.md/plan.md/tasks.md/test-cases.md contra `app.py`/`traslados.py` ejecutados)
+Última Actualización: 2026-07-07 (FR-011 vía flujo multi-agente real: Requirement Analyst → Architect → implementación → Review; ver decisions.md)
 Contexto de la Funcionalidad: transfer-calculator (Calculadora de Montos de Traslado Académico)
 
 ## Archivos Principales de Memoria
@@ -16,12 +16,14 @@ Contexto de la Funcionalidad: transfer-calculator (Calculadora de Montos de Tras
 - lecciones: .specify/memory/lessons.md
 - cache-investigacion: .specify/memory/research-cache.md
 - registro-metricas: .specify/memory/metrics-log.md
+- protocolo-sdd: .specify/memory/sdd-enterprise-protocol.md
 
 ## Artefactos de la Funcionalidad
 
 - especificacion: .specify/memory/spec.md
 - plan: .specify/memory/plan.md
 - test-cases: .specify/memory/test-cases.md
+- referencia-operaciones: .specify/memory/detalle-operaciones-referencia.md
 - implementacion: zproyect/app.py, zproyect/traslados.py (validation.py/calculator.py planeados en plan.md pero AÚN NO separados, ver tasks.md T004/T005), zproyect/data/parameters.json, zproyect/templates/index.html, zproyect/test/test_traslados.py, zproyect/requirements.txt
 
 ## Política de Frescura

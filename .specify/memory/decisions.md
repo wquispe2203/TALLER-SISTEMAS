@@ -171,3 +171,48 @@ Después de tomar una decisión importante, añade una nueva entrada:
 **Hallazgo adicional durante la implementación (2026-07-07):** al centralizar `detalle` en `generar_pasos_contado`, se descubrió que el bug de CUOTAS (semanas del ciclo completo en vez del periodo real) tenía un equivalente en CONTADO: `detalle.semanas_totales`/`semanas_restantes` usaban `duration_weeks` sin ajustar por feriados, mientras la fórmula real usa `semanas_efectivas = duration_weeks + semanas_feriado`. Para TC-1 (15/05/2026) esto mostraba `semanas_restantes: 31` en el detalle cuando la fórmula real usó `33`. Se corrigió igual que CUOTAS: `detalle` ahora deriva directamente de los mismos números que calculan el monto. Verificado con `pytest -s`, sin regresiones (ver `test_traslados.py`).
 
 **Nivel de Confianza:** Alto
+
+---
+
+## 2026-07-07 Feature 001: FR-011 — campos estructurados de fecha/semana actual, ejecutado vía flujo multi-agente real
+
+**Contexto:** El usuario pidió explícitamente que faltaban dos cosas en el desglose FR-010: (1) las fechas de inicio/fin del periodo relevante como campos estructurados (no solo dentro del texto narrativo), tanto para origen como destino, y (2) la "semana actual" (ej. "semana 2 de 4") como campo explícito — `semanas_consumidas` ya existía, pero no el índice de en qué semana cae la fecha de traslado. Además, exigió explícitamente que esta vez se usara SDD Enterprise de forma real: los agentes definidos en `.github/agents/*.agent.md`, no solo edición manual de archivos `.md`.
+
+**Ejecución real (no simulada — cada paso con evidencia verificable en esta conversación):**
+
+1. **Agente Requirement Analyst** (`.github/agents/requirement-analyst.agent.md`, Detailed Mode, subagente real vía `Agent` tool) — recibió el hallazgo de negocio, produjo FR-011 con AC-3.6/AC-3.7/AC-3.8 en formato Given-When-Then, y **dejó explícitamente 6 preguntas abiertas** (base 0 vs 1, formato de fecha, comportamiento en casos borde, clamp, nombres de campo) en vez de asumir respuestas — cumpliendo su propia regla "Never Do: fabricar una respuesta a su propia pregunta".
+2. **Agente Architect** (`.github/agents/architect.agent.md`, subagente real) — resolvió las 6 preguntas como ADR-4 en `plan.md`, con justificación y alternativa descartada para cada una, tabla de componentes afectados, diagrama Mermaid y Synthesis Assessment (Generalización / Build-vs-Adopt / Simplificación).
+3. **Implementación** (yo, con el rol de Software Engineer) — siguió ADR-4 al pie de la letra: helper `_fmt_fecha_opt`, extensión de `generar_pasos_contado`/`generar_pasos_cuotas`, clamp en CONTADO. Verificado ejecutando `calcular_traslado()` contra AC-3.6/AC-3.7/CB-9/CB-10 con valores exactos antes de continuar.
+4. **Tests** — se extendió `test_traslados.py` con AC-3.6/3.7/3.8, CB-8, CB-9, CB-10. **Hallazgo honesto durante esta fase:** CB-8 (`antes_primera_cuota`) es estructuralmente inalcanzable con los ciclos reales de `parameters.json` (todas las cuotas 1 usan "En la matrícula", que hace fallback a la propia fecha de inicio del ciclo) — se probó con datos sintéticos de cuotas, declarados explícitamente como tales en el comentario del test, no con un ciclo inventado en `parameters.json`/`spec.md` (a diferencia del error de la sesión anterior con "SEMIANUAL ENERO").
+5. **Agente Review** (`.github/agents/review.agent.md`, subagente real, pasada trivial-complexity combinada) — corrió `pytest` él mismo (no confió en el resultado reportado), verificó AC por AC con evidencia file:line, y **encontró un hallazgo real vía mutation testing**: el test original de CB-10 (clamp de `semana_actual` en CONTADO) usaba `ANUAL MARZO` con fecha en el último día del ciclo, pero ningún ciclo real de `parameters.json` alcanza jamás un `indice_semana_actual` que exceda `semanas_efectivas` — el clamp nunca se ejercitaba de verdad; el test habría seguido en verde aunque alguien borrara el clamp del código. Veredicto: **APPROVED WITH CONDITIONS**.
+6. **Corrección del hallazgo** — se agregó un caso sintético (`duration_weeks=1` sobre un rango de 2 semanas calendario) que sí fuerza el clamp. **Verificado con mutation testing propio:** se reemplazó temporalmente la línea del clamp por el valor sin clampear, se corrió la suite, el nuevo test de CB-10 falló como se esperaba (`AssertionError`), se restauró el código original, se re-confirmó que todo pasa. `git status`/`git diff --stat` confirmaron que no quedaron archivos residuales de la mutación.
+
+**Opciones Consideradas (nivel de proceso):**
+1. Implementar directamente sin pasar por los agentes — más rápido, pero es exactamente lo que el usuario pidió NO repetir.
+2. Usar el flujo de agentes real, con sus propias reglas de "Never Do" y "Ask First" tal como están escritas en `.github/agents/`, adaptando solo las rutas de archivo (`.specify/memory/` en vez de `.specify/specs/NNN/`, porque este repo no usa esa convención — ver auditoría previa de por qué los gates de CI tampoco la usan).
+
+**Elegida:** Opción 2.
+
+**Razonamiento:**
+- El valor real no fue "usar agentes" como ritual, sino que el Requirement Analyst dejó preguntas genuinamente abiertas (que yo solo no habría pensado en plantear formalmente) y el Review encontró un bug real de cobertura de test con mutation testing — ambos resultados habrían sido más débiles hechos por una sola pasada.
+- Cada salida de agente se aplicó literalmente a los archivos de memoria (no se resumió ni se reinterpretó), y cada afirmación de "está corregido" se verificó ejecutando código real antes de marcar cualquier tarea `[x]` — siguiendo `sdd-enterprise-protocol.md`.
+
+**Compromisos Aceptados:**
+- No se usó el CLI real `.specify/cli/sdd` para esta feature específica (los subagentes usan Read/Edit/Bash directamente) — los agentes de `.github/agents/` son prompts de rol, no comandos del CLI; se usaron como prompts de subagente vía el `Agent` tool, que es la forma en que esta sesión puede invocarlos.
+- Los agentes asumen la convención `.specify/specs/NNN/` en su texto original; se les indicó explícitamente adaptar a `.specify/memory/`, documentado en cada prompt.
+
+**Nivel de Confianza:** Alto — cada paso de este registro es reproducible: los prompts exactos están en la transcripción de la sesión, los comandos `pytest`/mutation test se ejecutaron y su output se pegó arriba, no se resumió de memoria.
+
+---
+
+## 2026-07-07 Feature 001: `test_traslados.py` ejecutable directo (sin `-m pytest`)
+
+**Contexto:** El usuario intentó correr los tests con `pytest test_traslados.py` (sin `python -m`) y le dio `ModuleNotFoundError: No module named 'traslados'`. Causa raíz: `pytest` (el script suelto) no agrega el directorio actual al import path de Python de la misma forma que `python -m pytest`; y el archivo vive en `zproyect/test/`, un nivel abajo de donde está `traslados.py` (`zproyect/`), sin ningún ajuste de `sys.path` que lo compensara.
+
+**Elegida:** Agregar `sys.path.insert(0, ...)` al inicio de `test_traslados.py`, apuntando al directorio padre (`zproyect/`), antes del `from traslados import`.
+
+**Razonamiento:** Es la forma mínima de que el archivo funcione con `python test_traslados.py` invocado desde cualquier lado (el pedido explícito del usuario), sin depender de flags de invocación (`-m`) ni de que el usuario recuerde en qué carpeta pararse. No se tocó ninguna regla de negocio ni se implementó nada adicional (alcance limitado a lo pedido).
+
+**Verificación:** ejecutado con éxito en 3 modos: `python test_traslados.py` desde `zproyect/test/`, `python test/test_traslados.py` desde `zproyect/`, y `pytest test/test_traslados.py -s` desde `zproyect/` (regresión, sigue funcionando igual que antes).
+
+**Nivel de Confianza:** Alto — cambio de una línea, con verificación ejecutada en los 3 modos de invocación relevantes.
