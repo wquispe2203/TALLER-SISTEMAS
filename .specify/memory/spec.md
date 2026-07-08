@@ -146,6 +146,32 @@ Entonces el sistema muestra además del resultado final:
 * Fórmula y resultado del costo del ciclo destino
 * Operación final y resultado
 
+> **Historial (2026-07-07):** se detectó que para CUOTAS, `detalle.origen/destino` se calculaba con `calcular_semanas_consumidas` (semanas del **ciclo completo**) mientras el monto real (`saldo_origen`/`costo_destino`) se calculaba con `_prorratear_cuota` (semanas del **periodo de la cuota vigente**) — un número totalmente distinto, que hacía el desglose engañoso. Se corrigió junto con FR-010 (ver abajo): `detalle` ahora usa, para CUOTAS, las semanas del periodo de la cuota vigente. Task: T018/T019 en `tasks.md`.
+
+### FR-010 Desglose expresado como cálculo manual (no como una resta directa)
+
+El sistema MUST presentar el desglose de FR-006 como una secuencia de pasos redactados en lenguaje natural que reproduzcan el razonamiento que seguiría un analista calculando a mano — no únicamente los números finales de una resta.
+
+* **Para CONTADO**, la secuencia MUST incluir explícitamente: la fecha de inicio del ciclo y su día de semana; en qué semana (por índice y rango de fechas, ancladas al lunes del calendario) cae la fecha de traslado; si esa semana se considera consumida o no según la regla lunes/martes (no consumida) vs miércoles-domingo (consumida); cuántas semanas de feriado caen dentro del ciclo completo; y la fórmula con los valores sustituidos: `valor por semana = cash_price ÷ semanas efectivas` y `saldo = valor por semana × semanas restantes`.
+* **Para CUOTAS**, la secuencia MUST incluir: qué cuota está vigente a la fecha de traslado y su monto; el periodo de esa cuota (fecha de inicio y fin, ancladas a la fecha de inicio de la propia cuota, no al calendario global); cuántos días y semanas dura ese periodo; cuántos días y semanas han transcurrido desde el inicio del periodo hasta la fecha de traslado; si alguna semana del periodo es una semana de feriado (y por tanto no cuenta como consumida); y la fórmula con los valores sustituidos: `valor residual = monto de la cuota × semanas restantes ÷ semanas totales del periodo`.
+* Implementación de referencia: `traslados.py::generar_pasos_contado` / `generar_pasos_cuotas`, expuestas en `detalle.origen.pasos` / `detalle.destino.pasos` de la respuesta de `calcular_traslado`.
+
+### AC-3.4 (Desglose CUOTAS estilo cálculo manual)
+
+Dado un traslado CUOTAS válido (fecha 25/03/2026, ANUAL MARZO SM Presencial→Virtual — ver `test-cases.md` TC-14),
+
+Cuando el sistema genera el desglose,
+
+Entonces debe mostrar, en este orden: cuota vigente (cuota 1, S/ 510.00), periodo de la cuota (16/03/2026–11/04/2026, 26 días, 4 semanas), días/semanas transcurridos desde el inicio del periodo (9 días → 1 semana consumida), semanas feriado dentro del periodo (0), semanas restantes (3), y la fórmula sustituida (510.00 × 3 ÷ 4 = 382.50).
+
+### AC-3.5 (Desglose CONTADO estilo cálculo manual)
+
+Dado un traslado CONTADO válido (fecha 15/05/2026, SEMIANUAL MARZO SM Presencial→Virtual — ver `test-cases.md` TC-15),
+
+Cuando el sistema genera el desglose,
+
+Entonces debe mostrar, en este orden: fecha de inicio del ciclo y su día de semana (16/03/2026, lunes), en qué semana (por índice y rango de fechas) cae la fecha de traslado (semana 9: 11/05/2026–17/05/2026), si esa semana cuenta como consumida (15/05 es viernes → sí), semanas consumidas (9), semanas feriado del ciclo completo (1), semanas efectivas (28 + 1 = 29), semanas restantes (29 − 9 = 20), y la fórmula sustituida (3213.00 ÷ 29 × 20 = 2215.86).
+
 ### AC-3.2 (Ajuste por feriados)
 
 Dado un cálculo de traslado donde la fecha cae en una semana de feriado (Fiestas Patrias o Navidad),
@@ -363,7 +389,9 @@ Los resultados se mostrarán en pantalla y podrán copiarse para soporte, pero n
 
 ### D-4
 
-La solución será una aplicación web monolítica en Python 3.11+. Flask servirá la interfaz (HTML, CSS y JavaScript estático en `templates/` y `static/`) y expondrá un endpoint REST, por ejemplo `POST /api/transfer-calculator`, para recibir los datos del traslado y devolver el resultado, el estado y el desglose del cálculo. La lógica de negocio (validaciones y cálculo) residirá en módulos Python independientes de las rutas HTTP, testeables con pytest.
+La solución será una aplicación web monolítica en Python 3.11+. Flask servirá la interfaz (HTML, CSS y JavaScript estático en `templates/` y `static/`) y expondrá un endpoint REST para recibir los datos del traslado y devolver el resultado, el estado y el desglose del cálculo. La lógica de negocio (validaciones y cálculo) residirá en módulos Python independientes de las rutas HTTP, testeables con pytest.
+
+> **Endpoint real (verificado en `zproyect/app.py`, 2026-07-07):** `POST /api/traslados/calcular`, no `/api/transfer-calculator` como decía esta sección antes. Rutas adicionales implementadas: `GET /health` (healthcheck) y `GET /api/ciclos` (lista los ciclos de `parameters.json`).
 
 ### D-5
 

@@ -62,3 +62,20 @@ Después de una corrección, gate fallido o detección de bloqueo, añade:
 
 **Regla de Prevención:**
 - En futuros proyectos, partir del Excel y del algoritmo acordado con el negocio, y luego redactar la spec, plan y casos de prueba basándose en esa base.
+
+---
+
+## 2026-07-07 Feature 001: "Actualizar la memoria" sin ejecutar el código no corrige nada — solo mueve el error de lugar
+
+**Qué Pasó:** La entrada de decisión del 2026-07-04 ("Adoptar algoritmo v4 como referencia canónica") marcó T003 como completado, pero `test-cases.md` seguía citando dos ciclos que no existen en `parameters.json` ("SEMIANUAL ENERO, SM" y "ANUAL MARZO, UNI") y 4 de los 12 valores esperados no correspondían al algoritmo real. El error no se detectó hasta que se ejecutó `calcular_traslado()` directamente contra los datos reales.
+
+**Causa Raíz:** Los valores esperados de `test-cases.md` se escribieron/editaron a mano (probablemente copiando y ajustando números del documento anterior) en vez de generarse ejecutando el código. Un checkbox se marcó `[x]` como acto de fe, no como verificación.
+
+**Qué Aprendimos:**
+- "Alinear la spec con el algoritmo" solo cuenta como hecho si cada valor esperado se generó ejecutando el código contra los datos reales — no si "suena razonable" o seguía el patrón del caso anterior.
+- Un nombre de ciclo en un test case es una afirmación verificable (`buscar_ciclo()` en `traslados.py` lo confirma o lo rechaza); debe verificarse contra `parameters.json`, no asumirse.
+- Marcar una tarea `[x]` sin correr `pytest` (o el script equivalente) después es peor que dejarla `[ ]`: crea falsa confianza en quien lee `tasks.md`.
+
+**Regla de Prevención:**
+- Ningún valor numérico en `spec.md` o `test-cases.md` se escribe a mano. Se genera con un script que llama a `calcular_traslado()` (o el módulo equivalente) y se copia el resultado literal.
+- Antes de marcar `[x]` una tarea de alineación de documentos con código, ejecutar la suite de tests real y confirmar que pasa — no basta con "revisar visualmente".

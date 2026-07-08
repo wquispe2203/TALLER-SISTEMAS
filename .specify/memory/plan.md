@@ -10,7 +10,7 @@ Este plan describe la implementación conceptual de una Calculadora de Montos de
 
 La solución se implementará mediante componentes independientes responsables de captura de datos, validaciones, cálculo y presentación de resultados.
 
-La interfaz será una aplicación web sencilla con HTML, CSS y JavaScript vanilla servidos por Flask desde `templates/` y `static/`. El backend se desarrollará en Python 3.11+ con Flask y expondrá un endpoint HTTP `POST /api/transfer-calculator` que recibe JSON, valida en cascada, ejecuta el motor de cálculo y devuelve resultado, estado y desglose. Los parámetros académicos y financieros se cargarán desde `data/parameters.json`, generado a partir del Excel oficial aprobado por Gerencia. Antes de calcular, el sistema aplicará validaciones fail-fast. El motor determinará semanas restantes, saldo disponible y costo del ciclo destino usando `decimal.Decimal` para montos. Las pruebas unitarias usarán pytest con cobertura mínima del 80% sobre validación y cálculo; el estilo de código se validará con ruff (PEP8).
+La interfaz será una aplicación web sencilla con HTML, CSS y JavaScript vanilla servidos por Flask desde `templates/` y `static/`. El backend se desarrollará en Python 3.11+ con Flask y expondrá un endpoint HTTP `POST /api/traslados/calcular` (verificado en `zproyect/app.py`) que recibe JSON, valida en cascada, ejecuta el motor de cálculo y devuelve resultado, estado y desglose. Los parámetros académicos y financieros se cargarán desde `data/parameters.json`, generado a partir del Excel oficial aprobado por Gerencia. Antes de calcular, el sistema aplicará validaciones fail-fast. El motor determinará semanas restantes, saldo disponible y costo del ciclo destino usando `decimal.Decimal` para montos. Las pruebas unitarias usarán pytest con cobertura mínima del 80% sobre validación y cálculo; el estilo de código se validará con ruff (PEP8).
 
 No se contempla almacenamiento histórico de cálculos en esta fase.
 
@@ -18,25 +18,26 @@ No se contempla almacenamiento histórico de cálculos en esta fase.
 
 # 2. Stack y Estructura de Archivos
 
-Estructura planificada (documentada; implementación pendiente):
+> **Estructura real (verificada 2026-07-07, ver `zproyect/`):** el código vive bajo `zproyect/`, no en la raíz del repo como se planificó originalmente. La separación `validation.py`/`calculator.py` **no se ha realizado**: toda la lógica de validación y cálculo sigue junta en `traslados.py` (435 líneas). Esto es la tarea T004/T005 de `tasks.md`, todavía pendiente — contradice ADR-1 (separación lógica/UI) parcialmente: la UI sí está separada, pero validación y cálculo no lo están entre sí.
 
 ```
-TALLER-SISTEMAS/
-├── app.py                  # Rutas Flask (UI + API en un solo archivo al inicio)
-├── validation.py           # Validaciones en cascada
-├── calculator.py           # Motor de cálculo (sin Flask)
+TALLER-SISTEMAS/zproyect/
+├── app.py                  # Rutas Flask (UI + API)
+├── traslados.py            # Validaciones + motor de cálculo, JUNTOS (pendiente separar en validation.py/calculator.py)
 ├── data/parameters.json    # Parámetros oficiales
 ├── templates/index.html
 ├── static/css/styles.css
 ├── static/js/app.js
-├── tests/
+├── test/test_traslados.py  # nota: carpeta "test" (singular), no "tests/"
 └── requirements.txt
 ```
 
-Convención de rutas (mismo origen, sin CORS):
+Convención de rutas (mismo origen, sin CORS) — **verificada contra `app.py`**:
 
 * `GET /` → página del formulario
-* `POST /api/transfer-calculator` → cálculo
+* `GET /health` → healthcheck
+* `GET /api/ciclos` → lista de ciclos disponibles en `parameters.json`
+* `POST /api/traslados/calcular` → cálculo (antes documentado erróneamente como `/api/transfer-calculator`)
 * Assets en `/static/...`
 * `fetch` con rutas relativas desde el frontend
 

@@ -1,12 +1,12 @@
 ---
 # Wave 23 §23.A.9/§23.A.10 — memory frontmatter for time-decay ranking
-last_referenced_at: "2026-04-11T16:24:38.145281+00:00"
-reference_count: 0
+last_referenced_at: "2026-07-07T00:00:00.000000+00:00"
+reference_count: 1
 ---
 # Índice de Memoria
 
-Última Actualización: —
-Contexto de la Funcionalidad: (ninguno)
+Última Actualización: 2026-07-07 (sincronización manual de spec.md/plan.md/tasks.md/test-cases.md contra `app.py`/`traslados.py` ejecutados)
+Contexto de la Funcionalidad: transfer-calculator (Calculadora de Montos de Traslado Académico)
 
 ## Archivos Principales de Memoria
 
@@ -21,7 +21,8 @@ Contexto de la Funcionalidad: (ninguno)
 
 - especificacion: .specify/memory/spec.md
 - plan: .specify/memory/plan.md
-- implementacion: app.py, validation.py, calculator.py, data/parameters.json, templates/index.html, requirements.txt
+- test-cases: .specify/memory/test-cases.md
+- implementacion: zproyect/app.py, zproyect/traslados.py (validation.py/calculator.py planeados en plan.md pero AÚN NO separados, ver tasks.md T004/T005), zproyect/data/parameters.json, zproyect/templates/index.html, zproyect/test/test_traslados.py, zproyect/requirements.txt
 
 ## Política de Frescura
 

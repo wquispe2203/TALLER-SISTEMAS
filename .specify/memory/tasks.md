@@ -24,7 +24,7 @@ Este documento contiene la lista de tareas ordenadas por dependencias para la ca
 * **Meta de la historia:** Exponer endpoint POST para calcular traslados de contado y cuotas.
 * **Criterios de prueba:** Ejecutar suite de pruebas unitarias cubriendo TC-1, TC-2, TC-3, TC-9.
 
-- [x] T006 [US1] Integrar el nuevo motor de cálculo en el endpoint `POST /api/transfer-calculator` de `zproyect/app.py`
+- [x] T006 [US1] Integrar el nuevo motor de cálculo en el endpoint `POST /api/traslados/calcular` de `zproyect/app.py` (nombre corregido 2026-07-07; el código real nunca usó `/api/transfer-calculator`)
 - [ ] T007 [P] [US1] Crear pruebas unitarias para traslados CONTADO en `zproyect/test/test_traslados.py`
 - [ ] T008 [P] [US1] Crear pruebas unitarias para traslados CUOTAS en `zproyect/test/test_traslados.py`
 
@@ -45,7 +45,7 @@ Este documento contiene la lista de tareas ordenadas por dependencias para la ca
 * **Meta de la historia:** Devolver y mostrar el detalle de los cálculos de semanas y feriados.
 * **Criterios de prueba:** Validar TC-6, TC-7, TC-8 y TC-11; verificar el texto plano copiado al portapapeles.
 
-- [ ] T011 [US3] Agregar desglose de semanas y feriados al JSON de respuesta en `zproyect/app.py`
+- [x] T011 [US3] Agregar desglose de semanas y feriados al JSON de respuesta en `zproyect/app.py` — satisfecha 2026-07-07 por T018/T019 (`detalle.origen/destino` con `pasos`); no fue necesario tocar `app.py` porque ya reenvía `resultado` completo.
 - [ ] T012 [P] [US3] Implementar botón y lógica de copiado rápido de resumen en `zproyect/static/js/app.js`
 
 ---
@@ -68,6 +68,17 @@ Este documento contiene la lista de tareas ordenadas por dependencias para la ca
 
 ---
 
+## Fase 8: User Story 5 (US-5 / FR-010: Desglose estilo cálculo manual)
+
+* **Meta de la historia:** El desglose de operaciones (US-3) debe narrar el cálculo como lo haría un analista a mano (semana por semana, cuota vigente y su periodo), no solo mostrar una resta final.
+* **Criterios de prueba:** Validar AC-3.4 (CUOTAS) y AC-3.5 (CONTADO) de `spec.md`; corregir la aserción TC-3 rota en `test_traslados.py`.
+
+- [x] T018 [US5] Implementar `generar_pasos_contado` y `generar_pasos_cuotas` en `zproyect/traslados.py`, reutilizando las funciones de cálculo existentes (sin duplicar fórmulas, Art. 4.4 de la constitución); corregir `detalle` de CUOTAS para que use las semanas del periodo de la cuota vigente en vez de las del ciclo completo. Verificado 2026-07-07: de paso se corrigió el mismo bug en CONTADO (`semanas_totales`/`semanas_restantes` usaban `duration_weeks` sin ajustar por feriados en vez de `semanas_efectivas`).
+- [x] T019 [US5] Exponer `detalle.origen.pasos` / `detalle.destino.pasos` en la respuesta de `calcular_traslado()` (`zproyect/traslados.py`); no requiere cambios en `zproyect/app.py` porque el endpoint ya reenvía `resultado` completo.
+- [x] T020 [US5] Corregir la aserción TC-3 obsoleta (esperaba 4080.00) en `zproyect/test/test_traslados.py` y agregar pruebas para AC-3.4/AC-3.5 (los dos ejemplos verificados: CUOTAS 25/03/2026 y CONTADO 15/05/2026 SEMIANUAL MARZO). Ejecutado `pytest -s` el 2026-07-07: las 33 verificaciones (`check()`) pasan, incluyendo las 9 preexistentes que ya pasaban y las 15 nuevas. Pendiente aparte (no bloquea esta tarea): el archivo no define funciones `def test_*`, por lo que pytest reporta exit code 5 ("no tests ran") aunque todo pase — es un patrón preexistente del archivo, no introducido en esta sesión.
+
+---
+
 ## Grafo de Dependencia
 
 ```mermaid
@@ -84,4 +95,7 @@ graph TD
     T013 --> T014 & T015
     T014 & T015 --> T016
     T016 --> T017
+    T006 --> T018
+    T018 --> T019
+    T019 --> T020
 ```
