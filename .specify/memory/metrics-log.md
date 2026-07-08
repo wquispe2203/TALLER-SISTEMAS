@@ -14,3 +14,6 @@ reference_count: 0
 | Date | Feature | Gate | Ceremony | Result | Errors | Warnings | Duration | Notes |
 |------|---------|------|----------|--------|--------|----------|----------|-------|
 
+| 2026-07-08T19:30:24Z | transfer-calculator | Gate 1 | standard | FAIL | 7 | - | - | - |
+| 2026-07-08T19:33:48Z | transfer-calculator | Gate 2 | standard | FAIL | 1 | - | - | - |
+| 2026-07-08T19:33:49Z | transfer-calculator | Gate 3 | standard | FAIL | 1 | - | - | - |
