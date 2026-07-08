@@ -158,6 +158,10 @@ calcular_traslado(date(2026, 5, 15),
 - Ciclo Origen: ANUAL MARZO, SM, PRESENCIAL, CUOTAS (10 cuotas de S/ 510)
 - Ciclo Destino: SEMIANUAL MARZO, SM, VIRTUAL, CUOTAS (7 cuotas de S/ 360)
 
+**Nota sobre el cálculo:**
+- El algoritmo prorratea **solo la cuota vigente** en la fecha del traslado, no suma el monto completo de las cuotas futuras.
+- El valor residual depende de cuántas semanas de la cuota vigente ya se han consumido.
+
 **Esperado:**
 - Estado: SALDO_A_FAVOR
 - Mensaje: "Saldo a favor: S/ 75.00"
@@ -187,6 +191,11 @@ calcular_traslado(date(2026, 5, 15),
 - Fecha de traslado: 29/07/2026 (miércoles, dentro de la semana de Fiestas Patrias)
 - Ciclo Origen: ANUAL MARZO, SM, PRESENCIAL, CONTADO
 - Ciclo Destino: ANUAL MARZO, SM, VIRTUAL, CONTADO
+
+**Nota sobre feriados:**
+- Los feriados definidos son: 28/07, 29/07 (Fiestas Patrias) y 25/12 (Navidad).
+- Cada feriado "cancela" la semana completa (lunes-domingo) en la que cae.
+- El algoritmo extiende la duración efectiva del ciclo sumando las semanas de feriado.
 
 **Esperado:**
 - Estado: SALDO_A_FAVOR

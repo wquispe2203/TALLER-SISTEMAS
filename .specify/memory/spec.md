@@ -269,7 +269,7 @@ Entonces debe mostrar una alerta destacada en rojo indicando el monto faltante e
 
 El sistema MUST solicitar los siguientes campos obligatorios:
 
-* Fecha de traslado (formato DD/MM/YYYY)
+* Fecha de traslado (formato DD/MM/YYYY, D/M/YYYY, YYYY-MM-DD, o "En la matrícula" para usar fecha de inicio del ciclo)
 * Ciclo origen:
   - Nombre del ciclo
   - Universidad
@@ -290,8 +290,7 @@ El sistema MUST aceptar únicamente las modalidades académicas que aparecen en 
 
 ### FR-006 Desglose de operaciones
 
-El sistema MUST mostrar junto al resultado final el desglose 
-de las operaciones matemáticas realizadas, incluyendo:
+El sistema MUST mostrar junto al resultado final el desglose de las operaciones matemáticas realizadas, incluyendo:
 
 * Semanas totales del ciclo origen
 * Semanas transcurridas a la fecha de traslado
@@ -299,6 +298,17 @@ de las operaciones matemáticas realizadas, incluyendo:
 * Fórmula y resultado del saldo disponible
 * Fórmula y resultado del costo del ciclo destino
 * Operación final y resultado
+
+### FR-006.1 Estructura de salida del cálculo
+
+El sistema MUST devolver el resultado con la siguiente estructura:
+
+* `saldo_origen`: valor residual del ciclo de origen
+* `costo_destino`: valor residual del ciclo de destino
+* `diferencia`: `saldo_origen - costo_destino`
+* `estado`: uno de `SALDO_A_FAVOR`, `MONTO_PENDIENTE`, `TRASLADO_CUBIERTO`
+* `mensaje`: texto amigable con el resultado
+* `detalle`: objeto con `semanas_totales`, `semanas_consumidas` y `semanas_restantes` para origen y destino
 
 ### FR-007 Validación prioritaria en cascada
 
@@ -323,6 +333,31 @@ El sistema MUST aceptar únicamente las siguientes condiciones de pago:
 El sistema MUST rechazar el traslado si pago_en_origen != pago_en_destino.
 
 Mensaje de error: "No se permiten traslados entre modalidades de pago diferentes. Si requiere este tipo de traslado, debe procesarlo manualmente."
+
+### FR-012 Reglas de cálculo de semanas consumidas (CONTADO)
+
+> Renumerado 2026-07-07 al fusionar con `origin/FEATURE-SDD-ENTERPRISE` (commit `37e6277`, edición manual paralela a esta sesión): originalmente etiquetado "FR-010" en esa edición, pero ese número ya lo usa el FR-010 de esta sesión ("Desglose expresado como cálculo manual"). Contenido sin cambios, solo el número.
+
+El sistema MUST aplicar las siguientes reglas para determinar semanas consumidas en modalidad CONTADO:
+
+* Las semanas se anclan al calendario global: cada semana empieza en lunes y termina en domingo.
+* Si la fecha de traslado cae en **lunes o martes**, la semana actual NO se considera consumida.
+* Si la fecha de traslado cae entre **miércoles y domingo**, la semana actual SÍ se considera consumida.
+* Las semanas de feriado completas no se cuentan como consumidas y se restan del cálculo.
+
+### FR-013 Reglas de cálculo de semanas consumidas (CUOTAS)
+
+> Renumerado 2026-07-07 (era "FR-011" en `origin/FEATURE-SDD-ENTERPRISE`, colisionaba con el FR-011 de esta sesión). Contenido sin cambios.
+
+El sistema MUST aplicar las siguientes reglas para determinar semanas consumidas en modalidad CUOTAS:
+
+* Las semanas se anclan a la **fecha de inicio del periodo de la cuota**, no al lunes del calendario.
+* El algoritmo calcula solo el valor residual de la **cuota vigente** en la fecha del traslado (no suma todas las cuotas futuras).
+* El periodo de una cuota va desde su fecha de inicio hasta la fecha de la siguiente cuota.
+* Para la última cuota, el periodo va hasta el fin del ciclo.
+* Las semanas feriado dentro del periodo de la cuota no se consideran consumidas.
+* Si la fecha de traslado es anterior a la primera cuota, se debe el valor completo de la primera cuota.
+* Si la fecha de traslado es igual o posterior al fin del ciclo, el valor residual es `0.00`.
 
 # 4. Requisitos No Funcionales (NFR)
 
@@ -365,11 +400,21 @@ Resultado esperado:
 
 El sistema ajusta el cálculo saltando la semana de feriado y usa la fecha ajustada para determinar semanas consumidas.
 
+**Feriados oficiales:**
+* 28/07 (Fiestas Patrias)
+* 29/07 (Fiestas Patrias)
+* 25/12 (Navidad)
+
 ### CB-5 Semana de feriado (Navidad)
 
 Resultado esperado:
 
 El sistema ajusta el cálculo saltando la semana de feriado y usa la fecha ajustada para determinar semanas consumidas.
+
+**Feriados oficiales:**
+* 28/07 (Fiestas Patrias)
+* 29/07 (Fiestas Patrias)
+* 25/12 (Navidad)
 
 ### CB-6 Resultado exactamente igual a cero
 
@@ -378,7 +423,7 @@ Resultado esperado:
 El sistema muestra:
 
 * Resultado: S/ 0
-* Estado: "Sin saldo pendiente"
+* Estado: "Traslado cubierto exactamente"
 
 ### CB-7 Traslado durante la última semana académica
 
@@ -428,7 +473,7 @@ Si estas fechas no existen o son incorrectas, el sistema no podrá calcular corr
 
 ### A-3
 
-Asumimos que el Excel define claramente las semanas de feriados institucionales (Fiestas Patrias y Navidad) que afectan el calendario académico.
+Asumimos que el Excel define claramente las semanas de feriados institucionales (Fiestas Patrias: 28/07 y 29/07, y Navidad: 25/12) que afectan el calendario académico.
 
 Si esta definición cambia, será necesario actualizar las constantes en el código.
 
@@ -488,5 +533,3 @@ Las dependencias de runtime y calidad se declararán en `requirements.txt` (Flas
 * Gestión de descuentos.
 * Modificación de información académica o financiera.
 
-```
-```
