@@ -13,3 +13,7 @@
 - CB-8/CB-9: null explícito, sin fallback inventado
 - Clamp de semana_actual en CONTADO: sí, agregar
 - Nombres de campo: unificados, sin prefijo por modalidad
+
+## Hidden Requirement Candidates
+
+- Ninguno identificado. Todos los requisitos están formalizados en spec.md como User Stories (US-1 a US-4) con sus Acceptance Criteria (AC-1.1 a AC-3.8), Functional Requirements (FR-001 a FR-013) y Casos Borde (CB-1 a CB-10).

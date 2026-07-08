@@ -14,6 +14,15 @@ reference_count: 0
 | Date | Feature | Gate | Ceremony | Result | Errors | Warnings | Duration | Notes |
 |------|---------|------|----------|--------|--------|----------|----------|-------|
 
-| 2026-07-08T19:30:24Z | transfer-calculator | Gate 1 | standard | FAIL | 7 | - | - | - |
-| 2026-07-08T19:33:48Z | transfer-calculator | Gate 2 | standard | FAIL | 1 | - | - | - |
-| 2026-07-08T19:33:49Z | transfer-calculator | Gate 3 | standard | FAIL | 1 | - | - | - |
+| 2026-07-08T22:37:38Z | transfer-calculator | Gate 1 | standard | PASS | 0 | - | - | - |
+| 2026-07-08T22:37:53Z | transfer-calculator | Gate 2 | standard | FAIL | 1 | - | - | - |
+| 2026-07-08T22:38:25Z | transfer-calculator | Gate 2 | standard | PASS | 0 | - | - | - |
+| 2026-07-08T22:38:42Z | transfer-calculator | Gate 2 | standard | PASS | 0 | - | - | - |
+| 2026-07-08T22:38:51Z | transfer-calculator | Gate 3 | standard | FAIL | 1 | - | - | - |
+| 2026-07-08T22:39:21Z | transfer-calculator | Gate 3 | standard | PASS | 0 | - | - | - |
+| 2026-07-08T22:39:30Z | transfer-calculator | Gate 3 | standard | PASS | 0 | - | - | - |
+| 2026-07-08T22:39:54Z | transfer-calculator | Gate 1 | standard | PASS | 0 | - | - | - |
+| 2026-07-08T22:39:57Z | transfer-calculator | Gate 2 | standard | PASS | 0 | - | - | - |
+| 2026-07-08T22:40:00Z | transfer-calculator | Gate 3 | standard | PASS | 0 | - | - | - |
+| 2026-07-08T22:58:12Z | transfer-calculator | Gate 2 | standard | PASS | 0 | - | - | - |
+| 2026-07-08T23:01:17Z | transfer-calculator | Gate 3 | standard | PASS | 0 | - | - | - |

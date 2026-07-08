@@ -1,0 +1,39 @@
+{
+  ".specify\\specs\\transfer-calculator\\business-context.md": {
+    "phase": "1",
+    "sha256": "ff96adb437c244027ccb19357580b13864b32f2f252ce401ea10c5b537865489",
+    "written-at": "2026-07-08T22:39:55Z",
+    "written-by": "sdd-gate-1"
+  },
+  ".specify\\specs\\transfer-calculator\\clarifications.md": {
+    "phase": "2",
+    "sha256": "05478eb91c4d19dbf13e696c988e77d179e978d60a12a2468fb9675082d2606c",
+    "written-at": "2026-07-08T22:58:12Z",
+    "written-by": "sdd-gate-2"
+  },
+  ".specify\\specs\\transfer-calculator\\plan.md": {
+    "phase": "3",
+    "sha256": "0ddd0b612663b0dd52a076295516f68f57110ae0a11b009bece7b7e08493442e",
+    "written-at": "2026-07-08T23:01:17Z",
+    "written-by": "sdd-gate-3"
+  },
+  ".specify\\specs\\transfer-calculator\\spec.md": {
+    "phase": "1",
+    "sha256": "843143f923a77b3a66e1fa7f563c010c10d1d123e8e59018f7aa7a14a1ef76ec",
+    "written-at": "2026-07-08T22:39:55Z",
+    "written-by": "sdd-gate-1"
+  },
+  ".specify\\specs\\transfer-calculator\\tasks.md": {
+    "phase": "3",
+    "sha256": "d9d70a040d5420844e461618673d272e94e8b3e750c30f8cca5264b145db7e76",
+    "written-at": "2026-07-08T23:01:17Z",
+    "written-by": "sdd-gate-3"
+  },
+  ".specify\\specs\\transfer-calculator\\test-cases.md": {
+    "phase": "3",
+    "sha256": "ff37bb184f9413bc316aebe28462dfe067c66df4b2abb57bc00a349b97a2535b",
+    "written-at": "2026-07-08T23:01:17Z",
+    "written-by": "sdd-gate-3"
+  },
+  "_schema": "Wave 23 \u00a723.B.4 \u2014 see .specify/templates/.artifact-hashes.example.json for the documented schema."
+}

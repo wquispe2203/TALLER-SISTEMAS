@@ -197,7 +197,7 @@
     const dest = det.destino || {};
 
     const filas = [
-      ['Semanas totales del ciclo', orig.semanas_totales ?? '—', dest.semanas_totales ?? '—'],
+      ['Semanas totales', orig.semanas_totales ?? '—', dest.semanas_totales ?? '—'],
       ['Semanas consumidas',        orig.semanas_consumidas ?? '—', dest.semanas_consumidas ?? '—'],
       ['Semanas restantes',         orig.semanas_restantes ?? '—', dest.semanas_restantes ?? '—'],
       ['Saldo / Costo calculado',   fmt(r.saldo_origen), fmt(r.costo_destino)],

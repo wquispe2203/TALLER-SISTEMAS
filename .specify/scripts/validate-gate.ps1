@@ -37,13 +37,13 @@ $MemoryDir      = Join-Path $RepoRoot '.specify\memory'
 $CheckpointsDir = Join-Path $RepoRoot '.specify\checkpoints'
 $ConfigFile     = Join-Path $RepoRoot '.specify\config.json'
 
-# ── Helper functions ──────────────────────────────────────────────────
+# -- Helper functions --------------------------------------------------
 
-function Write-Info  { param([string]$Msg) Write-Host "ℹ️  $Msg" -ForegroundColor Blue }
-function Write-Ok    { param([string]$Msg) Write-Host "✅ $Msg" -ForegroundColor Green }
-function Write-Warn  { param([string]$Msg) Write-Host "⚠️  $Msg" -ForegroundColor Yellow }
-function Write-Err   { param([string]$Msg) Write-Host "❌ $Msg" -ForegroundColor Red }
-function Write-Check { param([string]$Msg) Write-Host "   ↳ $Msg" -ForegroundColor Cyan }
+function Write-Info  { param([string]$Msg) Write-Host "[INFO] $Msg" -ForegroundColor Blue }
+function Write-Ok    { param([string]$Msg) Write-Host "[OK]   $Msg" -ForegroundColor Green }
+function Write-Warn  { param([string]$Msg) Write-Host "[WARN] $Msg" -ForegroundColor Yellow }
+function Write-Err   { param([string]$Msg) Write-Host "[ERROR] $Msg" -ForegroundColor Red }
+function Write-Check { param([string]$Msg) Write-Host "   -> $Msg" -ForegroundColor Cyan }
 
 function Test-FileExists {
     param([string]$Path, [string]$Desc)
@@ -100,7 +100,7 @@ function Test-USInPlan {
         if ($planC -match [regex]::Escape($id)) { $found++ } else { $missing += $id }
     }
     if ($missing.Count -gt 0) { Write-Err "User stories NOT in plan.md: $($missing -join ', ')" }
-    Write-Check "Spec → Plan traceability: $found/$($ids.Count) user stories"
+    Write-Check "Spec -> Plan traceability: $found/$($ids.Count) user stories"
     return ($found -eq $ids.Count)
 }
 
@@ -166,7 +166,7 @@ function Test-ShipChecklist {
     return ($completed -ge $total)
 }
 
-# ── Goal-Backward Verification (Wave 8) ──────────────────────────────
+# -- Goal-Backward Verification (Wave 8) ------------------------------
 
 function Test-GoalBackward {
     param([string]$Dir)
@@ -199,7 +199,7 @@ function Test-GoalBackward {
     return $true
 }
 
-# ── Stuck detection (Wave 8) ─────────────────────────────────────────
+# -- Stuck detection (Wave 8) -----------------------------------------
 
 function Test-StuckDetection {
     param([string]$Dir, [int]$Gate)
@@ -247,7 +247,7 @@ function Invoke-ExtensionHooks {
     }
 }
 
-# ── Autonomy provenance checks (Wave 11 Phase J) ─────────────────────
+# -- Autonomy provenance checks (Wave 11 Phase J) ---------------------
 
 function Get-ExecutionMode {
     param([string]$Dir)
@@ -362,15 +362,15 @@ function Test-AutonomyProvenance {
     return $e
 }
 
-# ── Gate validators ───────────────────────────────────────────────────
+# -- Gate validators ---------------------------------------------------
 
 function Invoke-Gate1 {
     param([string]$Dir)
     $e = 0
     Write-Host ''
-    Write-Host '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
-    Write-Host '  🚪 Gate 1: Three Amigos Review'
-    Write-Host '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+    Write-Host '======================================================='
+    Write-Host '  == Gate 1: Three Amigos Review'
+    Write-Host '======================================================='
     Write-Host ''
 
     # Delta-spec detection: if delta-spec.md exists, use delta validation path
@@ -434,9 +434,9 @@ function Invoke-Gate2 {
     param([string]$Dir)
     $e = 0
     Write-Host ''
-    Write-Host '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
-    Write-Host '  🚪 Gate 2: Technical Alignment Review'
-    Write-Host '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+    Write-Host '======================================================='
+    Write-Host '  == Gate 2: Technical Alignment Review'
+    Write-Host '======================================================='
     Write-Host ''; Write-Host 'Checking: Does the design fulfill the spec?'; Write-Host ''
     Write-Info 'Required artifacts:'
     if (-not (Test-FileExists (Join-Path $Dir 'plan.md') 'plan.md')) { $e++ }
@@ -468,9 +468,9 @@ function Invoke-Gate3 {
     param([string]$Dir)
     $e = 0
     Write-Host ''
-    Write-Host '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
-    Write-Host '  🚪 Gate 3: Implementation Gate'
-    Write-Host '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+    Write-Host '======================================================='
+    Write-Host '  == Gate 3: Implementation Gate'
+    Write-Host '======================================================='
     Write-Host ''; Write-Host 'Checking: Are spec, design, and tests aligned?'; Write-Host ''
     Write-Info 'Required artifacts:'
     if (-not (Test-FileExists (Join-Path $Dir 'test-cases.md') 'test-cases.md')) { $e++ }
@@ -491,9 +491,9 @@ function Invoke-Gate4 {
     param([string]$Dir)
     $e = 0
     Write-Host ''
-    Write-Host '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
-    Write-Host '  🚪 Gate 4: Ship Gate'
-    Write-Host '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+    Write-Host '======================================================='
+    Write-Host '  == Gate 4: Ship Gate'
+    Write-Host '======================================================='
     Write-Host ''; Write-Host 'Checking: Is this ready for production?'; Write-Host ''
     Write-Info 'Validating previous gates...'
     $e += Invoke-Gate1 $Dir
@@ -509,7 +509,7 @@ function Invoke-Gate4 {
     return $e
 }
 
-# ── Main ──────────────────────────────────────────────────────────────
+# -- Main --------------------------------------------------------------
 
 $FeatureDir = Join-Path $SpecsDir $FeatureId
 if (-not (Test-Path $FeatureDir)) {
@@ -580,9 +580,9 @@ try {
         4 {
             if ($CeremonyLevel -eq 'ultra-light') {
                 Write-Host ''
-                Write-Host '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
-                Write-Host '  🚪 Gate 4: Ship Gate (ultra-light)'
-                Write-Host '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+                Write-Host '======================================================='
+                Write-Host '  == Gate 4: Ship Gate (ultra-light)'
+                Write-Host '======================================================='
                 Write-Host ''
                 $e = 0
                 if (-not (Test-FileExists (Join-Path $FeatureDir 'spec.md') 'spec.md')) { $e++ }
@@ -657,17 +657,17 @@ try {
     }
 
     # Final verdict
-    Write-Host '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+    Write-Host '======================================================='
     if ($result -eq 0) {
-        Write-Ok "GATE ${GateNumber}: PASSED ✅"
+        Write-Ok "GATE ${GateNumber}: PASSED"
         Write-Host ''; Write-Host '  Ready to proceed to the next phase!'
         Invoke-ExtensionHooks -HookName 'after-gate-pass' -HookArgs @($FeatureId, $GateNumber)
     } else {
         Write-Err "GATE ${GateNumber}: FAILED ($result issues)"
         Write-Host ''
 
-        # ── Explain-mode diagnostics (OpenSpec MVP — Evolution §12 item #8) ──
-        Write-Host '📋 EXPLAIN:' -ForegroundColor Cyan
+        # -- Explain-mode diagnostics (OpenSpec MVP — Evolution §12 item #8) --
+        Write-Host ' EXPLAIN:' -ForegroundColor Cyan
         switch ($GateNumber) {
             1 {
                 Write-Host '   What failed:  Gate 1 (Three Amigos Review) requires business-context.md, spec.md'
@@ -726,7 +726,7 @@ try {
 
         Write-Host '  Please address the issues above before proceeding.'
     }
-    Write-Host '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+    Write-Host '======================================================='
 
     exit $result
 } finally {

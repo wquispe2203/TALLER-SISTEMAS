@@ -18,7 +18,7 @@ No se contempla almacenamiento histórico de cálculos en esta fase.
 
 # 2. Stack y Estructura de Archivos
 
-> **Estructura real (verificada 2026-07-07, ver `zproyect/`):** el código vive bajo `zproyect/`, no en la raíz del repo como se planificó originalmente. La separación `validation.py`/`calculator.py` **no se ha realizado**: toda la lógica de validación y cálculo sigue junta en `traslados.py` (435 líneas). Esto es la tarea T004/T005 de `tasks.md`, todavía pendiente — contradice ADR-1 (separación lógica/UI) parcialmente: la UI sí está separada, pero validación y cálculo no lo están entre sí.
+> **Estructura real (verificada 2026-07-07, ver `zproyect/`):** el código vive bajo `zproyect/`, no en la raíz del repo como se planificó originalmente. La separación **no se ha realizado**: toda la lógica de validación y cálculo sigue junta en `traslados.py` (435 líneas). Esto es la tarea T004/T005 de `tasks.md`, todavía pendiente — contradice ADR-1 (separación lógica/UI) parcialmente: la UI sí está separada, pero validación y cálculo no lo están entre sí.
 
 ```
 TALLER-SISTEMAS/zproyect/

@@ -2,7 +2,7 @@
 
 ## Propósito
 
-Este documento describe el algoritmo implementado en `traslados.py` para calcular el saldo o el monto pendiente cuando un alumno solicita un traslado entre ciclos de estudio.
+Este documento describe el algoritmo de **traslados** para calcular el saldo o el monto pendiente cuando un alumno solicita un traslado entre ciclos de estudio.
 
 ## Flujo general
 

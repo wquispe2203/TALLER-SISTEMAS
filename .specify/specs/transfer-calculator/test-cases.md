@@ -2,6 +2,7 @@
 
 Este documento define la suite de 15 casos de prueba (Test Cases) para la Calculadora de Montos de Traslado Académico. **Todos los valores esperados de este documento fueron generados ejecutando directamente `zproyect/traslados.py` contra `zproyect/data/parameters.json` (2026-07-07)** — no son cálculos manuales ni provienen del Excel original. Todos los ciclos referenciados existen verificados en `parameters.json`; ningún caso usa nombres de ciclo inventados.
 
+> **Cobertura de User Stories:** TC-1/2/3/6/7/8/9 cubren US-1, TC-4/5/10 cubren US-2, TC-11/14/15 cubren US-3, TC-12/13 cubren US-4.
 > Actualización 2026-07-07 (FR-010): se agregaron TC-14 y TC-15, que documentan el desglose "estilo cálculo manual" (`detalle.origen/destino.pasos`) — la respuesta de la API ahora narra el cálculo paso a paso (qué semana, desde cuándo, cuántas consumidas) en vez de mostrar solo el resultado final de una resta. Ver spec.md AC-3.4/AC-3.5 y `zproyect/traslados.py::generar_pasos_contado`/`generar_pasos_cuotas`. Los 13 casos anteriores (TC-1 a TC-13) siguen siendo válidos; todos, ejecutados hoy, quedan verificados 1:1 contra `zproyect/test/test_traslados.py`.
 
 > Nota de sincronización (2026-07-07): la versión anterior de este documento usaba dos ciclos que **no existen** en `parameters.json` ("SEMIANUAL ENERO, SM" y "ANUAL MARZO, UNI") y varios valores esperados correspondían a una versión previa del algoritmo (antes de que CUOTAS pasara a prorratear solo la cuota vigente). Ver `decisions.md` → entrada 2026-07-07 y `lessons.md` → entrada 2026-07-07.
