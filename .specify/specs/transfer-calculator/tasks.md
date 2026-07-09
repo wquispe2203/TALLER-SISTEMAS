@@ -25,8 +25,8 @@ Este documento contiene la lista de tareas ordenadas por dependencias para la ca
 * **Criterios de prueba:** Ejecutar suite de pruebas unitarias cubriendo TC-1, TC-2, TC-3, TC-9.
 
 - [x] T006 [US1] Integrar el nuevo motor de cálculo en el endpoint `POST /api/traslados/calcular` de `zproyect/app.py` (nombre corregido 2026-07-07; el código real nunca usó `/api/transfer-calculator`)
-- [ ] T007 [P] [US1] Crear pruebas unitarias para traslados CONTADO en `zproyect/test/test_traslados.py`
-- [ ] T008 [P] [US1] Crear pruebas unitarias para traslados CUOTAS en `zproyect/test/test_traslados.py`
+- [x] T007 [P] [US1] Crear pruebas unitarias para traslados CONTADO en `zproyect/test/test_traslados.py` — verificado 2026-07-09: 36 tests pytest con 0 fallos; cobertura 83%
+- [x] T008 [P] [US1] Crear pruebas unitarias para traslados CUOTAS en `zproyect/test/test_traslados.py` — idem T007, tests CUOTAS incluidos en los 36 tests
 
 ---
 
@@ -35,8 +35,8 @@ Este documento contiene la lista de tareas ordenadas por dependencias para la ca
 * **Meta de la historia:** Asegurar la correcta validación fail-fast antes de computar montos.
 * **Criterios de prueba:** Validar TC-4, TC-5, TC-10 y obtener respuestas con error controlado.
 
-- [ ] T009 [US2] Implementar validaciones en cascada de ciclos, modalidad de pago y rango de fechas en `zproyect/validation.py`
-- [ ] T010 [P] [US2] Crear pruebas para flujos de error en `zproyect/test/test_traslados.py`
+- [x] T009 [US2] Implementar validaciones en cascada de ciclos, modalidad de pago y rango de fechas en `zproyect/validation.py` — verificado 2026-07-09: función `validar_traslado()` retorna `ValidacionResult`; `calcular_traslado` la delega; 36 tests OK
+- [x] T010 [P] [US2] Crear pruebas para flujos de error en `zproyect/test/test_traslados.py` — verificado 2026-07-09: `test_tc4_error_modalidad_diferente`, `test_tc5_error_fuera_de_rango`, `test_tc10_error_ciclo_no_encontrado`, `test_error_ciclo_destino_no_encontrado`, `test_error_fuera_de_rango_destino` pasan
 
 ---
 
@@ -46,7 +46,7 @@ Este documento contiene la lista de tareas ordenadas por dependencias para la ca
 * **Criterios de prueba:** Validar TC-6, TC-7, TC-8 y TC-11; verificar el texto plano copiado al portapapeles.
 
 - [x] T011 [US3] Agregar desglose de semanas y feriados al JSON de respuesta en `zproyect/app.py` — satisfecha 2026-07-07 por T018/T019 (`detalle.origen/destino` con `pasos`); no fue necesario tocar `app.py` porque ya reenvía `resultado` completo.
-- [ ] T012 [P] [US3] Implementar botón y lógica de copiado rápido de resumen en `zproyect/static/js/app.js`
+- [x] T012 [P] [US3] Implementar botón y lógica de copiado rápido de resumen en `zproyect/static/js/app.js` — verificado 2026-07-09: botón existe en `index.html:136`, lógica completa en `app.js:318-365` con feedback visual "¡Copiado!"
 
 ---
 
@@ -63,8 +63,8 @@ Este documento contiene la lista de tareas ordenadas por dependencias para la ca
 
 ## Fase 7: Pulido y Calidad
 
-- [ ] T016 Validar formato PEP8 y corregir lints con ruff en todos los archivos python de `zproyect/`
-- [ ] T017 Ejecutar pruebas de cobertura unitaria superiores al 80% sobre `zproyect/test/test_traslados.py`
+- [x] T016 Validar formato PEP8 y corregir lints con ruff en todos los archivos python de `zproyect/` — verificado 2026-07-09: `ruff check --fix` resuelve 16 errores (imports no ordenados, unused imports, newline faltante)
+- [x] T017 Ejecutar pruebas de cobertura unitaria superiores al 80% sobre `zproyect/test/test_traslados.py` — verificado 2026-07-09: `pytest --cov` reporta 83% total (traslados 62%, calculator 88%, validation 94%)
 
 ---
 

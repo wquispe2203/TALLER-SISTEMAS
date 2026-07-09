@@ -64,12 +64,10 @@ Probar:
 import os
 
 from flask import Flask, jsonify, render_template, request
-
 from traslados import (
     CicloInput,
-    TrasladoError,
-    cargar_parametros,
     calcular_traslado_seguro,
+    cargar_parametros,
     parse_fecha,
 )
 

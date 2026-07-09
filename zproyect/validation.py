@@ -5,7 +5,6 @@ from dataclasses import dataclass
 from datetime import date
 from typing import Optional
 
-
 # ---------------------------------------------------------------------------
 # Errores y tipos
 # ---------------------------------------------------------------------------
@@ -71,3 +70,75 @@ def buscar_ciclo(parametros: dict, nombre: str, institucion: str, modalidad: str
         ):
             return ciclo
     return None
+
+
+# ---------------------------------------------------------------------------
+# Validación en cascada
+# ---------------------------------------------------------------------------
+
+@dataclass
+class ValidacionResult:
+    ciclo_origen: dict
+    ciclo_destino: dict
+    pago_en: str
+    fecha_inicio_origen: date
+    fecha_fin_origen: date
+    fecha_inicio_destino: date
+    fecha_fin_destino: date
+
+
+def validar_traslado(
+    fecha_traslado: date,
+    origen: CicloInput,
+    destino: CicloInput,
+    parametros: dict,
+) -> ValidacionResult:
+    """
+    Validación en cascada fail-fast:
+    1. Existencia de ambos ciclos en parameters.json
+    2. Igualdad de modalidad de pago entre origen y destino
+    3. Fecha de traslado dentro del rango de ambos ciclos
+
+    Devuelve un ValidacionResult con los datos ya validados para el cálculo.
+    Lanza TrasladoError en el primer incumplimiento.
+    """
+    ciclo_origen = buscar_ciclo(parametros, origen.nombre, origen.universidad, origen.modalidad_academica)
+    if ciclo_origen is None:
+        raise TrasladoError("Ciclo origen no encontrado en la base de datos")
+
+    ciclo_destino = buscar_ciclo(parametros, destino.nombre, destino.universidad, destino.modalidad_academica)
+    if ciclo_destino is None:
+        raise TrasladoError("Ciclo destino no encontrado en la base de datos")
+
+    if origen.pago_en.strip().upper() != destino.pago_en.strip().upper():
+        raise TrasladoError(
+            "No se permiten traslados entre modalidades de pago diferentes. "
+            "Si requiere este tipo de traslado, debe procesarlo manualmente."
+        )
+    pago_en = origen.pago_en.strip().upper()
+    if pago_en not in _PAGO_A_PLAN:
+        raise TrasladoError(f"Modalidad de pago inválida: {origen.pago_en}")
+
+    fecha_inicio_origen = parse_fecha(ciclo_origen["start_date"])
+    fecha_fin_origen = parse_fecha(ciclo_origen["end_date"])
+    fecha_inicio_destino = parse_fecha(ciclo_destino["start_date"])
+    fecha_fin_destino = parse_fecha(ciclo_destino["end_date"])
+
+    if not (fecha_inicio_origen <= fecha_traslado <= fecha_fin_origen):
+        raise TrasladoError(
+            f"La fecha de traslado está fuera del rango del ciclo origen ({ciclo_origen['cycle_name']})"
+        )
+    if not (fecha_inicio_destino <= fecha_traslado <= fecha_fin_destino):
+        raise TrasladoError(
+            f"La fecha de traslado está fuera del rango del ciclo destino ({ciclo_destino['cycle_name']})"
+        )
+
+    return ValidacionResult(
+        ciclo_origen=ciclo_origen,
+        ciclo_destino=ciclo_destino,
+        pago_en=pago_en,
+        fecha_inicio_origen=fecha_inicio_origen,
+        fecha_fin_origen=fecha_fin_origen,
+        fecha_inicio_destino=fecha_inicio_destino,
+        fecha_fin_destino=fecha_fin_destino,
+    )

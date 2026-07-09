@@ -2,43 +2,43 @@
   ".specify\\specs\\transfer-calculator\\business-context.md": {
     "phase": "1",
     "sha256": "561c76733837cd8f9df6ce7da664591fa6f4d9ba97c22977b90f72d7cdad5719",
-    "written-at": "2026-07-09T15:05:20Z",
+    "written-at": "2026-07-09T16:47:56Z",
     "written-by": "sdd-gate-1"
   },
   ".specify\\specs\\transfer-calculator\\clarifications.md": {
     "phase": "2",
     "sha256": "63fcb53bc84bdb76c800bb655224ffd40b853e620849a47505754a488b20354b",
-    "written-at": "2026-07-09T15:05:22Z",
+    "written-at": "2026-07-09T15:21:01Z",
     "written-by": "sdd-gate-2"
   },
   ".specify\\specs\\transfer-calculator\\plan.md": {
     "phase": "3",
     "sha256": "5e780e1dd5006c1beb3649e6e3c3e5f66057fa0357c8f126a6e12743dffc9a01",
-    "written-at": "2026-07-09T15:05:26Z",
+    "written-at": "2026-07-09T15:21:04Z",
     "written-by": "sdd-gate-3"
   },
   ".specify\\specs\\transfer-calculator\\ship-checklist.md": {
     "phase": "4",
     "sha256": "0fe1587ce973aeca66d02d5c40d4a4bfc525c5a35899dfd1473cb249c0c6880e",
-    "written-at": "2026-07-09T15:18:03Z",
+    "written-at": "2026-07-09T16:26:28Z",
     "written-by": "sdd-gate-4"
   },
   ".specify\\specs\\transfer-calculator\\spec.md": {
     "phase": "1",
     "sha256": "843143f923a77b3a66e1fa7f563c010c10d1d123e8e59018f7aa7a14a1ef76ec",
-    "written-at": "2026-07-09T15:05:20Z",
+    "written-at": "2026-07-09T16:47:56Z",
     "written-by": "sdd-gate-1"
   },
   ".specify\\specs\\transfer-calculator\\tasks.md": {
     "phase": "3",
     "sha256": "52d16c471f30c4b0e779b80d1962be248d1aeae8c1cda7194bff77276aaf36d4",
-    "written-at": "2026-07-09T15:05:26Z",
+    "written-at": "2026-07-09T15:21:04Z",
     "written-by": "sdd-gate-3"
   },
   ".specify\\specs\\transfer-calculator\\test-cases.md": {
     "phase": "3",
     "sha256": "ff37bb184f9413bc316aebe28462dfe067c66df4b2abb57bc00a349b97a2535b",
-    "written-at": "2026-07-09T15:05:26Z",
+    "written-at": "2026-07-09T15:21:04Z",
     "written-by": "sdd-gate-3"
   },
   "_schema": "Wave 23 \u00a723.B.4 \u2014 see .specify/templates/.artifact-hashes.example.json for the documented schema."

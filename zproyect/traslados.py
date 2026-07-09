@@ -5,27 +5,18 @@ import sys
 from datetime import date
 from decimal import Decimal
 
-from validation import (
-    TrasladoError,
-    CicloInput,
-    _PAGO_A_PLAN,
-    parse_fecha,
-    cargar_parametros,
-    buscar_ciclo,
-)
 from calculator import (
-    FERIADOS_DIAS,
-    contar_semanas_feriado_entre,
-    obtener_semanas_feriado_lunes,
-    calcular_semanas_consumidas,
-    calcular_valor_contado,
-    _seleccionar_cuota_vigente,
-    _fmt_fecha_opt,
     generar_pasos_contado,
     generar_pasos_cuotas,
-    calcular_valor_cuotas,
 )
-
+from validation import (
+    _PAGO_A_PLAN,
+    CicloInput,
+    TrasladoError,
+    cargar_parametros,
+    parse_fecha,
+    validar_traslado,
+)
 
 # ---------------------------------------------------------------------------
 # Algoritmo principal
@@ -38,60 +29,28 @@ def calcular_traslado(
     destino: CicloInput,
     parametros: dict,
 ) -> dict:
-    # PASO 1: existencia de ciclos
-    ciclo_origen = buscar_ciclo(parametros, origen.nombre, origen.universidad, origen.modalidad_academica)
-    if ciclo_origen is None:
-        raise TrasladoError("Ciclo origen no encontrado en la base de datos")
+    vr = validar_traslado(fecha_traslado, origen, destino, parametros)
+    pago_en = vr.pago_en
 
-    ciclo_destino = buscar_ciclo(parametros, destino.nombre, destino.universidad, destino.modalidad_academica)
-    if ciclo_destino is None:
-        raise TrasladoError("Ciclo destino no encontrado en la base de datos")
-
-    # PASO 2: modalidad de pago igual
-    if origen.pago_en.strip().upper() != destino.pago_en.strip().upper():
-        raise TrasladoError(
-            "No se permiten traslados entre modalidades de pago diferentes. "
-            "Si requiere este tipo de traslado, debe procesarlo manualmente."
-        )
-    pago_en = origen.pago_en.strip().upper()
-    if pago_en not in _PAGO_A_PLAN:
-        raise TrasladoError(f"Modalidad de pago inválida: {origen.pago_en}")
-
-    # PASO 3: fecha dentro de rango
-    fecha_inicio_origen = parse_fecha(ciclo_origen["start_date"])
-    fecha_fin_origen = parse_fecha(ciclo_origen["end_date"])
-    fecha_inicio_destino = parse_fecha(ciclo_destino["start_date"])
-    fecha_fin_destino = parse_fecha(ciclo_destino["end_date"])
-
-    if not (fecha_inicio_origen <= fecha_traslado <= fecha_fin_origen):
-        raise TrasladoError(
-            f"La fecha de traslado está fuera del rango del ciclo origen ({ciclo_origen['cycle_name']})"
-        )
-    if not (fecha_inicio_destino <= fecha_traslado <= fecha_fin_destino):
-        raise TrasladoError(
-            f"La fecha de traslado está fuera del rango del ciclo destino ({ciclo_destino['cycle_name']})"
-        )
-
-    # PASO 4 y 5: valor residual + desglose narrado
     plan_key = _PAGO_A_PLAN[pago_en]
-    plan_origen = ciclo_origen["payment_plans"][plan_key]
-    plan_destino = ciclo_destino["payment_plans"][plan_key]
+    plan_origen = vr.ciclo_origen["payment_plans"][plan_key]
+    plan_destino = vr.ciclo_destino["payment_plans"][plan_key]
 
     if pago_en == "CONTADO":
         pasos_origen, det_origen = generar_pasos_contado(
-            "Ciclo origen", fecha_traslado, fecha_inicio_origen, fecha_fin_origen,
-            ciclo_origen["duration_weeks"], Decimal(str(plan_origen["cash_price"])),
+            "Ciclo origen", fecha_traslado, vr.fecha_inicio_origen, vr.fecha_fin_origen,
+            vr.ciclo_origen["duration_weeks"], Decimal(str(plan_origen["cash_price"])),
         )
         pasos_destino, det_destino = generar_pasos_contado(
-            "Ciclo destino", fecha_traslado, fecha_inicio_destino, fecha_fin_destino,
-            ciclo_destino["duration_weeks"], Decimal(str(plan_destino["cash_price"])),
+            "Ciclo destino", fecha_traslado, vr.fecha_inicio_destino, vr.fecha_fin_destino,
+            vr.ciclo_destino["duration_weeks"], Decimal(str(plan_destino["cash_price"])),
         )
     else:  # CUOTAS
         pasos_origen, det_origen = generar_pasos_cuotas(
-            "Ciclo origen", plan_origen["installments"], fecha_traslado, fecha_inicio_origen, fecha_fin_origen,
+            "Ciclo origen", plan_origen["installments"], fecha_traslado, vr.fecha_inicio_origen, vr.fecha_fin_origen,
         )
         pasos_destino, det_destino = generar_pasos_cuotas(
-            "Ciclo destino", plan_destino["installments"], fecha_traslado, fecha_inicio_destino, fecha_fin_destino,
+            "Ciclo destino", plan_destino["installments"], fecha_traslado, vr.fecha_inicio_destino, vr.fecha_fin_destino,
         )
 
     saldo_origen = det_origen.pop("valor")
