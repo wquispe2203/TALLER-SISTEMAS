@@ -14,8 +14,8 @@ Este documento contiene la lista de tareas ordenadas por dependencias para la ca
 ## Fase 2: Fundacionales (Prerrequisitos de Arquitectura)
 
 - [x] T003 Alinear resultados esperados y ciclos inexistentes en `.specify/memory/spec.md` y `.specify/memory/test-cases.md` con la matemática correcta del algoritmo v4
-- [ ] T004 Refactorizar lógica de validaciones de `zproyect/traslados.py` hacia `zproyect/validation.py`
-- [ ] T005 Refactorizar motor de cálculo de `zproyect/traslados.py` hacia `zproyect/calculator.py`
+- [x] T004 Refactorizar lógica de validaciones de `zproyect/traslados.py` hacia `zproyect/validation.py` — verificado 2026-07-09: `traslados.py` importa de `validation.py`; `python test/test_traslados.py` reporta 61 checks OK; `sdd analyze` PASS WITH WARNINGS.
+- [x] T005 Refactorizar motor de cálculo de `zproyect/traslados.py` hacia `zproyect/calculator.py` — verificado 2026-07-09: `calculator.py` contiene feriados, semanas, prorrateo, `generar_pasos_contado`/`generar_pasos_cuotas` y `calcular_valor_*`; idem tests 61 OK.
 
 ---
 

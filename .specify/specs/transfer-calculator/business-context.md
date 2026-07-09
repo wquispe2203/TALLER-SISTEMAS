@@ -16,3 +16,13 @@ La solución impacta directamente al equipo de Soporte TI, responsable de calcul
 ## Stakeholders
 
 El principal stakeholder es el equipo de Soporte TI, que necesita una herramienta confiable para reducir errores y tiempos de respuesta. La Gerencia aprueba las reglas de negocio mediante el Excel oficial. Los estudiantes son los beneficiarios finales al recibir una liquidación precisa de su traslado académico. El área de TI es responsable de mantener la herramienta y actualizar los parámetros cuando cambien las reglas de negocio. Se espera que la herramienta sea utilizada por al menos 5 analistas durante cada campaña académica.
+
+## Métricas y Objetivos
+
+| Métrica | Línea Base | Objetivo | Cómo se mide |
+|---------|-----------|----------|--------------|
+| Tiempo por solicitud | 10–20 min manual | < 30 seg automático | Log de tiempo del endpoint POST /api/traslados/calcular |
+| Tasa de error en cálculo | ~5–10 % estimado (error humano) | 0 % (cálculo determinista) | Diferencia contra Excel oficial en suite de tests |
+| Consistencia entre analistas | Variable (criterio individual) | 100 % (mismo input → mismo output) | Misma función de cálculo para todos los request |
+| Disponibilidad en campaña | N/A (proceso manual) | 99.9 % uptime en horario laboral | Health check endpoint + monitoreo básico |
+| Usuarios simultáneos | 1 solicitud a la vez | 5+ analistas simultáneos | Prueba de carga con 5 request concurrentes |

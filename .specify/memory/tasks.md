@@ -97,6 +97,17 @@ Este documento contiene la lista de tareas ordenadas por dependencias para la ca
 
 ---
 
+## Fase 11: Corrección de feriados — exclusión completa (2026-07-09)
+
+- [x] T025 Actualizar `zproyect/test/test_traslados.py` con valores esperados corregidos (feriados excluidos del cálculo). TC-1: 3557.25, TC-6/7/8: 4131.00/4016.25, TC-12: 2409.75, TC-13: 127.50, TC-15: 2180.25. Verificado con `python test/test_traslados.py`: 61 checks OK.
+- [x] T026 Actualizar `.specify/memory/test-cases.md` con valores, notas de cálculo y narrativas corregidas (feriados excluidos). Documentar qué cambió y por qué.
+- [x] T027 Actualizar `zproyect/algoritmo_traslados.md` para describir la fórmula correcta (÷duration_weeks, sin sumar feriados).
+- [x] T028 Actualizar `zproyect/memory_cambios.md` para reflejar la exclusión completa de feriados.
+- [x] T029 Documentar la corrección en `.specify/memory/decisions.md` (entrada 2026-07-09 con tabla de valores antes/después).
+- [x] T030 Actualizar `.specify/memory/spec.md` — AC-1.1, AC-1.3, AC-3.5, AC-3.2, FR-006, FR-010, CB-4/CB-5 — para reflejar la exclusión de feriados. Verificado por análisis cruzado: 7/7 PASS.
+
+---
+
 ## Grafo de Dependencia
 
 ```mermaid
@@ -119,4 +130,10 @@ graph TD
     T020 --> T021
     T021 --> T022
     T022 --> T023
+    T023 --> T025
+    T025 --> T026
+    T026 --> T027
+    T027 --> T028
+    T028 --> T029
+    T029 --> T030
 ```

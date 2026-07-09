@@ -40,8 +40,10 @@ Dado un traslado válido (TC-1 del algoritmo):
 Cuando el usuario ejecuta el cálculo,
 
 Entonces el sistema muestra:
-* Resultado: S/ 1060.72 de saldo a favor
+* Resultado: S/ 1046.25 de saldo a favor
 * Estado: "Saldo a favor"
+
+> **Nota (2026-07-09):** Corregido de S/ 1060.72 a S/ 1046.25 por la exclusión de feriados. Anteriormente el denominador era `duration_weeks + feriados` (42), ahora es solo `duration_weeks` (40). Ver `decisions.md` entrada 2026-07-09.
 
 ### AC-1.2 (Traslado cubierto)
 
@@ -66,8 +68,10 @@ Dado un traslado válido (TC-2 del algoritmo):
 Cuando el usuario ejecuta el cálculo,
 
 Entonces el sistema muestra:
-* Resultado: S/ 1060.72 pendiente de pago
+* Resultado: S/ 1046.25 pendiente de pago
 * Estado: "Monto pendiente"
+
+> **Nota (2026-07-09):** Corregido de S/ 1060.72 a S/ 1046.25 — reverso simétrico de AC-1.3, misma corrección por exclusión de feriados.
 
 ---
 
@@ -139,7 +143,7 @@ Cuando el usuario ejecuta el cálculo,
 
 Entonces el sistema muestra además del resultado final:
 
-* Semanas totales del ciclo origen (incluyendo semanas de feriado)
+* Semanas totales de clase del ciclo origen (feriados ya excluidos)
 * Semanas transcurridas a la fecha de traslado (ajustado por feriados)
 * Semanas restantes
 * Fórmula y resultado del saldo disponible (con valor residual de contado/cuotas)
@@ -152,7 +156,7 @@ Entonces el sistema muestra además del resultado final:
 
 El sistema MUST presentar el desglose de FR-006 como una secuencia de pasos redactados en lenguaje natural que reproduzcan el razonamiento que seguiría un analista calculando a mano — no únicamente los números finales de una resta.
 
-* **Para CONTADO**, la secuencia MUST incluir explícitamente: la fecha de inicio del ciclo y su día de semana; en qué semana (por índice y rango de fechas, ancladas al lunes del calendario) cae la fecha de traslado; si esa semana se considera consumida o no según la regla lunes/martes (no consumida) vs miércoles-domingo (consumida); cuántas semanas de feriado caen dentro del ciclo completo; y la fórmula con los valores sustituidos: `valor por semana = cash_price ÷ semanas efectivas` y `saldo = valor por semana × semanas restantes`.
+* **Para CONTADO**, la secuencia MUST incluir explícitamente: la fecha de inicio del ciclo y su día de semana; en qué semana (por índice y rango de fechas, ancladas al lunes del calendario) cae la fecha de traslado; si esa semana se considera consumida o no según la regla lunes/martes (no consumida) vs miércoles-domingo (consumida); cuántas semanas de feriado caen dentro del ciclo completo (solo informativo, no afectan el cálculo); y la fórmula con los valores sustituidos: `valor por semana = cash_price ÷ duration_weeks` y `saldo = valor por semana × semanas restantes`. Los feriados no se cobran al alumno: no se incluyen ni en las semanas de clase ni en las semanas restantes.
 * **Para CUOTAS**, la secuencia MUST incluir: qué cuota está vigente a la fecha de traslado y su monto; el periodo de esa cuota (fecha de inicio y fin, ancladas a la fecha de inicio de la propia cuota, no al calendario global); cuántos días y semanas dura ese periodo; cuántos días y semanas han transcurrido desde el inicio del periodo hasta la fecha de traslado; si alguna semana del periodo es una semana de feriado (y por tanto no cuenta como consumida); y la fórmula con los valores sustituidos: `valor residual = monto de la cuota × semanas restantes ÷ semanas totales del periodo`.
 * Implementación de referencia: `traslados.py::generar_pasos_contado` / `generar_pasos_cuotas`, expuestas en `detalle.origen.pasos` / `detalle.destino.pasos` de la respuesta de `calcular_traslado`.
 
@@ -170,7 +174,9 @@ Dado un traslado CONTADO válido (fecha 15/05/2026, SEMIANUAL MARZO SM Presencia
 
 Cuando el sistema genera el desglose,
 
-Entonces debe mostrar, en este orden: fecha de inicio del ciclo y su día de semana (16/03/2026, lunes), en qué semana (por índice y rango de fechas) cae la fecha de traslado (semana 9: 11/05/2026–17/05/2026), si esa semana cuenta como consumida (15/05 es viernes → sí), semanas consumidas (9), semanas feriado del ciclo completo (1), semanas efectivas (28 + 1 = 29), semanas restantes (29 − 9 = 20), y la fórmula sustituida (3213.00 ÷ 29 × 20 = 2215.86).
+Entonces debe mostrar, en este orden: fecha de inicio del ciclo y su día de semana (16/03/2026, lunes), en qué semana (por índice y rango de fechas) cae la fecha de traslado (semana 9: 11/05/2026–17/05/2026), si esa semana cuenta como consumida (15/05 es viernes → sí), semanas consumidas (9), semanas feriado del ciclo completo (1), semanas de clase (28, feriados ya excluidos), semanas restantes (28 − 9 = 19), y la fórmula sustituida (3213.00 ÷ 28 × 19 = 2180.25).
+
+> **Nota (2026-07-09):** Corregido: antes se sumaban los feriados al denominador (28+1=29, 3213÷29×20=2215.86). Ahora los feriados se excluyen completamente: solo 28 semanas de clase, 19 restantes.
 
 ### AC-3.2 (Ajuste por feriados)
 
@@ -182,7 +188,7 @@ Entonces el sistema debe incluir explícitamente en el detalle:
 
 * Las semanas de feriado que se cancelan y se saltan en el calendario académico.
 * La fecha ajustada usada para el cálculo de semanas consumidas.
-* La aclaración de que las semanas efectivas incluyen las semanas de feriado.
+* La aclaración de que los feriados no se cobran al alumno (no se incluyen ni en las semanas de clase ni en las semanas restantes).
 
 ### AC-3.3 (Exportación o copia rápida para atención de tickets)
 
@@ -409,12 +415,7 @@ El sistema ajusta el cálculo saltando la semana de feriado y usa la fecha ajust
 
 Resultado esperado:
 
-El sistema ajusta el cálculo saltando la semana de feriado y usa la fecha ajustada para determinar semanas consumidas.
-
-**Feriados oficiales:**
-* 28/07 (Fiestas Patrias)
-* 29/07 (Fiestas Patrias)
-* 25/12 (Navidad)
+El sistema ajusta el cálculo saltando la semana de feriado (25/12) y la excluye completamente del cómputo de semanas de clase.
 
 ### CB-6 Resultado exactamente igual a cero
 

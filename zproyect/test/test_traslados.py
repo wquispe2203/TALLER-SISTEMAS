@@ -58,19 +58,16 @@ origen = CicloInput("ANUAL MARZO", "SM", "PRESENCIAL", "CONTADO")
 destino = CicloInput("ANUAL MARZO", "SM", "VIRTUAL", "CONTADO")  # mismo ciclo real distinto modalidad
 r = calcular_traslado(date(2026, 5, 15), origen, destino, PARAMS)
 det = r["resultado"]["detalle"]["origen"]
-check("TC-1 adaptado: semanas consumidas origen = 9", det["semanas_consumidas"] == 9)
-# NOTA: el TC-1 original del documento da 3557.25 porque NO aplica su propia
-# Regla 5 (semanas_efectivas = duration_weeks + feriados_del_ciclo_completo).
-# El ciclo ANUAL MARZO (16/3-31/12) SÍ cruza 2 semanas feriado (jul + dic),
-# tal como lo confirma el propio TC-11 del documento (semanas_efectivas=42).
-# Aplicando la fórmula correctamente (y consistente con TC-11), el valor real es 3606.43.
-check("TC-1 con Regla 5 aplicada correctamente (feriados del ciclo completo): 3606.43", r["resultado"]["saldo_origen"] == 3606.43)
-# detalle.semanas_totales/semanas_restantes deben reflejar semanas_efectivas (42),
-# no duration_weeks (40) sin ajustar — bug corregido 2026-07-07 (T018/T019):
-# antes "semanas_restantes" del detalle (40-9=31) no coincidía con las semanas
-# realmente usadas por la fórmula (42-9=33).
-check("TC-1: detalle.semanas_totales == semanas_efectivas (42)", det["semanas_totales"] == 42)
-check("TC-1: detalle.semanas_restantes == 42 - 9 = 33", det["semanas_restantes"] == 33)
+check("TC-1: semanas consumidas origen = 9", det["semanas_consumidas"] == 9)
+# CORREGIDO 2026-07-09: los feriados NO se cobran al alumno. Anteriormente se
+# sumaban al denominador (duration_weeks + feriados = 42), diluyendo el costo.
+# Ahora duration_weeks (40) se usa directamente: valor_semana = 4590/40 = 114.75,
+# semanas_restantes = 40-9 = 31, saldo = 114.75*31 = 3557.25.
+check("TC-1: saldo_origen == 3557.25 (feriados excluidos, /40)", r["resultado"]["saldo_origen"] == 3557.25)
+check("TC-1: costo_destino == 2511.00 (3240/40*31)", r["resultado"]["costo_destino"] == 2511.00)
+# detalle ahora usa duration_weeks (no + feriados) porque los feriados no se cobran.
+check("TC-1: detalle.semanas_totales == duration_weeks (40)", det["semanas_totales"] == 40)
+check("TC-1: detalle.semanas_restantes == 40 - 9 = 31", det["semanas_restantes"] == 31)
 check("TC-1: detalle incluye 'pasos' (desglose humano, FR-010)", len(det["pasos"]) > 0)
 print("   -> ", r["resultado"]["mensaje"])
 
@@ -81,19 +78,17 @@ print("   -> ", r["resultado"]["mensaje"])
 origen40 = CicloInput("ANUAL MARZO", "SM", "PRESENCIAL", "CONTADO")
 destino40 = CicloInput("ANUAL MARZO", "SM", "VIRTUAL", "CONTADO")
 
-# NOTA: igual que en TC-1, los valores 4131.00/4016.25 del documento original
-# no aplican la Regla 5 completa (semanas_efectivas=42 en vez de 40). Los
-# valores correctos con la fórmula ya corregida son 4152.86 / 4043.57.
-# Lo que SÍ se preserva (y es lo que estos TC realmente verifican) es que
-# lunes y martes dan el mismo resultado, y miércoles da un valor menor.
+# CORREGIDO 2026-07-09: feriados excluidos (÷40 en vez de ÷42). Los valores
+# correctos son 4131.00 / 4016.25. Lo que se preserva es que lunes y martes
+# dan el mismo resultado, y miércoles da un valor menor.
 r_lunes = calcular_traslado(date(2026, 4, 13), origen40, destino40, PARAMS)  # lunes
-check("TC-6 lunes: saldo_origen == 4152.86", r_lunes["resultado"]["saldo_origen"] == 4152.86)
+check("TC-6 lunes: saldo_origen == 4131.00", r_lunes["resultado"]["saldo_origen"] == 4131.00)
 
 r_martes = calcular_traslado(date(2026, 4, 14), origen40, destino40, PARAMS)  # martes
-check("TC-7 martes: saldo_origen == 4152.86 (igual que lunes)", r_martes["resultado"]["saldo_origen"] == r_lunes["resultado"]["saldo_origen"])
+check("TC-7 martes: saldo_origen == 4131.00 (igual que lunes)", r_martes["resultado"]["saldo_origen"] == r_lunes["resultado"]["saldo_origen"])
 
 r_miercoles = calcular_traslado(date(2026, 4, 15), origen40, destino40, PARAMS)  # miércoles
-check("TC-8 miércoles: saldo_origen == 4043.57 (sí consumida, menor que lunes/martes)", r_miercoles["resultado"]["saldo_origen"] == 4043.57)
+check("TC-8 miércoles: saldo_origen == 4016.25 (sí consumida, menor que lunes/martes)", r_miercoles["resultado"]["saldo_origen"] == 4016.25)
 check("TC-8 < TC-6 (miércoles consume una semana más que lunes)", r_miercoles["resultado"]["saldo_origen"] < r_lunes["resultado"]["saldo_origen"])
 
 
@@ -142,18 +137,19 @@ check("AC-3.4/TC-14: pasos menciona la cuota 1 y el periodo 16/03/2026 al 11/04/
 
 # ---------------------------------------------------------------------------
 # AC-3.5 (spec.md) / TC-15 (test-cases.md): desglose humano CONTADO
-# Ejemplo verificado manualmente por el usuario y confirmado contra el
-# código real: 15/05/2026, SEMIANUAL MARZO SM Presencial->Virtual CONTADO.
+# CORREGIDO 2026-07-09: feriados excluidos del cálculo. El ciclo SEMIANUAL
+# MARZO tiene 1 feriado en su rango (Fiestas Patrias), pero NO se suma al
+# denominador. duration_weeks=28 es el total de semanas de clase.
 # ---------------------------------------------------------------------------
 o15 = CicloInput("SEMIANUAL MARZO", "SM", "PRESENCIAL", "CONTADO")
 d15 = CicloInput("SEMIANUAL MARZO", "SM", "VIRTUAL", "CONTADO")
 r15 = calcular_traslado(date(2026, 5, 15), o15, d15, PARAMS)
-check("AC-3.5/TC-15: saldo_origen == 2215.86", r15["resultado"]["saldo_origen"] == 2215.86)
-check("AC-3.5/TC-15: costo_destino == 1564.14", r15["resultado"]["costo_destino"] == 1564.14)
-check("AC-3.5/TC-15: diferencia == 651.72, SALDO_A_FAVOR", r15["resultado"]["diferencia"] == 651.72 and r15["resultado"]["estado"] == "SALDO_A_FAVOR")
+check("AC-3.5/TC-15: saldo_origen == 2180.25 (3213/28*19)", r15["resultado"]["saldo_origen"] == 2180.25)
+check("AC-3.5/TC-15: costo_destino == 1539.00 (2268/28*19)", r15["resultado"]["costo_destino"] == 1539.00)
+check("AC-3.5/TC-15: diferencia == 641.25, SALDO_A_FAVOR", r15["resultado"]["diferencia"] == 641.25 and r15["resultado"]["estado"] == "SALDO_A_FAVOR")
 det15 = r15["resultado"]["detalle"]["origen"]
-check("AC-3.5/TC-15: semanas efectivas 29 (28+1 feriado), 9 consumidas, 20 restantes",
-      det15["semanas_totales"] == 29 and det15["semanas_consumidas"] == 9 and det15["semanas_restantes"] == 20)
+check("AC-3.5/TC-15: semanas de clase 28, 9 consumidas, 19 restantes",
+      det15["semanas_totales"] == 28 and det15["semanas_consumidas"] == 9 and det15["semanas_restantes"] == 19)
 check("AC-3.5/TC-15: pasos menciona la semana 9 y que el 15/05/2026 es viernes",
       any("semana 9" in p for p in det15["pasos"]) and any("viernes" in p for p in det15["pasos"]))
 
@@ -192,15 +188,40 @@ check("TC-10: ciclo origen no encontrado (modo seguro)", r10 == {"success": Fals
 
 
 # ---------------------------------------------------------------------------
-# Traslado durante semana de feriado (Fiestas Patrias 2026): mismo ciclo -> cubierto
+# TC-12: Traslado CONTADO durante semana de feriado (Fiestas Patrias 2026)
+# CORREGIDO 2026-07-09: feriados excluidos del cálculo. Anteriormente se
+# sumaban al denominador. Ahora: valor_semana=4590/40, restantes=40-19=21,
+# saldo=2409.75 (vs 2513.57 con la fórmula antigua ÷42).
 # ---------------------------------------------------------------------------
 o_fer = CicloInput("ANUAL MARZO", "SM", "PRESENCIAL", "CONTADO")
 d_fer = CicloInput("ANUAL MARZO", "SM", "VIRTUAL", "CONTADO")
 r_fer = calcular_traslado(date(2026, 7, 29), o_fer, d_fer, PARAMS)
-check("Feriado: mismo ciclo real (incluye semana feriado) -> saldo == costo", r_fer["resultado"]["saldo_origen"] != r_fer["resultado"]["costo_destino"])
-# (saldo != costo aquí porque son modalidades con precios distintos SM Presencial vs Virtual;
-#  lo importante es que NO explota y que semanas_consumidas ya excluye la semana feriado)
-print("   -> semanas consumidas origen en semana feriado:", r_fer["resultado"]["detalle"]["origen"]["semanas_consumidas"])
+check("TC-12: saldo_origen == 2409.75 (4590/40*(40-19))", r_fer["resultado"]["saldo_origen"] == 2409.75)
+check("TC-12: costo_destino == 1701.00 (3240/40*21)", r_fer["resultado"]["costo_destino"] == 1701.00)
+check("TC-12: diferencia == 708.75, SALDO_A_FAVOR", r_fer["resultado"]["diferencia"] == 708.75 and r_fer["resultado"]["estado"] == "SALDO_A_FAVOR")
+det_fer = r_fer["resultado"]["detalle"]["origen"]
+check("TC-12: semanas de clase 40, 19 consumidas (feriado excluido), 21 restantes",
+      det_fer["semanas_totales"] == 40 and det_fer["semanas_consumidas"] == 19 and det_fer["semanas_restantes"] == 21)
+print("   -> ", r_fer["resultado"]["mensaje"])
+
+
+# ---------------------------------------------------------------------------
+# TC-13: CUOTAS con feriado en el periodo de la cuota vigente (05/08/2026)
+# CORREGIDO 2026-07-09: feriados excluidos. Cuota 5 de ANUAL MARZO tiene
+# periodo 04/07-08/08 (5 semanas calendario, 1 feriado = 4 semanas reales).
+# Con nueva fórmula: semanas_totales=4, consumidas=3, restantes=1.
+# saldo_origen=510*1/4=127.50, costo_destino=360*1/4=90.00.
+# ---------------------------------------------------------------------------
+o13 = CicloInput("ANUAL MARZO", "SM", "PRESENCIAL", "CUOTAS")
+d13 = CicloInput("ANUAL MARZO", "SM", "VIRTUAL", "CUOTAS")
+r13 = calcular_traslado(date(2026, 8, 5), o13, d13, PARAMS)
+check("TC-13: saldo_origen == 127.50 (510*1/4, feriado excluido del total)", r13["resultado"]["saldo_origen"] == 127.50)
+check("TC-13: costo_destino == 90.00 (360*1/4)", r13["resultado"]["costo_destino"] == 90.00)
+check("TC-13: diferencia == 37.50, SALDO_A_FAVOR", r13["resultado"]["diferencia"] == 37.50 and r13["resultado"]["estado"] == "SALDO_A_FAVOR")
+det13 = r13["resultado"]["detalle"]["origen"]
+check("TC-13: semanas totales 4 (5-1 feriado), 3 consumidas, 1 restante",
+      det13["semanas_totales"] == 4 and det13["semanas_consumidas"] == 3 and det13["semanas_restantes"] == 1)
+print("   -> ", r13["resultado"]["mensaje"])
 
 
 # ---------------------------------------------------------------------------

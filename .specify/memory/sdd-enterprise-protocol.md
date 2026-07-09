@@ -13,7 +13,7 @@ Una auditoría (2026-07-07) encontró que SDD Enterprise estaba **instalado pero
 
 - `tasks.md` tenía tareas marcadas `[x]` que en la práctica seguían rotas (T003 decía "alineado con el algoritmo v4" y `test-cases.md` seguía citando ciclos que no existían en `parameters.json`).
 - El frontmatter de `last_referenced_at`/`reference_count` de los archivos de memoria estaba congelado en una fecha **anterior al primer commit real del proyecto** — prueba de que los "scripts de gate automáticos" nunca corrieron.
-- Los workflows de CI (`spec-gate-enforcement.yml`, etc.) filtran por rutas (`.specify/specs/**`) que **no existen** en este repo (acá todo vive en `.specify/memory/`) — estructuralmente no pueden dispararse.
+- Los workflows de CI (`spec-gate-enforcement.yml`, etc.) filtran por rutas (`.specify/specs/**`) — en este repo SÍ existe `.specify/specs/transfer-calculator/` con los artefactos de la feature. Sin embargo, la memoria activa (los archivos que se editan) está en `.specify/memory/`. Hay dos copias: los artefactos en `specs/transfer-calculator/` y la memoria en `memory/`. Se recomienda mantener `specs/transfer-calculator/` como la copia canónica que el CLI consume, y sincronizar `memory/` desde ahí (o viceversa).
 - `zproyect/test/test_traslados.py` fallaba en tiempo de colección por una aserción con un valor obsoleto, sin que nadie lo hubiera notado.
 
 Ninguna de estas fallas requería mala intención — bastó con no verificar antes de dar algo por hecho. Este documento existe para que no se repita.
@@ -40,7 +40,7 @@ Ninguna de estas fallas requería mala intención — bastó con no verificar an
 - Todos los archivos de `.specify/memory/*.md` están sincronizados y verificados contra `zproyect/app.py` / `zproyect/traslados.py` ejecutados — no contra el Excel original ni cálculos a mano. Ver `decisions.md` para el historial completo de qué se corrigió y por qué.
 - `zproyect/test/test_traslados.py` corre limpio (`pytest -s`, sin fallos) — pero el archivo usa asserts a nivel de módulo, no `def test_*`, así que pytest reporta "0 items"/exit 5 aunque todo pase. Migrar a funciones `test_*` reales es una mejora pendiente, no un bloqueante.
 - Tareas reales pendientes (ver `tasks.md`): **T004, T005** (separar `traslados.py` en `validation.py`/`calculator.py`), **T007, T008** (tests unitarios formales adicionales), **T009, T010** (validaciones en cascada explícitas + tests de error), **T012** (botón de copiado en la UI), **T016, T017** (ruff + cobertura ≥80%).
-- El CLI real `sdd` (bajo `.specify/cli/`) es invocable: `PYTHONPATH=.specify/cli python -m sdd status` corre (confirmado 2026-07-07), pero reporta "No features found" porque esta feature nunca se registró con `sdd new`/`feature.lock.json`. Si se retoma el uso del CLI en vez de edición manual, ese es el primer paso real a dar — no asumir que ya está integrado.
+- El CLI real `sdd` (bajo `.specify/cli/`) **funciona correctamente** desde 2026-07-09. Se creó `feature.lock.json` en `.specify/specs/transfer-calculator/` para que la resolución sea explícita (no dependa del nombre del branch). Comandos verificados: `sdd status` (detecta feature, todos los artefactos Present), `sdd analyze` (PASS WITH WARNINGS). Uso: `$env:PYTHONPATH=".specify/cli"; python -m sdd <comando> [feature-id]`.
 
 ## Qué NO hacer
 

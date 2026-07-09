@@ -205,6 +205,57 @@ Después de tomar una decisión importante, añade una nueva entrada:
 
 ---
 
+## 2026-07-09 Feature 001: Feriados completamente excluidos del cálculo (no se cobran al alumno)
+
+**Contexto:** Se identificó que la fórmula anterior (`duration_weeks + semanas_feriado` como denominador) diluía el costo de los feriados entre todas las semanas en vez de eliminarlo. El negocio requiere que los feriados sean literalmente gratis para el alumno: no deben aparecer ni en el denominador ni en el numerador del cálculo de valor residual. Ver el análisis detallado en el historial de la sesión ("las semanas feriados, se contaba por el modelo...").
+
+**Opciones Consideradas:**
+1. Mantener la fórmula anterior (`÷42`) — los feriados se diluyen, pero el texto "no se cobran" era impreciso.
+2. Excluir feriados completamente (código actual, implementado en `traslados.py`) — `duration_weeks` como único denominador, feriados excluidos también de semanas consumidas. Esta ya era la implementación real en `traslados.py::calcular_valor_contado` y `calcular_semanas_consumidas`, pero los tests y la documentación aún reflejaban el comportamiento anterior.
+
+**Elegida:** Opción 2 (la que ya está en el código). Se actualizan tests, test-cases.md, algoritmo_traslados.md y memory_cambios.md para reflejar el comportamiento real.
+
+**Razonamiento:**
+- El código fuente (`traslados.py`) ya implementaba la exclusión correcta de feriados:
+  - `calcular_valor_contado`: usa `duration_weeks` directamente sin sumar feriados.
+  - `calcular_semanas_consumidas`: salta semanas feriado sin contarlas.
+  - `_detalle_semanas_periodo`: las semanas feriado se restan del total para CUOTAS.
+- Solo los tests y la documentación estaban desactualizados (aún esperaban la fórmula diluida).
+- La narrativa de `generar_pasos_contado` ya era correcta: "No se cobran al alumno: no se incluyen ni en las semanas de clase ni en las semanas restantes."
+
+**Cambios realizados (2026-07-09):**
+- `zproyect/test/test_traslados.py`: actualizados valores esperados de TC-1, TC-6/7/8, TC-12, TC-13, TC-15.
+- `.specify/memory/test-cases.md`: actualizados valores esperados y notas de cálculo de todos los casos afectados.
+- `zproyect/algoritmo_traslados.md`: descripción del algoritmo corregida (÷duration_weeks, no ÷(duration_weeks+feriados)).
+- `zproyect/memory_cambios.md`: reglas de CONTADO y CUOTAS corregidas.
+
+**Valores que cambiaron (fórmula ÷40 vs ÷42 anterior):**
+
+| Caso | Concepto | Antes (÷42) | Ahora (÷40) |
+|------|----------|-------------|-------------|
+| TC-1 | saldo_origen | 3606.43 | 3557.25 |
+| TC-1 | costo_destino | 2545.71 | 2511.00 |
+| TC-1 | diff | 1060.72 | 1046.25 |
+| TC-6/7 | saldo_origen (lun/mar) | 4152.86 | 4131.00 |
+| TC-8 | saldo_origen (mié) | 4043.57 | 4016.25 |
+| TC-12 | saldo_origen (feriado) | 2513.57 | 2409.75 |
+| TC-12 | costo_destino | 1774.29 | 1701.00 |
+| TC-12 | diff | 739.28 | 708.75 |
+| TC-13 | saldo_origen (CUOTAS feriado) | 204.00 (×2/5) | 127.50 (×1/4) |
+| TC-13 | diff | 60.00 | 37.50 |
+| TC-15 | saldo_origen | 2215.86 | 2180.25 |
+| TC-15 | diff | 651.72 | 641.25 |
+
+TC-3/9, TC-10, TC-14 no cambiaron (sus periodos no incluyen feriados).
+
+**Compromisos Aceptados:**
+- El cambio es solo en documentación y tests; el código (`traslados.py`) no se modificó porque ya estaba correcto.
+- Los valores esperados ahora son consistentes con la ejecución real del código.
+
+**Nivel de Confianza:** Alto — todos los valores fueron generados ejecutando `calcular_traslado()` contra `parameters.json` real.
+
+---
+
 ## 2026-07-07 Feature 001: `test_traslados.py` ejecutable directo (sin `-m pytest`)
 
 **Contexto:** El usuario intentó correr los tests con `pytest test_traslados.py` (sin `python -m`) y le dio `ModuleNotFoundError: No module named 'traslados'`. Causa raíz: `pytest` (el script suelto) no agrega el directorio actual al import path de Python de la misma forma que `python -m pytest`; y el archivo vive en `zproyect/test/`, un nivel abajo de donde está `traslados.py` (`zproyect/`), sin ningún ajuste de `sys.path` que lo compensara.

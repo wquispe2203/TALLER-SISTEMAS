@@ -1,10 +1,8 @@
 # Resumen Ejecutivo
 
-Este documento define la suite de 15 casos de prueba (Test Cases) para la Calculadora de Montos de Traslado Académico. **Todos los valores esperados de este documento fueron generados ejecutando directamente `zproyect/traslados.py` contra `zproyect/data/parameters.json` (2026-07-07)** — no son cálculos manuales ni provienen del Excel original. Todos los ciclos referenciados existen verificados en `parameters.json`; ningún caso usa nombres de ciclo inventados.
+Este documento define la suite de 15 casos de prueba (Test Cases) para la Calculadora de Montos de Traslado Académico. **Todos los valores esperados de este documento fueron generados ejecutando directamente `zproyect/traslados.py` contra `zproyect/data/parameters.json` (2026-07-09)** — no son cálculos manuales ni provienen del Excel original. Todos los ciclos referenciados existen verificados en `parameters.json`; ningún caso usa nombres de ciclo inventados.
 
-> Actualización 2026-07-07 (FR-010): se agregaron TC-14 y TC-15, que documentan el desglose "estilo cálculo manual" (`detalle.origen/destino.pasos`) — la respuesta de la API ahora narra el cálculo paso a paso (qué semana, desde cuándo, cuántas consumidas) en vez de mostrar solo el resultado final de una resta. Ver spec.md AC-3.4/AC-3.5 y `zproyect/traslados.py::generar_pasos_contado`/`generar_pasos_cuotas`. Los 13 casos anteriores (TC-1 a TC-13) siguen siendo válidos; todos, ejecutados hoy, quedan verificados 1:1 contra `zproyect/test/test_traslados.py`.
-
-> Nota de sincronización (2026-07-07): la versión anterior de este documento usaba dos ciclos que **no existen** en `parameters.json` ("SEMIANUAL ENERO, SM" y "ANUAL MARZO, UNI") y varios valores esperados correspondían a una versión previa del algoritmo (antes de que CUOTAS pasara a prorratear solo la cuota vigente). Ver `decisions.md` → entrada 2026-07-07 y `lessons.md` → entrada 2026-07-07.
+> **Actualización 2026-07-09 (Corrección de feriados):** se corrigió el algoritmo para que las semanas de feriado NO se cobren al alumno (ni diluidas ni de ninguna otra forma). Anteriormente se sumaban al denominador (`duration_weeks + feriados`), lo que diluía el costo del feriado entre todas las semanas en vez de eliminarlo. Ahora `duration_weeks` se usa directamente como denominador, y las semanas feriado simplemente no cuentan ni en semanas consumidas ni en semanas totales. Ver `decisions.md` → entrada 2026-07-09. Los valores de TC-1, TC-2, TC-6/7/8, TC-12, TC-13 y TC-15 cambiaron; TC-3/9, TC-10, TC-14 permanecen iguales (sus periodos no incluyen feriados).
 
 ## Cómo reproducir estos valores
 
@@ -30,12 +28,12 @@ calcular_traslado(date(2026, 5, 15),
 
 **Esperado (verificado en `zproyect/test/test_traslados.py`):**
 - Estado: SALDO_A_FAVOR
-- Mensaje: "Saldo a favor: S/ 1060.72"
-- Saldo origen: S/ 3606.43
-- Costo destino: S/ 2545.71
-- Diferencia: S/ 1060.72
+- Mensaje: "Saldo a favor: S/ 1046.25"
+- Saldo origen: S/ 3557.25
+- Costo destino: S/ 2511.00
+- Diferencia: S/ 1046.25
 
-**Nota de cálculo:** `semanas_efectivas = duration_weeks + semanas_feriado_del_ciclo_completo = 40 + 2 = 42` (el ciclo 16/3–31/12/2026 cruza las semanas de feriado de julio y diciembre). `semanas_consumidas = 9` al 15/05/2026.
+**Nota de cálculo:** `valor_semana = cash_price / duration_weeks = 4590/40 = 114.75`. `semanas_consumidas = 9` al 15/05/2026. `semanas_restantes = 40 - 9 = 31`. `saldo = 114.75 * 31 = 3557.25`. Los feriados (2 en el ciclo completo) no se incluyen en el denominador ni en el numerador.
 
 ---
 
@@ -48,10 +46,10 @@ calcular_traslado(date(2026, 5, 15),
 
 **Esperado:**
 - Estado: MONTO_PENDIENTE
-- Mensaje: "Monto pendiente: S/ 1060.72"
-- Saldo origen: S/ 2545.71
-- Costo destino: S/ 3606.43
-- Diferencia: -S/ 1060.72
+- Mensaje: "Monto pendiente: S/ 1046.25"
+- Saldo origen: S/ 2511.00
+- Costo destino: S/ 3557.25
+- Diferencia: -S/ 1046.25
 
 ---
 
@@ -105,7 +103,7 @@ calcular_traslado(date(2026, 5, 15),
 - Ciclo Destino: ANUAL MARZO, SM, VIRTUAL, CONTADO
 
 **Esperado (verificado en `zproyect/test/test_traslados.py`):**
-- Saldo origen: S/ 4152.86 (la semana del 13/04 NO se cuenta como consumida)
+- Saldo origen: S/ 4131.00 (la semana del 13/04 NO se cuenta como consumida)
 
 ---
 
@@ -117,7 +115,7 @@ calcular_traslado(date(2026, 5, 15),
 - Ciclo Destino: ANUAL MARZO, SM, VIRTUAL, CONTADO
 
 **Esperado (verificado en `zproyect/test/test_traslados.py`):**
-- Saldo origen: S/ 4152.86 (igual que TC-6)
+- Saldo origen: S/ 4131.00 (igual que TC-6)
 
 ---
 
@@ -129,7 +127,7 @@ calcular_traslado(date(2026, 5, 15),
 - Ciclo Destino: ANUAL MARZO, SM, VIRTUAL, CONTADO
 
 **Esperado (verificado en `zproyect/test/test_traslados.py`):**
-- Saldo origen: S/ 4043.57 (menor que TC-6/TC-7: el miércoles sí consume la semana)
+- Saldo origen: S/ 4016.25 (menor que TC-6/TC-7: el miércoles sí consume la semana)
 
 ---
 
@@ -192,17 +190,18 @@ calcular_traslado(date(2026, 5, 15),
 - Ciclo Origen: ANUAL MARZO, SM, PRESENCIAL, CONTADO
 - Ciclo Destino: ANUAL MARZO, SM, VIRTUAL, CONTADO
 
-**Nota sobre feriados:**
-- Los feriados definidos son: 28/07, 29/07 (Fiestas Patrias) y 25/12 (Navidad).
-- Cada feriado "cancela" la semana completa (lunes-domingo) en la que cae.
-- El algoritmo extiende la duración efectiva del ciclo sumando las semanas de feriado.
+**Nota sobre feriados (corregido 2026-07-09):**
+- Los feriados NO se cobran al alumno. No se suman al denominador. `duration_weeks=40` se usa directamente.
+- La semana feriado se salta en el conteo de semanas consumidas: aunque el 29/07 cae en la semana 20 del ciclo, esa semana no se cuenta como consumida.
+- Semanas consumidas reales = 19 (de las 20 semanas calendario transcurridas, 1 es feriado y no cuenta).
 
 **Esperado:**
 - Estado: SALDO_A_FAVOR
-- Mensaje: "Saldo a favor: S/ 739.28"
-- Saldo origen: S/ 2513.57
-- Costo destino: S/ 1774.29
-- Semanas consumidas (origen y destino): 19 de 40 (la semana feriado 27/07–02/08 no se cuenta)
+- Mensaje: "Saldo a favor: S/ 708.75"
+- Saldo origen: S/ 2409.75 (= 4590/40 × 21)
+- Costo destino: S/ 1701.00 (= 3240/40 × 21)
+- Semanas consumidas (origen y destino): 19 de 40 semanas de clase
+- Semanas restantes: 40 − 19 = 21
 
 ---
 
@@ -210,20 +209,24 @@ calcular_traslado(date(2026, 5, 15),
 
 **Entradas:**
 - Fecha de traslado: 05/08/2026
-- Ciclo Origen: ANUAL MARZO, SM, PRESENCIAL, CUOTAS (cuota vigente: cuota 5, S/ 510, periodo 04/07/2026–08/08/2026 → 5 semanas, incluye la semana de Fiestas Patrias)
+- Ciclo Origen: ANUAL MARZO, SM, PRESENCIAL, CUOTAS (cuota vigente: cuota 5, S/ 510, periodo 04/07/2026–08/08/2026 → 5 semanas calendario, incluye la semana de Fiestas Patrias)
 - Ciclo Destino: ANUAL MARZO, SM, VIRTUAL, CUOTAS (cuota vigente: cuota 5, S/ 360, mismo periodo)
+
+**Nota (corregido 2026-07-09):**
+- Anteriormente la semana feriado se excluía solo del consumo pero se mantenía en el total (5 total, 3 consumidas, 2 restantes → 510×2/5=204.00).
+- Ahora la semana feriado se excluye del total también: 5 calendario − 1 feriado = 4 semanas reales. De las 4 semanas completas transcurridas, 3 son reales (una es feriado). Restante: 1 semana.
+- `510 × 1/4 = 127.50`, `360 × 1/4 = 90.00`.
 
 **Esperado:**
 - Estado: SALDO_A_FAVOR
-- Mensaje: "Saldo a favor: S/ 60.00"
-- Saldo origen: S/ 204.00 (= 510 × 2/5: de las 4 semanas transcurridas del periodo, 1 es la semana feriado y no cuenta como consumida → solo 3 consumidas, 2 restantes)
-- Costo destino: S/ 144.00 (= 360 × 2/5)
-
-**Nota (resuelta 2026-07-07, ver TC-14/TC-15):** la limitación que describía esta nota — el bloque `detalle` de CUOTAS mostraba las semanas del ciclo completo en vez del periodo de la cuota vigente — está corregida. `detalle.origen/destino` ahora usa, para CUOTAS, exactamente las semanas de `_detalle_semanas_periodo` (4 semanas totales / 2 consumidas / 2 restantes para este caso), las mismas que calculan el monto.
+- Mensaje: "Saldo a favor: S/ 37.50"
+- Saldo origen: S/ 127.50 (= 510 × 1/4)
+- Costo destino: S/ 90.00 (= 360 × 1/4)
+- `detalle.origen`: `semanas_totales: 4, semanas_consumidas: 3, semanas_restantes: 1`
 
 ---
 
-## TC-14: Desglose humano CUOTAS (AC-3.4) — verificado, ejemplo aportado por el usuario
+## TC-14: Desglose humano CUOTAS (AC-3.4) — sin cambios (periodo sin feriados)
 
 **Entradas:**
 - Fecha de traslado: 25/03/2026
@@ -246,7 +249,7 @@ calcular_traslado(date(2026, 5, 15),
 
 ---
 
-## TC-15: Desglose humano CONTADO (AC-3.5) — verificado, ejemplo aportado por el usuario
+## TC-15: Desglose humano CONTADO (AC-3.5) — corregido por exclusión de feriados
 
 **Entradas:**
 - Fecha de traslado: 15/05/2026
@@ -254,9 +257,9 @@ calcular_traslado(date(2026, 5, 15),
 - Ciclo Destino: SEMIANUAL MARZO, SM, VIRTUAL, CONTADO (cash_price: S/ 2268, duration_weeks: 28, mismas fechas)
 
 **Esperado (verificado en `zproyect/test/test_traslados.py`, AC-3.5/TC-15):**
-- Estado: SALDO_A_FAVOR — Mensaje: "Saldo a favor: S/ 651.72"
-- Saldo origen: S/ 2215.86 — Costo destino: S/ 1564.14 — Diferencia: S/ 651.72
-- `detalle.origen`: `semanas_totales: 29, semanas_consumidas: 9, semanas_restantes: 20`
+- Estado: SALDO_A_FAVOR — Mensaje: "Saldo a favor: S/ 641.25"
+- Saldo origen: S/ 2180.25 — Costo destino: S/ 1539.00 — Diferencia: S/ 641.25
+- `detalle.origen`: `semanas_totales: 28, semanas_consumidas: 9, semanas_restantes: 19`
 
 **`detalle.origen.pasos` (desglose humano real, `generar_pasos_contado`):**
 1. "Ciclo origen: fecha de traslado 15/05/2026 (viernes)."
@@ -264,10 +267,8 @@ calcular_traslado(date(2026, 5, 15),
 3. "La fecha de traslado cae en la semana 9 del ciclo (11/05/2026 al 17/05/2026)."
 4. "Como es viernes (miércoles a domingo consumen la semana), esa semana SÍ se cuenta como consumida."
 5. "Semanas consumidas: 9."
-6. "Dentro del ciclo completo hay 1 semana(s) de feriado (cuentan igual, haya pasado el traslado antes o después de que ocurran)."
-7. "Semanas efectivas del ciclo = duración (28) + semanas feriado (1) = 29."
-8. "Semanas restantes = semanas efectivas (29) − semanas consumidas (9) = 20."
-9. "Valor por semana = cash_price (S/ 3213.00) ÷ semanas efectivas (29) = S/ 110.7931."
-10. "Saldo = valor por semana × semanas restantes (20) = S/ 2215.86 (redondeo half-up a 2 decimales)."
-
-**Nota de verificación cruzada:** ambos TC-14 y TC-15 fueron calculados primero a mano por el usuario y luego confirmados exactos (mismos 6 valores, sin ninguna diferencia de redondeo) ejecutando `calcular_traslado()` contra el código real — ver `decisions.md`, entrada 2026-07-07, para las aclaraciones sobre reglas de redondeo que surgieron de esa verificación (round() vs ceil() en semanas de periodo; ROUND_HALF_UP vs round() nativo en montos).
+6. "Dentro del ciclo completo hay 1 semana(s) de feriado. No se cobran al alumno: no se incluyen ni en las semanas de clase ni en las semanas restantes."
+7. "Semanas de clase del ciclo (duration_weeks, feriados ya excluidos): 28."
+8. "Semanas restantes = semanas de clase (28) − semanas consumidas (9) = 19."
+9. "Valor por semana = cash_price (S/ 3213.00) ÷ semanas de clase (28) = S/ 114.7500."
+10. "Saldo = valor por semana × semanas restantes (19) = S/ 2180.25 (redondeo half-up a 2 decimales)."

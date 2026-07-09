@@ -20,13 +20,13 @@ La memoria del proyecto debe documentar la lógica actual de `traslados.py` y la
 3. Reglas de `CONTADO`
    - Las semanas se cuentan en bloques lunes-domingo.
    - Lunes y martes no consumen la semana actual; miércoles a domingo sí.
-   - Las semanas de feriado completas se excluyen del consumo.
-   - El valor residual se calcula sobre `cash_price` dividido por `duration_weeks + semanas_feriado`.
+   - Las semanas de feriado se excluyen completamente: no cuentan como consumidas NI se suman al denominador.
+   - El valor residual se calcula sobre `cash_price` dividido por `duration_weeks` únicamente. Los feriados no se cobran al alumno.
 
 4. Reglas de `CUOTAS`
    - Solo se prorratea la cuota vigente, no se suman cuotas futuras completas.
    - El periodo de la cuota está anclado a la propia fecha de inicio de la cuota.
-   - Las semanas feriado dentro del periodo no se cuentan como consumidas.
+   - Las semanas feriado dentro del periodo no se cuentan como consumidas ni se incluyen en el total de semanas del periodo.
    - Si la fecha de traslado es anterior a la primera cuota, se cobra la cuota 1 completa.
    - Si la fecha de traslado está fuera del ciclo, el valor residual es `0.00`.
 

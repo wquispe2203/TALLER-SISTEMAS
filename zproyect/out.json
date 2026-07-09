@@ -1,0 +1,99 @@
+{
+  "TC1": {
+    "saldo_origen": 3557.25,
+    "costo_destino": 2511.0,
+    "diferencia": 1046.25,
+    "detalle": {
+      "semanas_totales": 40,
+      "semanas_consumidas": 9,
+      "semanas_restantes": 31,
+      "fecha_inicio_periodo": "16/03/2026",
+      "fecha_fin_periodo": "31/12/2026",
+      "semana_actual": 9,
+      "pasos": [
+        "Ciclo origen: fecha de traslado 15/05/2026 (viernes).",
+        "El ciclo inicia el 16/03/2026 y termina el 31/12/2026.",
+        "La fecha de traslado cae en la semana 9 del ciclo (11/05/2026 al 17/05/2026).",
+        "Como es viernes (miércoles a domingo consumen la semana), esa semana SÍ se cuenta como consumida.",
+        "Semanas consumidas: 9.",
+        "Dentro del ciclo completo hay 2 semana(s) de feriado. No se cobran al alumno: no se incluyen ni en las semanas de clase ni en las semanas restantes.",
+        "Semanas de clase del ciclo (duration_weeks, feriados ya excluidos): 40.",
+        "Semanas restantes = semanas de clase (40) − semanas consumidas (9) = 31.",
+        "Valor por semana = cash_price (S/ 4590.00) ÷ semanas de clase (40) = S/ 114.7500.",
+        "Saldo = valor por semana × semanas restantes (31) = S/ 3557.25 (redondeo half-up a 2 decimales)."
+      ]
+    }
+  },
+  "TC15": {
+    "saldo_origen": 2180.25,
+    "costo_destino": 1539.0,
+    "diferencia": 641.25,
+    "detalle": {
+      "semanas_totales": 28,
+      "semanas_consumidas": 9,
+      "semanas_restantes": 19,
+      "fecha_inicio_periodo": "16/03/2026",
+      "fecha_fin_periodo": "02/10/2026",
+      "semana_actual": 9,
+      "pasos": [
+        "Ciclo origen: fecha de traslado 15/05/2026 (viernes).",
+        "El ciclo inicia el 16/03/2026 y termina el 02/10/2026.",
+        "La fecha de traslado cae en la semana 9 del ciclo (11/05/2026 al 17/05/2026).",
+        "Como es viernes (miércoles a domingo consumen la semana), esa semana SÍ se cuenta como consumida.",
+        "Semanas consumidas: 9.",
+        "Dentro del ciclo completo hay 1 semana(s) de feriado. No se cobran al alumno: no se incluyen ni en las semanas de clase ni en las semanas restantes.",
+        "Semanas de clase del ciclo (duration_weeks, feriados ya excluidos): 28.",
+        "Semanas restantes = semanas de clase (28) − semanas consumidas (9) = 19.",
+        "Valor por semana = cash_price (S/ 3213.00) ÷ semanas de clase (28) = S/ 114.7500.",
+        "Saldo = valor por semana × semanas restantes (19) = S/ 2180.25 (redondeo half-up a 2 decimales)."
+      ]
+    }
+  },
+  "TC12": {
+    "saldo_origen": 2409.75,
+    "costo_destino": 1701.0,
+    "diferencia": 708.75,
+    "detalle": {
+      "semanas_totales": 40,
+      "semanas_consumidas": 19,
+      "semanas_restantes": 21,
+      "fecha_inicio_periodo": "16/03/2026",
+      "fecha_fin_periodo": "31/12/2026",
+      "semana_actual": 20,
+      "pasos": [
+        "Ciclo origen: fecha de traslado 29/07/2026 (miércoles).",
+        "El ciclo inicia el 16/03/2026 y termina el 31/12/2026.",
+        "La fecha de traslado cae en la semana 20 del ciclo (27/07/2026 al 02/08/2026).",
+        "Como es miércoles (miércoles a domingo consumen la semana), esa semana SÍ se cuenta como consumida.",
+        "Semanas consumidas: 19.",
+        "Dentro del ciclo completo hay 2 semana(s) de feriado. No se cobran al alumno: no se incluyen ni en las semanas de clase ni en las semanas restantes.",
+        "Semanas de clase del ciclo (duration_weeks, feriados ya excluidos): 40.",
+        "Semanas restantes = semanas de clase (40) − semanas consumidas (19) = 21.",
+        "Valor por semana = cash_price (S/ 4590.00) ÷ semanas de clase (40) = S/ 114.7500.",
+        "Saldo = valor por semana × semanas restantes (21) = S/ 2409.75 (redondeo half-up a 2 decimales)."
+      ]
+    }
+  },
+  "TC13": {
+    "saldo_origen": 127.5,
+    "costo_destino": 90.0,
+    "diferencia": 37.5,
+    "detalle": {
+      "semanas_totales": 4,
+      "semanas_consumidas": 3,
+      "semanas_restantes": 1,
+      "fecha_inicio_periodo": "04/07/2026",
+      "fecha_fin_periodo": "08/08/2026",
+      "semana_actual": 5,
+      "pasos": [
+        "Ciclo origen: fecha de traslado 05/08/2026.",
+        "La cuota vigente es la cuota 5, de S/ 510.00, con periodo del 04/07/2026 al 08/08/2026 (35 días).",
+        "Ese periodo equivale a 5 semana(s) de calendario (35 días ÷ 7 = 5.00, redondeado).",
+        "Desde el inicio del periodo (04/07/2026) hasta la fecha de traslado han pasado 32 día(s).",
+        "Dentro de este periodo hay 1 semana(s) de feriado. No se cobran al alumno: no cuentan como consumidas ni se incluyen en el total de semanas del periodo (5 calendario − 1 feriado(s) = 4 semanas reales).",
+        "Semanas consumidas del periodo: 3. Semanas restantes: 4 − 3 = 1.",
+        "Valor residual = monto de la cuota (S/ 510.00) × semanas restantes (1) ÷ semanas reales del periodo (4) = S/ 127.50 (redondeo half-up a 2 decimales)."
+      ]
+    }
+  }
+}

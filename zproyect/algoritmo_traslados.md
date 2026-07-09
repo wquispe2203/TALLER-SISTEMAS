@@ -30,18 +30,18 @@ Este documento describe el algoritmo de **traslados** para calcular el saldo o e
 
 El cálculo de valores residuales para `CONTADO` sigue estos pasos:
 
-1. Se calcula cuántas semanas se han consumido desde el inicio del ciclo origen hasta la fecha de traslado.
-2. Se calcula cuántas semanas se han consumido desde el inicio del ciclo destino hasta la fecha de traslado (para compartir el mismo criterio de reporte en el detalle).
-3. Se consideran las semanas de feriado completas para extender la duración efectiva del ciclo.
-4. El valor por semana se obtiene dividiendo `cash_price` entre `duration_weeks + semanas_feriado`.
-5. El saldo restante es `valor_semana * semanas_restantes`.
+1. Se calcula cuántas semanas se han consumido desde el inicio del ciclo origen hasta la fecha de traslado, **excluyendo** las semanas de feriado.
+2. Se calcula cuántas semanas se han consumido desde el inicio del ciclo destino hasta la fecha de traslado (mismo criterio).
+3. **Las semanas de feriado NO se cobran al alumno.** No se suman al denominador: `duration_weeks` representa las semanas reales de clase.
+4. El valor por semana se obtiene dividiendo `cash_price` entre `duration_weeks` (sin añadir feriados).
+5. El saldo restante es `valor_semana * (duration_weeks - semanas_consumidas)`.
 
 ### Reglas de semanas consumidas en CONTADO
 
 - Las semanas se anclan al calendario global: cada semana empieza en lunes y termina en domingo.
 - Si la fecha de traslado cae en lunes o martes, la semana actual no se considera consumida.
 - Si la fecha de traslado cae entre miércoles y domingo, la semana actual sí se considera consumida.
-- Las semanas de feriado completas no se cuentan como consumidas y se restan del cálculo.
+- Las semanas de feriado completas no se cuentan como consumidas ni se incluyen en ningún lado del cálculo.
 
 ### Feriados para CONTADO
 
@@ -51,6 +51,7 @@ El cálculo de valores residuales para `CONTADO` sigue estos pasos:
   - 25/12
 - Cada feriado cancela la semana completa en la que cae, usando el lunes de esa semana.
 - El algoritmo busca estas semanas en el año anterior, el año del traslado y el año siguiente para cubrir rangos que crucen años.
+- Las semanas feriado son solo informativas en la narrativa: se listan pero no afectan el cálculo del monto.
 
 ## Pago CUOTAS
 

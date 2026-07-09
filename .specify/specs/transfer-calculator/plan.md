@@ -315,5 +315,24 @@ Implementación:
 
 ---
 
+## US-3 (Mostrar desglose de operaciones y resumen)
+
+Implementación:
+
+* Motor de Cálculo de Traslados (generar_pasos_contado / generar_pasos_cuotas)
+* Módulo de Resultados (detalle con pasos narrativos)
+* Interfaz de Usuario (botón de copiado, T012)
+
+---
+
+## US-4 (Interfaz de usuario premium)
+
+Implementación:
+
+* Interfaz de Usuario (HTML semántico, CSS glassmorphism, JS)
+* Módulo de Resultados (conexión del formulario con la API)
+
+---
+
 ```
 ```
