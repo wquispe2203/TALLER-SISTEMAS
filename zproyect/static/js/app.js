@@ -25,6 +25,9 @@
   const desgloseTog  = document.getElementById('desglose-toggle');
   const desgloseBody = document.getElementById('desglose-body');
   const desgloseTbod = document.getElementById('desglose-tbody');
+  const narrativaTog     = document.getElementById('narrativa-toggle');
+  const narrativaBody    = document.getElementById('narrativa-body');
+  const narrativaContent = document.getElementById('narrativa-content');
   const btnCopy      = document.getElementById('btn-copy');
 
   // Selects dinámicos
@@ -154,6 +157,16 @@
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); desgloseTog.click(); }
   });
 
+  // ── Narrativa toggle ───────────────────────────────────────────────────
+  narrativaTog.addEventListener('click', () => {
+    const open = narrativaTog.classList.toggle('open');
+    narrativaBody.classList.toggle('open', open);
+    narrativaTog.setAttribute('aria-expanded', String(open));
+  });
+  narrativaTog.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); narrativaTog.click(); }
+  });
+
   // ── Mostrar resultado ──────────────────────────────────────────────────
   function mostrarResultado(resultado) {
     const r = resultado;
@@ -209,10 +222,16 @@
       )
       .join('');
 
-    // Reset toggle
+    // Narrativa completa (texto plano generado por el backend)
+    narrativaContent.textContent = r.desglose_narrativo || '';
+
+    // Reset toggles
     desgloseTog.classList.remove('open');
     desgloseBody.classList.remove('open');
     desgloseTog.setAttribute('aria-expanded', 'false');
+    narrativaTog.classList.remove('open');
+    narrativaBody.classList.remove('open');
+    narrativaTog.setAttribute('aria-expanded', 'false');
 
     resCard.classList.remove('hidden');
     errToast.classList.add('hidden');

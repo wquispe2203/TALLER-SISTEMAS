@@ -289,4 +289,45 @@ check("CB-8 (sintético): semana_actual == 1", det_cb8["semana_actual"] == 1)
 check("CB-8 (sintético): valor == monto completo de la cuota 1 (500.00)", det_cb8["valor"] == Decimal("500.00"))
 
 
+# ---------------------------------------------------------------------------
+# AC-014 a AC-016: Narrativa paso a paso (TC-021 a TC-026)
+# ---------------------------------------------------------------------------
+
+# Reusamos variables existentes:
+#   r14 = CUOTAS, 25/03/2026, ANUAL MARZO, cuota 1 vigente
+#   r15 = CONTADO, 15/05/2026, SEMIANUAL MARZO
+
+det_ac14 = r14["resultado"]["detalle"]["origen"]
+pasos_cuotas = det_ac14["pasos"]
+check("TC-021: CUOTAS identifica cuota vigente con número y fechas",
+      any("cuota 1" in p and "16/03/2026" in p and "11/04/2026" in p for p in pasos_cuotas))
+check("TC-022: CUOTAS incluye días del periodo y semanas equivalentes",
+      any("días" in p and "semana(s)" in p for p in pasos_cuotas))
+check("TC-023: CUOTAS incluye semanas consumidas y restantes",
+      any("Semanas consumidas del periodo" in p and "Semanas restantes" in p for p in pasos_cuotas))
+check("TC-024: CUOTAS incluye fórmula monto × restantes ÷ totales",
+      any("×" in p and "÷" in p for p in pasos_cuotas))
+
+det_ac16_contado = r15["resultado"]["detalle"]["origen"]
+pasos_contado = det_ac16_contado["pasos"]
+check("TC-025: CONTADO menciona inicio y fin del ciclo completo",
+      any("inicia" in p and "termina" in p for p in pasos_contado))
+
+det_ac16_cuotas = r14["resultado"]["detalle"]["origen"]
+pasos_cuotas2 = det_ac16_cuotas["pasos"]
+check("TC-026: CUOTAS menciona periodo de cuota (no ciclo completo) con fechas del periodo",
+      any("periodo del" in p and "16/03/2026" in p and "11/04/2026" in p for p in pasos_cuotas2))
+
+# AC-014(5): "conclusión con diferencia y estado" — ningún TC-0XX de test-cases.md
+# cubre este punto todavía; se verifica contra mensaje/estado ya calculados por
+# calcular_traslado (no se fabrican valores nuevos, Art. "Precisión" constitución).
+check("AC-014(5) CUOTAS: desglose_narrativo incluye conclusión con mensaje y estado reales",
+      "CONCLUSIÓN" in r14["resultado"]["desglose_narrativo"]
+      and r14["resultado"]["estado"] in r14["resultado"]["desglose_narrativo"]
+      and r14["resultado"]["mensaje"] in r14["resultado"]["desglose_narrativo"])
+check("AC-014(5) CONTADO: desglose_narrativo incluye conclusión con mensaje y estado reales",
+      "CONCLUSIÓN" in r15["resultado"]["desglose_narrativo"]
+      and r15["resultado"]["estado"] in r15["resultado"]["desglose_narrativo"]
+      and r15["resultado"]["mensaje"] in r15["resultado"]["desglose_narrativo"])
+
 print("\nTodas las pruebas pasaron correctamente.")

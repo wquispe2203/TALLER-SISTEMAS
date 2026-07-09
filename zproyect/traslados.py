@@ -585,6 +585,15 @@ def calcular_traslado(
         mensaje = "Traslado cubierto exactamente"
         estado = "TRASLADO_CUBIERTO"
 
+    conclusion = f"Conclusión: {mensaje} (estado: {estado})."
+    desglose_narrativo = (
+        "\n---\n".join(pasos_origen)
+        + "\n\n-- DESTINO --\n"
+        + "\n---\n".join(pasos_destino)
+        + "\n\n-- CONCLUSIÓN --\n"
+        + conclusion
+    )
+
     return {
         "success": True,
         "resultado": {
@@ -593,6 +602,7 @@ def calcular_traslado(
             "diferencia": float(diferencia),
             "estado": estado,
             "mensaje": mensaje,
+            "desglose_narrativo": desglose_narrativo,
             "detalle": {
                 "origen": det_origen,
                 "destino": det_destino,
