@@ -1,6 +1,6 @@
 # SDD Enterprise Policy
 
-This repository MUST use the installed SDD Enterprise workflow.
+This repository MUST use the installed SDD Enterprise workflow!. 
 
 **Before doing anything else, read `.specify/memory/sdd-enterprise-protocol.md`.** It documents concrete failures found in this repo (tasks marked done without verification, fabricated test data, dead CI gates) and the mandatory verification rules that prevent them from happening again. This is not optional context — it is how "using SDD Enterprise" is actually checked in this project.
 

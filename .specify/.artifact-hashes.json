@@ -1,8 +1,8 @@
 {
   ".specify\\specs\\transfer-calculator\\business-context.md": {
     "phase": "1",
-    "sha256": "ff96adb437c244027ccb19357580b13864b32f2f252ce401ea10c5b537865489",
-    "written-at": "2026-07-08T22:39:55Z",
+    "sha256": "bf00fccbeedafca87525bb19d1494a6d14a79b9559935efa30d2960e806e757a",
+    "written-at": "2026-07-09T02:52:36Z",
     "written-by": "sdd-gate-1"
   },
   ".specify\\specs\\transfer-calculator\\clarifications.md": {
@@ -20,7 +20,7 @@
   ".specify\\specs\\transfer-calculator\\spec.md": {
     "phase": "1",
     "sha256": "843143f923a77b3a66e1fa7f563c010c10d1d123e8e59018f7aa7a14a1ef76ec",
-    "written-at": "2026-07-08T22:39:55Z",
+    "written-at": "2026-07-09T02:52:36Z",
     "written-by": "sdd-gate-1"
   },
   ".specify\\specs\\transfer-calculator\\tasks.md": {
