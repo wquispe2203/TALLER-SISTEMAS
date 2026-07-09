@@ -17,6 +17,12 @@
     "written-at": "2026-07-08T23:01:17Z",
     "written-by": "sdd-gate-3"
   },
+  ".specify\\specs\\transfer-calculator\\ship-checklist.md": {
+    "phase": "4",
+    "sha256": "0fe1587ce973aeca66d02d5c40d4a4bfc525c5a35899dfd1473cb249c0c6880e",
+    "written-at": "2026-07-09T15:18:03Z",
+    "written-by": "sdd-gate-4"
+  },
   ".specify\\specs\\transfer-calculator\\spec.md": {
     "phase": "1",
     "sha256": "843143f923a77b3a66e1fa7f563c010c10d1d123e8e59018f7aa7a14a1ef76ec",
