@@ -1,6 +1,6 @@
 ﻿{
     "ceremony":  "standard",
-    "gate":  4,
-    "timestamp":  "2026-07-09T10:18:03Z",
+    "gate":  3,
+    "timestamp":  "2026-07-09T10:05:26Z",
     "featureId":  "transfer-calculator"
 }

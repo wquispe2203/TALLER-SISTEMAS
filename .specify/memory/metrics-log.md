@@ -27,7 +27,7 @@ reference_count: 0
 | 2026-07-08T22:58:12Z | transfer-calculator | Gate 2 | standard | PASS | 0 | - | - | - |
 | 2026-07-08T23:01:17Z | transfer-calculator | Gate 3 | standard | PASS | 0 | - | - | - |
 | 2026-07-09T02:52:36Z | transfer-calculator | Gate 1 | standard | PASS | 0 | - | - | - |
-| 2026-07-09T15:16:44Z | transfer-calculator | Gate 4 | standard | FAIL | 2 | - | - | - |
-| 2026-07-09T15:16:52Z | transfer-calculator | Gate 4 | standard | FAIL | 2 | - | - | - |
-| 2026-07-09T15:17:48Z | transfer-calculator | Gate 4 | standard | PASS | 0 | - | - | - |
-| 2026-07-09T15:18:03Z | transfer-calculator | Gate 4 | standard | PASS | 0 | - | - | - |
+| 2026-07-09T15:05:20Z | transfer-calculator | Gate 1 | standard | PASS | 0 | - | - | - |
+| 2026-07-09T15:05:22Z | transfer-calculator | Gate 2 | standard | PASS | 0 | - | - | - |
+| 2026-07-09T15:05:26Z | transfer-calculator | Gate 3 | standard | PASS | 0 | - | - | - |
+| 2026-07-09T15:05:28Z | transfer-calculator | Gate 4 | standard | FAIL | 2 | - | - | - |

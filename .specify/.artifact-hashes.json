@@ -1,20 +1,20 @@
 {
   ".specify\\specs\\transfer-calculator\\business-context.md": {
     "phase": "1",
-    "sha256": "bf00fccbeedafca87525bb19d1494a6d14a79b9559935efa30d2960e806e757a",
-    "written-at": "2026-07-09T02:52:36Z",
+    "sha256": "561c76733837cd8f9df6ce7da664591fa6f4d9ba97c22977b90f72d7cdad5719",
+    "written-at": "2026-07-09T15:05:20Z",
     "written-by": "sdd-gate-1"
   },
   ".specify\\specs\\transfer-calculator\\clarifications.md": {
     "phase": "2",
-    "sha256": "05478eb91c4d19dbf13e696c988e77d179e978d60a12a2468fb9675082d2606c",
-    "written-at": "2026-07-08T22:58:12Z",
+    "sha256": "63fcb53bc84bdb76c800bb655224ffd40b853e620849a47505754a488b20354b",
+    "written-at": "2026-07-09T15:05:22Z",
     "written-by": "sdd-gate-2"
   },
   ".specify\\specs\\transfer-calculator\\plan.md": {
     "phase": "3",
-    "sha256": "0ddd0b612663b0dd52a076295516f68f57110ae0a11b009bece7b7e08493442e",
-    "written-at": "2026-07-08T23:01:17Z",
+    "sha256": "5e780e1dd5006c1beb3649e6e3c3e5f66057fa0357c8f126a6e12743dffc9a01",
+    "written-at": "2026-07-09T15:05:26Z",
     "written-by": "sdd-gate-3"
   },
   ".specify\\specs\\transfer-calculator\\ship-checklist.md": {
@@ -26,19 +26,19 @@
   ".specify\\specs\\transfer-calculator\\spec.md": {
     "phase": "1",
     "sha256": "843143f923a77b3a66e1fa7f563c010c10d1d123e8e59018f7aa7a14a1ef76ec",
-    "written-at": "2026-07-09T02:52:36Z",
+    "written-at": "2026-07-09T15:05:20Z",
     "written-by": "sdd-gate-1"
   },
   ".specify\\specs\\transfer-calculator\\tasks.md": {
     "phase": "3",
-    "sha256": "d9d70a040d5420844e461618673d272e94e8b3e750c30f8cca5264b145db7e76",
-    "written-at": "2026-07-08T23:01:17Z",
+    "sha256": "52d16c471f30c4b0e779b80d1962be248d1aeae8c1cda7194bff77276aaf36d4",
+    "written-at": "2026-07-09T15:05:26Z",
     "written-by": "sdd-gate-3"
   },
   ".specify\\specs\\transfer-calculator\\test-cases.md": {
     "phase": "3",
     "sha256": "ff37bb184f9413bc316aebe28462dfe067c66df4b2abb57bc00a349b97a2535b",
-    "written-at": "2026-07-08T23:01:17Z",
+    "written-at": "2026-07-09T15:05:26Z",
     "written-by": "sdd-gate-3"
   },
   "_schema": "Wave 23 \u00a723.B.4 \u2014 see .specify/templates/.artifact-hashes.example.json for the documented schema."
